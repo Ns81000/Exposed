@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "buildCommand": "cd dashboard && pnpm install && pnpm build",
+  "outputDirectory": "dashboard/dist",
+  "installCommand": "pnpm install",
+  "env": {
+    "CI": "true"
+  },
+  "regions": ["sfo1"],
+  "public": true
+}

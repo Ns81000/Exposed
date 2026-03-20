@@ -1,0 +1,36 @@
+{
+  "name": "exposed",
+  "version": "1.0.0",
+  "description": "uBlock hides them. Exposed names them. Local-first surveillance intelligence platform.",
+  "licenses": "MIT",
+  "author": "Ns8pc",
+  "homepage": "https://github.com/Ns81000/Exposed",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ns81000/Exposed.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ns81000/Exposed/issues"
+  },
+  "private": false,
+  "keywords": [
+    "privacy",
+    "tracking",
+    "surveillance",
+    "chrome-extension",
+    "tracker-detection",
+    "web-privacy",
+    "security",
+    "analytics",
+    "third-party-trackers"
+  ],
+  "scripts": {
+    "setup": "cd dashboard && pnpm install && cd ../extension && pnpm install 2>/dev/null || echo 'Extension has no dependencies'",
+    "dev": "cd dashboard && pnpm dev",
+    "build": "cd dashboard && pnpm build",
+    "preview": "cd dashboard && pnpm preview"
+  },
+  "workspaces": [
+    "dashboard"
+  ]
+}

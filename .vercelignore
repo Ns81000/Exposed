@@ -1,0 +1,23 @@
+# Don't deploy extension folder to Vercel
+extension/
+
+# Don't deploy documentation that's not needed on the deployed site
+EXPOSED_documentation.md
+*.md
+
+# Don't deploy node_modules (will be installed)
+node_modules/
+
+# Don't deploy git files
+.git/
+.gitignore
+
+# IDE files
+.vscode/
+.idea/
+.DS_Store
+
+# Test & dev files
+*.test.js
+*.test.jsx
+.env.local

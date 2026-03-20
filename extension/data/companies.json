@@ -1,0 +1,39 @@
+{
+  "doubleclick.net": {
+    "company": "Google",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Google ad targeting and cross-site tracking infrastructure.",
+    "learnMore": "https://policies.google.com/privacy"
+  },
+  "facebook.net": {
+    "company": "Meta",
+    "category": "Social Pixel",
+    "risk": "high",
+    "description": "Cross-site pixel tracking used for ad profiling."
+  },
+  "hotjar.com": {
+    "company": "Hotjar",
+    "category": "Session Recording",
+    "risk": "high",
+    "description": "Captures user interactions to replay sessions."
+  },
+  "google-analytics.com": {
+    "company": "Google",
+    "category": "Analytics",
+    "risk": "medium",
+    "description": "Site traffic analytics and behavior measurement."
+  },
+  "segment.com": {
+    "company": "Twilio Segment",
+    "category": "Analytics",
+    "risk": "medium",
+    "description": "Customer data pipeline and analytics tracking."
+  },
+  "newrelic.com": {
+    "company": "New Relic",
+    "category": "Performance Monitoring",
+    "risk": "low",
+    "description": "Performance telemetry and observability instrumentation."
+  }
+}
