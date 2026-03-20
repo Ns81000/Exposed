@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "cd dashboard && pnpm install && pnpm build",
-  "outputDirectory": "dashboard/dist",
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist",
   "installCommand": "pnpm install",
   "env": {
     "CI": "true"
