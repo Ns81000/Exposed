@@ -1,7 +1,4 @@
 {
-  "buildCommand": "pnpm build",
-  "outputDirectory": "dashboard/dist",
-  "installCommand": "pnpm install",
   "rewrites": [
     {
       "source": "/(.*)",
