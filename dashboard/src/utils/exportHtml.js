@@ -1,19 +1,24 @@
-function riskColor(risk) {
-  if (risk === 'high') return '#DC2626';
-  if (risk === 'medium') return '#D97706';
-  if (risk === 'low') return '#2563EB';
-  return '#52525B';
+import { riskAccent } from './riskColor';
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 export function exportSiteReport(site, visits, events) {
   const rows = events
     .map(
       (event) => `<tr>
-        <td>${event.company}</td>
-        <td>${event.category}</td>
-        <td><span style="color:${riskColor(event.risk)}">${event.risk.toUpperCase()}</span></td>
-        <td>${event.trackerDomain}</td>
-        <td>${new Date(event.timestamp).toLocaleTimeString()}</td>
+        <td>${escapeHtml(event.company)}</td>
+        <td>${escapeHtml(event.category)}</td>
+        <td><span style="color:${riskAccent(event.risk)}">${escapeHtml(event.risk?.toUpperCase())}</span></td>
+        <td>${escapeHtml(event.trackerDomain)}</td>
+        <td>${escapeHtml(new Date(event.timestamp).toLocaleTimeString())}</td>
       </tr>`
     )
     .join('');
@@ -23,7 +28,7 @@ export function exportSiteReport(site, visits, events) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Exposed Report ${site.domain}</title>
+  <title>Exposed Report ${escapeHtml(site.domain)}</title>
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; padding: 32px; background: #09090B; color: #FAFAFA; font-family: Inter, system-ui, sans-serif; }
@@ -39,7 +44,7 @@ export function exportSiteReport(site, visits, events) {
 </head>
 <body>
   <h1>Exposed Site Report</h1>
-  <p class="meta">${site.domain} | ${new Date().toLocaleString()}</p>
+  <p class="meta">${escapeHtml(site.domain)} | ${escapeHtml(new Date().toLocaleString())}</p>
   <div class="summary">
     <div class="summary-item"><strong>${events.length}</strong><br />Trackers</div>
     <div class="summary-item"><strong>${visits.length}</strong><br />Visits</div>
@@ -66,11 +71,11 @@ export function exportArchiveReport(archive) {
   const rows = (archive.data?.trackerEvents || [])
     .map(
       (event) => `<tr>
-        <td>${event.siteDomain}</td>
-        <td>${event.company}</td>
-        <td>${event.category}</td>
-        <td><span style="color:${riskColor(event.risk)}">${event.risk.toUpperCase()}</span></td>
-        <td>${event.trackerDomain}</td>
+        <td>${escapeHtml(event.siteDomain)}</td>
+        <td>${escapeHtml(event.company)}</td>
+        <td>${escapeHtml(event.category)}</td>
+        <td><span style="color:${riskAccent(event.risk)}">${escapeHtml(event.risk?.toUpperCase())}</span></td>
+        <td>${escapeHtml(event.trackerDomain)}</td>
       </tr>`
     )
     .join('');
@@ -80,7 +85,7 @@ export function exportArchiveReport(archive) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Exposed Archive ${archive.date}</title>
+  <title>Exposed Archive ${escapeHtml(archive.date)}</title>
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; padding: 32px; background: #09090B; color: #FAFAFA; font-family: Inter, system-ui, sans-serif; }
@@ -92,7 +97,7 @@ export function exportArchiveReport(archive) {
 </head>
 <body>
   <h1>Exposed Daily Archive</h1>
-  <p>${archive.date} | Total trackers: ${archive.data?.summary?.totalTrackers || 0}</p>
+  <p>${escapeHtml(archive.date)} | Total trackers: ${archive.data?.summary?.totalTrackers || 0}</p>
   <table>
     <thead>
       <tr><th>Site</th><th>Company</th><th>Category</th><th>Risk</th><th>Domain</th></tr>

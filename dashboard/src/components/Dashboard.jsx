@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import ConnectPrompt from './ConnectPrompt';
-import DailyArchive from './DailyArchive';
 import ExportButton from './ExportButton';
 import MobileGate from './MobileGate';
 import NodeGraph from './NodeGraph';
-import SettingsPanel from './SettingsPanel';
+import SettingsModal from './SettingsModal';
 import Sidebar from './Sidebar';
+import SummaryStats from './SummaryStats';
 import TrackerDetailPanel from './TrackerDetailPanel';
 import VisitTimeline from './VisitTimeline';
+import { useToast } from './Toast';
 import { useLiveUpdates } from '../hooks/useLiveUpdates';
 import { useTrackerStore } from '../hooks/useTrackerStore';
 import { cleanExpiredSessions, runDailyArchive } from '../utils/archiver';
@@ -19,6 +20,8 @@ function isMobileView() {
 
 export default function Dashboard() {
   const [deletingAll, setDeletingAll] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   const connected = useTrackerStore((state) => state.connected);
   const sessionTTL = useTrackerStore((state) => state.sessionTTL);
   const selectedDomain = useTrackerStore((state) => state.selectedDomain);
@@ -33,6 +36,8 @@ export default function Dashboard() {
   const setSelectedTracker = useTrackerStore((state) => state.setSelectedTracker);
   const setSessionTTL = useTrackerStore((state) => state.setSessionTTL);
   const setResetAt = useTrackerStore((state) => state.setResetAt);
+
+  const { addToast } = useToast();
 
   useLiveUpdates();
 
@@ -66,6 +71,7 @@ export default function Dashboard() {
     if (window.chrome?.storage?.local) {
       await window.chrome.storage.local.set({ sessionTTL: nextTTL });
     }
+    addToast(`Retention set to ${nextTTL === 0 ? 'never expire' : `${nextTTL} days`}`, 'success');
   }
 
   async function onDeleteAllData() {
@@ -100,9 +106,10 @@ export default function Dashboard() {
       });
 
       setResetAt(resetAt);
-
       setSelectedTracker(null);
       await hydrate();
+      setSettingsOpen(false);
+      addToast('All tracking data deleted', 'info');
     } finally {
       setDeletingAll(false);
     }
@@ -112,7 +119,7 @@ export default function Dashboard() {
   if (!connected) return <ConnectPrompt />;
 
   return (
-    <div className="min-h-screen bg-bg text-secondary md:flex">
+    <div className="min-h-screen bg-bg text-secondary flex">
       <Sidebar
         sites={sites}
         selectedDomain={selectedDomain}
@@ -120,33 +127,43 @@ export default function Dashboard() {
           setSelectedDomain(domain);
           setSelectedTracker(null);
         }}
+        archives={archives}
+        onRefresh={hydrate}
+        onOpenSettings={() => setSettingsOpen(true)}
       />
 
-      <main className="flex-1 p-4 md:p-6 space-y-4">
-        <header className="border border-border bg-surface px-4 py-3 flex items-center justify-between">
+      <main className="flex-1 p-4 md:p-6 space-y-4 overflow-y-auto">
+        {/* Header */}
+        <header className="border border-border bg-surface px-5 py-4 flex items-center justify-between animate-fade-in">
           <div>
             <p className="section-label">Active Site</p>
-            <h1 className="text-[24px] font-normal text-text mt-2">{selectedDomain || 'Waiting for data'}</h1>
+            <h1 className="text-[22px] font-medium text-text mt-1.5">{selectedDomain || 'Waiting for data'}</h1>
           </div>
           <ExportButton site={site} visits={visitsForSite} events={eventsForSite} />
         </header>
 
+        {/* Summary Stats */}
+        <SummaryStats events={eventsForSite} />
+
+        {/* Node Graph */}
         <NodeGraph events={eventsForSite} onNodeClick={setSelectedTracker} />
 
+        {/* Timeline + Tracker Detail */}
         <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-4 items-start">
           <VisitTimeline events={eventsForSite} onSelectTracker={setSelectedTracker} />
-          <div className="space-y-4 self-start">
-            <TrackerDetailPanel tracker={selectedTracker} onClose={() => setSelectedTracker(null)} />
-            <SettingsPanel
-              ttl={sessionTTL}
-              onChange={onTTLChange}
-              onDeleteAll={onDeleteAllData}
-              deletingAll={deletingAll}
-            />
-            <DailyArchive archives={archives} onRefresh={hydrate} />
-          </div>
+          <TrackerDetailPanel tracker={selectedTracker} onClose={() => setSelectedTracker(null)} />
         </div>
       </main>
+
+      {/* Settings Modal */}
+      <SettingsModal
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        ttl={sessionTTL}
+        onTTLChange={onTTLChange}
+        onDeleteAll={onDeleteAllData}
+        deletingAll={deletingAll}
+      />
     </div>
   );
 }

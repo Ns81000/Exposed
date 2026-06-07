@@ -1,55 +1,76 @@
+import { useEffect } from 'react';
+import { X, ExternalLink } from 'lucide-react';
 import { riskAccent } from '../utils/riskColor';
 
 export default function TrackerDetailPanel({ tracker, onClose }) {
+  useEffect(() => {
+    if (!tracker) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [tracker, onClose]);
+
   if (!tracker) return null;
 
+  const fields = [
+    { label: 'Company', value: tracker.company, className: 'text-text' },
+    { label: 'Category', value: tracker.category },
+    {
+      label: 'Risk',
+      value: tracker.risk,
+      style: { color: riskAccent(tracker.risk) },
+      transform: (v) => v?.toUpperCase()
+    },
+    { label: 'Domain', value: tracker.trackerDomain, className: 'text-text' },
+    { label: 'Request URL', value: tracker.requestUrl, className: 'break-all text-muted text-[11px]' }
+  ];
+
   return (
-    <aside className="border border-border bg-surface p-4">
+    <aside className="border border-border bg-surface p-4 animate-slide-in-right self-start">
       <div className="flex items-center justify-between border-b border-border pb-3">
         <p className="section-label">Tracker Details</p>
         <button
           type="button"
-          className="text-[11px] text-muted hover:text-text transition-all duration-150"
+          className="text-muted hover:text-text transition-colors duration-150"
           onClick={onClose}
+          title="Close (Esc)"
         >
-          Close
+          <X size={16} />
         </button>
       </div>
 
       <div className="mt-4 space-y-3 text-[13px] text-secondary">
-        <div>
-          <p className="section-label">Company</p>
-          <p className="mt-1 text-text">{tracker.company}</p>
-        </div>
+        {fields.map((field) => (
+          <div key={field.label}>
+            <p className="section-label">{field.label}</p>
+            <p className={`mt-1 ${field.className || ''}`} style={field.style}>
+              {field.transform ? field.transform(field.value) : field.value}
+            </p>
+          </div>
+        ))}
 
-        <div>
-          <p className="section-label">Category</p>
-          <p className="mt-1">{tracker.category}</p>
-        </div>
-
-        <div>
-          <p className="section-label">Risk</p>
-          <p className="mt-1" style={{ color: riskAccent(tracker.risk) }}>
-            {tracker.risk}
-          </p>
-        </div>
-
-        <div>
-          <p className="section-label">Domain</p>
-          <p className="mt-1 text-text">{tracker.trackerDomain}</p>
-        </div>
-
-        <div>
-          <p className="section-label">Request URL</p>
-          <p className="mt-1 break-all text-muted">{tracker.requestUrl}</p>
-        </div>
-
-        {tracker.description ? (
+        {tracker.description && (
           <div>
             <p className="section-label">Description</p>
-            <p className="mt-1">{tracker.description}</p>
+            <p className="mt-1 text-[12px] leading-relaxed">{tracker.description}</p>
           </div>
-        ) : null}
+        )}
+
+        {tracker.learnMore && (
+          <div>
+            <a
+              href={tracker.learnMore}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 mt-1 text-[12px] text-accent hover:underline transition-colors"
+            >
+              <ExternalLink size={12} />
+              Privacy Policy
+            </a>
+          </div>
+        )}
       </div>
     </aside>
   );

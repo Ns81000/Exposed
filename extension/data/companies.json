@@ -10,30 +10,826 @@
     "company": "Meta",
     "category": "Social Pixel",
     "risk": "high",
-    "description": "Cross-site pixel tracking used for ad profiling."
+    "description": "Cross-site pixel tracking used for ad profiling.",
+    "learnMore": "https://www.facebook.com/privacy/policy/"
   },
   "hotjar.com": {
     "company": "Hotjar",
     "category": "Session Recording",
     "risk": "high",
-    "description": "Captures user interactions to replay sessions."
+    "description": "Captures user interactions to replay sessions.",
+    "learnMore": "https://www.hotjar.com/privacy/"
   },
   "google-analytics.com": {
     "company": "Google",
     "category": "Analytics",
     "risk": "medium",
-    "description": "Site traffic analytics and behavior measurement."
+    "description": "Site traffic analytics and behavior measurement.",
+    "learnMore": "https://policies.google.com/privacy"
   },
   "segment.com": {
     "company": "Twilio Segment",
     "category": "Analytics",
     "risk": "medium",
-    "description": "Customer data pipeline and analytics tracking."
+    "description": "Customer data pipeline and analytics tracking.",
+    "learnMore": "https://segment.com/legal/privacy/"
   },
   "newrelic.com": {
     "company": "New Relic",
     "category": "Performance Monitoring",
     "risk": "low",
-    "description": "Performance telemetry and observability instrumentation."
+    "description": "Performance telemetry and observability instrumentation.",
+    "learnMore": "https://newrelic.com/termsandconditions/privacy"
+  },
+  "adsrvr.org": {
+    "company": "The Trade Desk",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Programmatic ad exchange and real-time bidding infrastructure.",
+    "learnMore": "https://www.thetradedesk.com/general/privacy"
+  },
+  "googlesyndication.com": {
+    "company": "Google",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Google AdSense ad delivery and publisher monetization network.",
+    "learnMore": "https://policies.google.com/privacy"
+  },
+  "googletagmanager.com": {
+    "company": "Google",
+    "category": "Tag Management",
+    "risk": "medium",
+    "description": "Google Tag Manager for deploying marketing and analytics tags.",
+    "learnMore": "https://policies.google.com/privacy"
+  },
+  "googleadservices.com": {
+    "company": "Google",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Google Ads conversion tracking and remarketing pixel.",
+    "learnMore": "https://policies.google.com/privacy"
+  },
+  "googlevideo.com": {
+    "company": "Google",
+    "category": "Content Delivery",
+    "risk": "low",
+    "description": "YouTube video content delivery and streaming infrastructure."
+  },
+  "youtube.com": {
+    "company": "Google",
+    "category": "Content Delivery",
+    "risk": "medium",
+    "description": "YouTube embedded player with viewer behavior tracking.",
+    "learnMore": "https://policies.google.com/privacy"
+  },
+  "facebook.com": {
+    "company": "Meta",
+    "category": "Social Tracking",
+    "risk": "high",
+    "description": "Facebook social plugins and cross-site behavioral tracking.",
+    "learnMore": "https://www.facebook.com/privacy/policy/"
+  },
+  "instagram.com": {
+    "company": "Meta",
+    "category": "Social Tracking",
+    "risk": "high",
+    "description": "Instagram embedded content and user activity profiling."
+  },
+  "fbcdn.net": {
+    "company": "Meta",
+    "category": "Content Delivery",
+    "risk": "medium",
+    "description": "Meta CDN for delivering tracking scripts and social widgets."
+  },
+  "twitter.com": {
+    "company": "X (Twitter)",
+    "category": "Social Tracking",
+    "risk": "high",
+    "description": "Twitter/X embedded widgets and conversion tracking pixel.",
+    "learnMore": "https://twitter.com/en/privacy"
+  },
+  "t.co": {
+    "company": "X (Twitter)",
+    "category": "Link Tracking",
+    "risk": "medium",
+    "description": "Twitter/X URL shortener used to track link clicks."
+  },
+  "linkedin.com": {
+    "company": "LinkedIn",
+    "category": "Social Tracking",
+    "risk": "high",
+    "description": "LinkedIn Insight Tag for professional audience tracking.",
+    "learnMore": "https://www.linkedin.com/legal/privacy-policy"
+  },
+  "licdn.com": {
+    "company": "LinkedIn",
+    "category": "Content Delivery",
+    "risk": "medium",
+    "description": "LinkedIn CDN for tracking scripts and badge widgets."
+  },
+  "snap.com": {
+    "company": "Snap Inc.",
+    "category": "Social Pixel",
+    "risk": "high",
+    "description": "Snapchat Pixel for ad conversion and audience tracking."
+  },
+  "snapchat.com": {
+    "company": "Snap Inc.",
+    "category": "Social Tracking",
+    "risk": "high",
+    "description": "Snapchat embedded content and engagement tracking."
+  },
+  "tiktok.com": {
+    "company": "ByteDance",
+    "category": "Social Pixel",
+    "risk": "high",
+    "description": "TikTok Pixel for ad conversion and behavioral profiling.",
+    "learnMore": "https://www.tiktok.com/legal/privacy-policy"
+  },
+  "bytedance.com": {
+    "company": "ByteDance",
+    "category": "Analytics",
+    "risk": "high",
+    "description": "ByteDance analytics and data collection infrastructure."
+  },
+  "amazon-adsystem.com": {
+    "company": "Amazon",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Amazon advertising pixel and affiliate tracking system.",
+    "learnMore": "https://www.amazon.com/gp/help/customer/display.html?nodeId=201909010"
+  },
+  "amazonaws.com": {
+    "company": "Amazon",
+    "category": "Cloud Infrastructure",
+    "risk": "low",
+    "description": "AWS cloud hosting and content delivery — used by many third-party trackers."
+  },
+  "criteo.com": {
+    "company": "Criteo",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Retargeting ad platform that builds browsing profiles across sites.",
+    "learnMore": "https://www.criteo.com/privacy/"
+  },
+  "criteo.net": {
+    "company": "Criteo",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Criteo ad delivery and bidding network."
+  },
+  "outbrain.com": {
+    "company": "Outbrain",
+    "category": "Content Recommendation",
+    "risk": "medium",
+    "description": "Sponsored content recommendation engine with user profiling."
+  },
+  "taboola.com": {
+    "company": "Taboola",
+    "category": "Content Recommendation",
+    "risk": "medium",
+    "description": "Content discovery and native advertising with behavioral tracking."
+  },
+  "scorecardresearch.com": {
+    "company": "comScore",
+    "category": "Analytics",
+    "risk": "medium",
+    "description": "Cross-site audience measurement and internet analytics.",
+    "learnMore": "https://www.comscore.com/About/Privacy-Policy"
+  },
+  "quantserve.com": {
+    "company": "Quantcast",
+    "category": "Analytics",
+    "risk": "high",
+    "description": "Real-time audience measurement and targeted advertising.",
+    "learnMore": "https://www.quantcast.com/privacy/"
+  },
+  "quantcount.com": {
+    "company": "Quantcast",
+    "category": "Analytics",
+    "risk": "high",
+    "description": "Quantcast Measure tag for audience profiling."
+  },
+  "rubiconproject.com": {
+    "company": "Magnite",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Programmatic ad exchange (formerly Rubicon Project)."
+  },
+  "pubmatic.com": {
+    "company": "PubMatic",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Supply-side ad platform with real-time bidding and tracking."
+  },
+  "openx.net": {
+    "company": "OpenX",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Programmatic ad exchange with cross-site user profiling."
+  },
+  "casalemedia.com": {
+    "company": "Index Exchange",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Index Exchange ad marketplace with header bidding."
+  },
+  "adnxs.com": {
+    "company": "Xandr (Microsoft)",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "AppNexus/Xandr ad serving platform owned by Microsoft.",
+    "learnMore": "https://www.xandr.com/privacy/"
+  },
+  "bing.com": {
+    "company": "Microsoft",
+    "category": "Advertising",
+    "risk": "medium",
+    "description": "Microsoft Bing Ads UET tag for conversion tracking.",
+    "learnMore": "https://privacy.microsoft.com/en-us/privacystatement"
+  },
+  "clarity.ms": {
+    "company": "Microsoft",
+    "category": "Session Recording",
+    "risk": "high",
+    "description": "Microsoft Clarity session replay and heatmap analytics.",
+    "learnMore": "https://privacy.microsoft.com/en-us/privacystatement"
+  },
+  "demdex.net": {
+    "company": "Adobe",
+    "category": "Data Management",
+    "risk": "high",
+    "description": "Adobe Audience Manager DMP for cross-site audience segmentation.",
+    "learnMore": "https://www.adobe.com/privacy.html"
+  },
+  "omtrdc.net": {
+    "company": "Adobe",
+    "category": "Analytics",
+    "risk": "medium",
+    "description": "Adobe Analytics (Omniture) data collection endpoint."
+  },
+  "2o7.net": {
+    "company": "Adobe",
+    "category": "Analytics",
+    "risk": "medium",
+    "description": "Adobe Analytics legacy data collection domain."
+  },
+  "mixpanel.com": {
+    "company": "Mixpanel",
+    "category": "Analytics",
+    "risk": "medium",
+    "description": "Product analytics platform tracking user events and funnels.",
+    "learnMore": "https://mixpanel.com/legal/privacy-policy/"
+  },
+  "amplitude.com": {
+    "company": "Amplitude",
+    "category": "Analytics",
+    "risk": "medium",
+    "description": "Behavioral analytics platform for product and growth teams.",
+    "learnMore": "https://amplitude.com/privacy"
+  },
+  "heap.io": {
+    "company": "Heap",
+    "category": "Analytics",
+    "risk": "medium",
+    "description": "Auto-capture analytics that records all user interactions."
+  },
+  "fullstory.com": {
+    "company": "FullStory",
+    "category": "Session Recording",
+    "risk": "high",
+    "description": "Session replay capturing clicks, scrolls, and form interactions.",
+    "learnMore": "https://www.fullstory.com/legal/privacy-policy/"
+  },
+  "mouseflow.com": {
+    "company": "Mouseflow",
+    "category": "Session Recording",
+    "risk": "high",
+    "description": "Session recording and heatmap tool capturing user behavior."
+  },
+  "crazyegg.com": {
+    "company": "Crazy Egg",
+    "category": "Heatmaps",
+    "risk": "medium",
+    "description": "Heatmap and scroll tracking for landing page optimization."
+  },
+  "optimizely.com": {
+    "company": "Optimizely",
+    "category": "A/B Testing",
+    "risk": "medium",
+    "description": "Experimentation platform running A/B tests on user segments."
+  },
+  "launchdarkly.com": {
+    "company": "LaunchDarkly",
+    "category": "Feature Flags",
+    "risk": "low",
+    "description": "Feature flag management with user targeting and segmentation."
+  },
+  "sentry.io": {
+    "company": "Sentry",
+    "category": "Error Monitoring",
+    "risk": "low",
+    "description": "Error tracking and performance monitoring for applications.",
+    "learnMore": "https://sentry.io/privacy/"
+  },
+  "bugsnag.com": {
+    "company": "Bugsnag",
+    "category": "Error Monitoring",
+    "risk": "low",
+    "description": "Application error monitoring and crash reporting."
+  },
+  "datadoghq.com": {
+    "company": "Datadog",
+    "category": "Performance Monitoring",
+    "risk": "low",
+    "description": "Infrastructure and application performance monitoring."
+  },
+  "nr-data.net": {
+    "company": "New Relic",
+    "category": "Performance Monitoring",
+    "risk": "low",
+    "description": "New Relic browser agent data collection endpoint."
+  },
+  "intercom.io": {
+    "company": "Intercom",
+    "category": "Customer Messaging",
+    "risk": "medium",
+    "description": "Customer messaging platform with user behavior tracking.",
+    "learnMore": "https://www.intercom.com/legal/privacy"
+  },
+  "intercomcdn.com": {
+    "company": "Intercom",
+    "category": "Customer Messaging",
+    "risk": "medium",
+    "description": "Intercom CDN for messenger widget and tracking scripts."
+  },
+  "drift.com": {
+    "company": "Drift",
+    "category": "Customer Messaging",
+    "risk": "medium",
+    "description": "Conversational marketing platform with visitor identification."
+  },
+  "hubspot.com": {
+    "company": "HubSpot",
+    "category": "Marketing Automation",
+    "risk": "medium",
+    "description": "Marketing and CRM platform tracking leads and conversions.",
+    "learnMore": "https://legal.hubspot.com/privacy-policy"
+  },
+  "hsforms.com": {
+    "company": "HubSpot",
+    "category": "Lead Capture",
+    "risk": "medium",
+    "description": "HubSpot forms and lead capture tracking."
+  },
+  "marketo.net": {
+    "company": "Adobe Marketo",
+    "category": "Marketing Automation",
+    "risk": "medium",
+    "description": "Marketo marketing automation and lead scoring platform."
+  },
+  "marketo.com": {
+    "company": "Adobe Marketo",
+    "category": "Marketing Automation",
+    "risk": "medium",
+    "description": "Marketo web tracking for B2B marketing automation."
+  },
+  "pardot.com": {
+    "company": "Salesforce",
+    "category": "Marketing Automation",
+    "risk": "medium",
+    "description": "Salesforce Pardot B2B marketing and lead tracking."
+  },
+  "salesforceliveagent.com": {
+    "company": "Salesforce",
+    "category": "Customer Messaging",
+    "risk": "medium",
+    "description": "Salesforce live chat and visitor tracking agent."
+  },
+  "zdassets.com": {
+    "company": "Zendesk",
+    "category": "Customer Support",
+    "risk": "low",
+    "description": "Zendesk widget assets for customer support chat."
+  },
+  "zendesk.com": {
+    "company": "Zendesk",
+    "category": "Customer Support",
+    "risk": "low",
+    "description": "Zendesk support platform with visitor tracking."
+  },
+  "onetrust.com": {
+    "company": "OneTrust",
+    "category": "Consent Management",
+    "risk": "low",
+    "description": "Privacy consent management and cookie compliance platform."
+  },
+  "cookielaw.org": {
+    "company": "OneTrust",
+    "category": "Consent Management",
+    "risk": "low",
+    "description": "OneTrust CookiePro consent banner and cookie scanning."
+  },
+  "trustarc.com": {
+    "company": "TrustArc",
+    "category": "Consent Management",
+    "risk": "low",
+    "description": "Privacy compliance and consent management platform."
+  },
+  "cloudflare.com": {
+    "company": "Cloudflare",
+    "category": "CDN / Security",
+    "risk": "low",
+    "description": "CDN, DDoS protection, and web analytics.",
+    "learnMore": "https://www.cloudflare.com/privacypolicy/"
+  },
+  "cloudflareinsights.com": {
+    "company": "Cloudflare",
+    "category": "Analytics",
+    "risk": "low",
+    "description": "Cloudflare Web Analytics beacon for privacy-first analytics."
+  },
+  "stripe.com": {
+    "company": "Stripe",
+    "category": "Payment Processing",
+    "risk": "low",
+    "description": "Payment processing with fraud detection telemetry.",
+    "learnMore": "https://stripe.com/privacy"
+  },
+  "paypal.com": {
+    "company": "PayPal",
+    "category": "Payment Processing",
+    "risk": "low",
+    "description": "PayPal payment buttons and checkout tracking."
+  },
+  "recaptcha.net": {
+    "company": "Google",
+    "category": "Bot Detection",
+    "risk": "medium",
+    "description": "Google reCAPTCHA bot detection with behavioral analysis."
+  },
+  "gstatic.com": {
+    "company": "Google",
+    "category": "Content Delivery",
+    "risk": "low",
+    "description": "Google static content CDN for fonts, scripts, and assets."
+  },
+  "googletagservices.com": {
+    "company": "Google",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Google Publisher Tag for ad serving and header bidding."
+  },
+  "google.com": {
+    "company": "Google",
+    "category": "Analytics",
+    "risk": "medium",
+    "description": "Google services including analytics, fonts, and APIs.",
+    "learnMore": "https://policies.google.com/privacy"
+  },
+  "pinterest.com": {
+    "company": "Pinterest",
+    "category": "Social Pixel",
+    "risk": "high",
+    "description": "Pinterest Tag for conversion tracking and audience building."
+  },
+  "pinimg.com": {
+    "company": "Pinterest",
+    "category": "Content Delivery",
+    "risk": "medium",
+    "description": "Pinterest image CDN and widget delivery."
+  },
+  "ads-twitter.com": {
+    "company": "X (Twitter)",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Twitter/X ad conversion tracking pixel."
+  },
+  "reddit.com": {
+    "company": "Reddit",
+    "category": "Social Tracking",
+    "risk": "medium",
+    "description": "Reddit Pixel for conversion tracking on Reddit ads."
+  },
+  "redditmedia.com": {
+    "company": "Reddit",
+    "category": "Content Delivery",
+    "risk": "low",
+    "description": "Reddit embedded content and media delivery."
+  },
+  "chartbeat.com": {
+    "company": "Chartbeat",
+    "category": "Analytics",
+    "risk": "medium",
+    "description": "Real-time content analytics for publishers."
+  },
+  "parsely.com": {
+    "company": "Parse.ly",
+    "category": "Analytics",
+    "risk": "medium",
+    "description": "Content analytics platform for publishers and media companies."
+  },
+  "branch.io": {
+    "company": "Branch",
+    "category": "Attribution",
+    "risk": "medium",
+    "description": "Mobile attribution and deep linking platform."
+  },
+  "adjust.com": {
+    "company": "Adjust",
+    "category": "Attribution",
+    "risk": "medium",
+    "description": "Mobile measurement and ad attribution platform."
+  },
+  "appsflyer.com": {
+    "company": "AppsFlyer",
+    "category": "Attribution",
+    "risk": "medium",
+    "description": "Mobile attribution and marketing analytics platform."
+  },
+  "braze.com": {
+    "company": "Braze",
+    "category": "Marketing Automation",
+    "risk": "medium",
+    "description": "Customer engagement platform with cross-channel messaging."
+  },
+  "onesignal.com": {
+    "company": "OneSignal",
+    "category": "Push Notifications",
+    "risk": "medium",
+    "description": "Push notification service with user segmentation and tracking."
+  },
+  "liveintent.com": {
+    "company": "LiveIntent",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Identity-based advertising platform for email and web."
+  },
+  "adform.net": {
+    "company": "Adform",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Full-stack ad tech platform with cross-device tracking."
+  },
+  "bidswitch.net": {
+    "company": "IPONWEB",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Real-time bidding exchange connecting multiple ad networks."
+  },
+  "addthis.com": {
+    "company": "Oracle",
+    "category": "Social Sharing",
+    "risk": "high",
+    "description": "Social sharing widget with extensive cross-site tracking.",
+    "learnMore": "https://www.oracle.com/legal/privacy/"
+  },
+  "bluekai.com": {
+    "company": "Oracle",
+    "category": "Data Management",
+    "risk": "high",
+    "description": "Oracle BlueKai DMP for third-party audience data collection."
+  },
+  "eloqua.com": {
+    "company": "Oracle",
+    "category": "Marketing Automation",
+    "risk": "medium",
+    "description": "Oracle Eloqua marketing automation and lead tracking."
+  },
+  "mparticle.com": {
+    "company": "mParticle",
+    "category": "Data Management",
+    "risk": "medium",
+    "description": "Customer data platform collecting and routing user events."
+  },
+  "treasuredata.com": {
+    "company": "Treasure Data",
+    "category": "Data Management",
+    "risk": "medium",
+    "description": "Enterprise CDP for cross-channel customer data unification."
+  },
+  "lr-in.com": {
+    "company": "LogRocket",
+    "category": "Session Recording",
+    "risk": "high",
+    "description": "Session replay and frontend monitoring capturing all user actions.",
+    "learnMore": "https://logrocket.com/privacy/"
+  },
+  "lr-ingest.com": {
+    "company": "LogRocket",
+    "category": "Session Recording",
+    "risk": "high",
+    "description": "LogRocket data ingestion endpoint for session recordings."
+  },
+  "smartlook.com": {
+    "company": "Smartlook",
+    "category": "Session Recording",
+    "risk": "high",
+    "description": "Session recording and user behavior analytics tool."
+  },
+  "matomo.cloud": {
+    "company": "Matomo",
+    "category": "Analytics",
+    "risk": "low",
+    "description": "Privacy-focused open-source web analytics platform."
+  },
+  "plausible.io": {
+    "company": "Plausible",
+    "category": "Analytics",
+    "risk": "low",
+    "description": "Lightweight privacy-focused web analytics without cookies."
+  },
+  "umami.is": {
+    "company": "Umami",
+    "category": "Analytics",
+    "risk": "low",
+    "description": "Simple privacy-focused open-source website analytics."
+  },
+  "mouseflow.com": {
+    "company": "Mouseflow",
+    "category": "Session Recording",
+    "risk": "high",
+    "description": "Session replay and heatmap analytics capturing user interactions."
+  },
+  "vwo.com": {
+    "company": "VWO",
+    "category": "A/B Testing",
+    "risk": "medium",
+    "description": "Visual Website Optimizer for A/B testing and conversion optimization."
+  },
+  "adobedtm.com": {
+    "company": "Adobe",
+    "category": "Tag Management",
+    "risk": "medium",
+    "description": "Adobe Launch (DTM) tag management and analytics deployment."
+  },
+  "typekit.net": {
+    "company": "Adobe",
+    "category": "Font Delivery",
+    "risk": "low",
+    "description": "Adobe Fonts (Typekit) web font delivery service."
+  },
+  "pendo.io": {
+    "company": "Pendo",
+    "category": "Product Analytics",
+    "risk": "medium",
+    "description": "Product analytics and in-app messaging with user behavior tracking."
+  },
+  "walkme.com": {
+    "company": "WalkMe",
+    "category": "Digital Adoption",
+    "risk": "medium",
+    "description": "Digital adoption platform tracking user journeys and engagement."
+  },
+  "userpilot.com": {
+    "company": "Userpilot",
+    "category": "Product Analytics",
+    "risk": "medium",
+    "description": "Product growth platform with user onboarding and behavior tracking."
+  },
+  "sprig.com": {
+    "company": "Sprig",
+    "category": "User Research",
+    "risk": "medium",
+    "description": "In-product surveys and user research with behavior targeting."
+  },
+  "6sc.co": {
+    "company": "6sense",
+    "category": "B2B Intent Data",
+    "risk": "high",
+    "description": "B2B intent data platform identifying anonymous website visitors."
+  },
+  "demandbase.com": {
+    "company": "Demandbase",
+    "category": "B2B Intent Data",
+    "risk": "high",
+    "description": "Account-based marketing with anonymous visitor identification."
+  },
+  "clearbit.com": {
+    "company": "Clearbit",
+    "category": "Data Enrichment",
+    "risk": "high",
+    "description": "Visitor identification and data enrichment from IP addresses."
+  },
+  "zoominfo.com": {
+    "company": "ZoomInfo",
+    "category": "B2B Intent Data",
+    "risk": "high",
+    "description": "B2B contact and company data platform with website tracking."
+  },
+  "liveramp.com": {
+    "company": "LiveRamp",
+    "category": "Identity Resolution",
+    "risk": "high",
+    "description": "Cross-device identity graph connecting online and offline data.",
+    "learnMore": "https://liveramp.com/privacy/"
+  },
+  "rlcdn.com": {
+    "company": "LiveRamp",
+    "category": "Identity Resolution",
+    "risk": "high",
+    "description": "LiveRamp identity resolution and data onboarding CDN."
+  },
+  "krxd.net": {
+    "company": "Salesforce (Krux)",
+    "category": "Data Management",
+    "risk": "high",
+    "description": "Salesforce DMP (formerly Krux) for audience data collection."
+  },
+  "speedcurve.com": {
+    "company": "SpeedCurve",
+    "category": "Performance Monitoring",
+    "risk": "low",
+    "description": "Web performance monitoring with real user metrics."
+  },
+  "akamai.net": {
+    "company": "Akamai",
+    "category": "CDN / Security",
+    "risk": "low",
+    "description": "Content delivery network and edge computing platform."
+  },
+  "fastly.net": {
+    "company": "Fastly",
+    "category": "CDN / Security",
+    "risk": "low",
+    "description": "Edge cloud platform and content delivery network."
+  },
+  "unpkg.com": {
+    "company": "Cloudflare",
+    "category": "CDN",
+    "risk": "low",
+    "description": "npm package CDN for open-source JavaScript libraries."
+  },
+  "jsdelivr.net": {
+    "company": "jsDelivr",
+    "category": "CDN",
+    "risk": "low",
+    "description": "Free open-source CDN for npm packages and GitHub files."
+  },
+  "scdn.co": {
+    "company": "Spotify",
+    "category": "Content Delivery",
+    "risk": "low",
+    "description": "Spotify CDN for embedded player widgets."
+  },
+  "spotify.com": {
+    "company": "Spotify",
+    "category": "Content Delivery",
+    "risk": "low",
+    "description": "Spotify embedded content and player widgets."
+  },
+  "twimg.com": {
+    "company": "X (Twitter)",
+    "category": "Content Delivery",
+    "risk": "medium",
+    "description": "Twitter/X image CDN and widget delivery network."
+  },
+  "tiqcdn.com": {
+    "company": "Tealium",
+    "category": "Tag Management",
+    "risk": "medium",
+    "description": "Tealium iQ tag management system CDN."
+  },
+  "sharethis.com": {
+    "company": "ShareThis",
+    "category": "Social Sharing",
+    "risk": "high",
+    "description": "Social sharing buttons with cross-site behavioral tracking."
+  },
+  "yimg.com": {
+    "company": "Yahoo",
+    "category": "Content Delivery",
+    "risk": "medium",
+    "description": "Yahoo image and content delivery network."
+  },
+  "yahoo.com": {
+    "company": "Yahoo",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Yahoo advertising and behavioral tracking platform."
+  },
+  "media.net": {
+    "company": "Media.net",
+    "category": "Advertising",
+    "risk": "high",
+    "description": "Yahoo/Bing contextual ad network for publishers."
+  },
+  "moatads.com": {
+    "company": "Oracle Moat",
+    "category": "Ad Verification",
+    "risk": "medium",
+    "description": "Oracle Moat ad viewability and attention measurement."
+  },
+  "doubleverify.com": {
+    "company": "DoubleVerify",
+    "category": "Ad Verification",
+    "risk": "medium",
+    "description": "Digital media verification for ad fraud and brand safety."
+  },
+  "iasds01.com": {
+    "company": "Integral Ad Science",
+    "category": "Ad Verification",
+    "risk": "medium",
+    "description": "Ad verification measuring viewability and brand safety."
   }
 }

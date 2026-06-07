@@ -1,63 +1,49 @@
-const GITHUB_URL = 'https://github.com/Ns81000/Exposed';
+import { Monitor, Github } from 'lucide-react';
 
-const styles = `
-  .mobile-button {
-    border-color: #52525B;
-    color: #FAFAFA;
-    transition: border-color 150ms ease-in-out;
-  }
-  
-  .mobile-button:hover {
-    border-color: #FAFAFA;
-  }
-`;
+const GITHUB_URL = 'https://github.com/Ns81000/Exposed';
 
 export default function MobileGate() {
   return (
-    <div className="bg-[#09090B] text-[#FAFAFA] min-h-screen px-6 py-12 flex flex-col items-center justify-center">
-      <style>{styles}</style>
+    <div className="bg-bg text-text min-h-screen px-6 py-12 flex flex-col items-center justify-center">
       <div className="max-w-sm mx-auto text-center space-y-8">
         <div>
-          <h1 className="text-[24px] font-400 tracking-tight mb-4">
-            Exposed
+          <div className="w-12 h-12 rounded-full border border-border bg-surface flex items-center justify-center mx-auto mb-5">
+            <Monitor size={22} className="text-accent" />
+          </div>
+          <h1 className="text-[22px] font-medium tracking-tight mb-3">
+            Desktop Only
           </h1>
-          <p className="text-[15px] text-[#A1A1AA] leading-relaxed">
-            Exposed is a desktop-only tool designed for Chrome on Windows, macOS, or Linux. Mobile access is not supported.
+          <p className="text-[14px] text-secondary leading-relaxed">
+            Exposed is a desktop Chrome extension. Mobile access is not supported — open this page on your computer.
           </p>
         </div>
 
-        <div className="border-t border-[#27272A] border-b pt-8 pb-8">
-          <h2 className="text-[13px] font-400 text-[#FAFAFA] mb-6">
+        <div className="border-t border-b border-border pt-7 pb-7">
+          <h2 className="text-[13px] font-medium text-text mb-5">
             How to set up on desktop
           </h2>
-          <ol className="space-y-5 text-left">
+          <ol className="space-y-4 text-left">
             <li>
-              <p className="text-[11px] text-[#52525B] uppercase tracking-wider mb-2">
-                Get the Extension
-              </p>
-              <div className="bg-[#1A1A1A] rounded border border-[#27272A] p-3">
-                <p className="font-mono text-[11px] text-[#A1A1AA] break-words">
+              <p className="section-label mb-2">Get the Extension</p>
+              <div className="bg-raised rounded border border-border p-3">
+                <p className="font-mono text-[11px] text-secondary break-words">
                   git clone {GITHUB_URL}.git
                 </p>
               </div>
             </li>
             <li>
-              <p className="text-[11px] text-[#52525B] uppercase tracking-wider mb-2">
-                Load in Chrome
-              </p>
-              <p className="text-[13px] text-[#A1A1AA] space-y-1">
-                <span className="block">1. Go to chrome://extensions</span>
-                <span className="block">2. Enable Developer mode</span>
-                <span className="block">3. Click Load unpacked</span>
-                <span className="block">4. Select the extension/ folder</span>
-              </p>
+              <p className="section-label mb-2">Load in Chrome</p>
+              <div className="text-[13px] text-secondary space-y-1">
+                <p>1. Go to chrome://extensions</p>
+                <p>2. Enable Developer mode</p>
+                <p>3. Click Load unpacked</p>
+                <p>4. Select the extension/ folder</p>
+              </div>
             </li>
             <li>
-              <p className="text-[11px] text-[#52525B] uppercase tracking-wider mb-2">
-                Open Dashboard
-              </p>
-              <p className="text-[13px] text-[#A1A1AA]">
-                Visit exposed-dashboard.vercel.app/dashboard on your desktop browser.
+              <p className="section-label mb-2">Open Dashboard</p>
+              <p className="text-[13px] text-secondary">
+                Visit exposed-dashboard.vercel.app on your desktop browser.
               </p>
             </li>
           </ol>
@@ -68,13 +54,14 @@ export default function MobileGate() {
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="mobile-button inline-block px-6 py-3 border text-[13px] bg-transparent"
+            className="btn btn-accent inline-flex"
           >
+            <Github size={14} />
             View on GitHub
           </a>
         </div>
 
-        <p className="text-[11px] text-[#52525B]">
+        <p className="text-[11px] text-muted">
           Full documentation and source code available on GitHub.
         </p>
       </div>

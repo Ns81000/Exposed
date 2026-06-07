@@ -4,16 +4,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#09090B',
-        surface: '#111111',
-        raised: '#1A1A1A',
-        border: '#242424',
-        text: '#FAFAFA',
-        secondary: '#A1A1AA',
-        muted: '#52525B',
-        riskHigh: '#DC2626',
-        riskMedium: '#D97706',
-        riskLow: '#2563EB'
+        bg: 'var(--color-bg)',
+        surface: 'var(--color-surface)',
+        raised: 'var(--color-raised)',
+        border: 'var(--color-border)',
+        text: 'var(--color-text)',
+        secondary: 'var(--color-secondary)',
+        muted: 'var(--color-muted)',
+        accent: 'var(--color-accent)',
+        'accent-soft': 'var(--color-accent-soft)',
+        riskHigh: 'var(--color-risk-high)',
+        riskMedium: 'var(--color-risk-medium)',
+        riskLow: 'var(--color-risk-low)',
+        danger: 'var(--color-danger)',
+        'danger-soft': 'var(--color-danger-soft)',
+        success: 'var(--color-success)'
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'Segoe UI', 'sans-serif']

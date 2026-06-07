@@ -1,6 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import * as d3 from 'd3';
+import { Maximize2, Minimize2 } from 'lucide-react';
 import { riskAccent } from '../utils/riskColor';
+
+function getThemeColors() {
+  const style = getComputedStyle(document.documentElement);
+  return {
+    bg: style.getPropertyValue('--color-bg').trim(),
+    border: style.getPropertyValue('--color-border').trim(),
+    text: style.getPropertyValue('--color-text').trim(),
+    muted: style.getPropertyValue('--color-muted').trim(),
+    surface: style.getPropertyValue('--color-surface').trim()
+  };
+}
 
 function buildGraph(events) {
   const counts = {};
@@ -53,13 +65,14 @@ export default function NodeGraph({ events, onNodeClick }) {
     };
   }, []);
 
-  useEffect(() => {
+  const drawGraph = useCallback(() => {
     if (!ref.current) return;
 
     const svg = d3.select(ref.current);
     svg.selectAll('*').remove();
     if (events.length === 0) return;
 
+    const colors = getThemeColors();
     const element = ref.current;
     const width = element.clientWidth || 900;
     const height = element.clientHeight || 360;
@@ -78,7 +91,7 @@ export default function NodeGraph({ events, onNodeClick }) {
       .selectAll('line')
       .data(links)
       .join('line')
-      .attr('stroke', '#242424')
+      .attr('stroke', colors.border)
       .attr('stroke-width', 1)
       .attr('stroke-opacity', 0.6);
 
@@ -88,17 +101,21 @@ export default function NodeGraph({ events, onNodeClick }) {
       .data(nodes)
       .join('circle')
       .attr('r', (d) => d.radius)
-      .attr('fill', (d) => (d.type === 'site' ? '#FAFAFA' : riskAccent(d.risk)))
+      .attr('fill', (d) => (d.type === 'site' ? colors.text : riskAccent(d.risk)))
       .attr('fill-opacity', (d) => (d.type === 'site' ? 1 : 0.6))
-      .attr('stroke', '#242424')
+      .attr('stroke', colors.border)
       .attr('stroke-width', (d) => (d.type === 'site' ? 0 : 1))
       .style('cursor', 'pointer')
       .on('mouseenter', function onMouseEnter(_, datum) {
-        d3.select(this).attr('stroke', '#FAFAFA');
-        link.attr('stroke-opacity', (edge) => (edge.source.id === datum.id || edge.target.id === datum.id ? 1 : 0.2));
+        d3.select(this).attr('stroke', colors.text).attr('stroke-width', 2);
+        link.attr('stroke-opacity', (edge) =>
+          edge.source.id === datum.id || edge.target.id === datum.id ? 1 : 0.15
+        );
       })
       .on('mouseleave', function onMouseLeave(_, datum) {
-        d3.select(this).attr('stroke', datum.type === 'site' ? 'none' : '#242424');
+        d3.select(this)
+          .attr('stroke', datum.type === 'site' ? 'none' : colors.border)
+          .attr('stroke-width', datum.type === 'site' ? 0 : 1);
         link.attr('stroke-opacity', 0.6);
       })
       .on('click', (_, datum) => {
@@ -132,17 +149,23 @@ export default function NodeGraph({ events, onNodeClick }) {
       .join('text')
       .text((d) => d.label)
       .attr('font-size', 11)
-      .attr('fill', '#52525B')
+      .attr('fill', colors.muted)
       .attr('text-anchor', 'middle')
       .style('pointer-events', 'none')
       .style('opacity', 0);
 
     node.on('mouseenter.label', function onLabelEnter(_, datum) {
-      label.filter((nodeDatum) => nodeDatum.id === datum.id).style('opacity', 1).attr('fill', '#FAFAFA');
+      label
+        .filter((nodeDatum) => nodeDatum.id === datum.id)
+        .style('opacity', 1)
+        .attr('fill', colors.text);
     });
 
     node.on('mouseleave.label', function onLabelLeave(_, datum) {
-      label.filter((nodeDatum) => nodeDatum.id === datum.id).style('opacity', 0).attr('fill', '#52525B');
+      label
+        .filter((nodeDatum) => nodeDatum.id === datum.id)
+        .style('opacity', 0)
+        .attr('fill', colors.muted);
     });
 
     const simulation = d3
@@ -166,6 +189,23 @@ export default function NodeGraph({ events, onNodeClick }) {
     return () => simulation.stop();
   }, [events, onNodeClick]);
 
+  useEffect(() => {
+    const cleanup = drawGraph();
+    return cleanup;
+  }, [drawGraph]);
+
+  // Re-draw when theme changes
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      drawGraph();
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+    return () => observer.disconnect();
+  }, [drawGraph]);
+
   async function toggleFullscreen() {
     if (!containerRef.current) return;
 
@@ -180,18 +220,20 @@ export default function NodeGraph({ events, onNodeClick }) {
   return (
     <section
       ref={containerRef}
-      className={`border border-border bg-surface ${isFullscreen ? 'h-screen p-4' : 'h-[360px]'}`}
+      className={`border border-border bg-surface animate-fade-in ${isFullscreen ? 'h-screen p-4' : 'h-[360px]'}`}
+      style={{ animationDelay: '100ms' }}
     >
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <p className="section-label">Tracker Network</p>
         <div className="flex items-center gap-3">
-          <p className="text-[11px] text-muted tracking-[0.08em] uppercase">D3 Graph</p>
+          <p className="text-[11px] text-muted tracking-[0.08em] uppercase">D3 Force Graph</p>
           <button
             type="button"
             onClick={toggleFullscreen}
-            className="border border-border px-3 py-1 text-[11px] text-secondary hover:border-muted hover:text-text transition-all duration-150"
+            className="btn py-1 px-2"
           >
-            {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+            {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+            <span className="text-[11px]">{isFullscreen ? 'Exit' : 'Fullscreen'}</span>
           </button>
         </div>
       </div>

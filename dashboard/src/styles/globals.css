@@ -2,11 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Theme Tokens ─────────────────────────────────────────── */
+
 :root {
-  color: #FAFAFA;
-  background: #09090B;
-  font-family: Inter, system-ui, Segoe UI, sans-serif;
+  /* Dark theme (default) */
+  --color-bg: #09090B;
+  --color-surface: #111111;
+  --color-raised: #1A1A1A;
+  --color-border: #242424;
+  --color-text: #FAFAFA;
+  --color-secondary: #A1A1AA;
+  --color-muted: #52525B;
+  --color-risk-high: #DC2626;
+  --color-risk-medium: #D97706;
+  --color-risk-low: #2563EB;
+  --color-accent: #6366F1;
+  --color-accent-soft: rgba(99, 102, 241, 0.12);
+  --color-danger: #DC2626;
+  --color-danger-soft: rgba(220, 38, 38, 0.12);
+  --color-success: #16A34A;
+
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-family: Inter, system-ui, 'Segoe UI', sans-serif;
+  color-scheme: dark;
 }
+
+[data-theme="light"] {
+  --color-bg: #FAFAFA;
+  --color-surface: #FFFFFF;
+  --color-raised: #F4F4F5;
+  --color-border: #E4E4E7;
+  --color-text: #09090B;
+  --color-secondary: #52525B;
+  --color-muted: #A1A1AA;
+  --color-risk-high: #DC2626;
+  --color-risk-medium: #B45309;
+  --color-risk-low: #1D4ED8;
+  --color-accent: #4F46E5;
+  --color-accent-soft: rgba(79, 70, 229, 0.08);
+  --color-danger: #DC2626;
+  --color-danger-soft: rgba(220, 38, 38, 0.08);
+  --color-success: #16A34A;
+
+  color-scheme: light;
+}
+
+/* ── Base Resets ──────────────────────────────────────────── */
 
 * {
   box-sizing: border-box;
@@ -17,18 +59,32 @@ body,
 #root {
   margin: 0;
   min-height: 100%;
-  background: #09090B;
+  background: var(--color-bg);
 }
 
 body {
   font-size: 13px;
   line-height: 1.5;
-  color: #A1A1AA;
+  color: var(--color-secondary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── Theme Transition ────────────────────────────────────── */
+
+html.transitioning,
+html.transitioning *,
+html.transitioning *::before,
+html.transitioning *::after {
+  transition: background-color 200ms ease, color 200ms ease,
+    border-color 200ms ease, box-shadow 200ms ease !important;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
 
 .scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #242424 #1A1A1A;
+  scrollbar-color: var(--color-border) var(--color-raised);
 }
 
 .scrollbar::-webkit-scrollbar {
@@ -36,16 +92,165 @@ body {
 }
 
 .scrollbar::-webkit-scrollbar-track {
-  background: #1A1A1A;
+  background: var(--color-raised);
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-  background: #242424;
+  background: var(--color-border);
+  border-radius: 2px;
 }
+
+/* ── Section Label ───────────────────────────────────────── */
 
 .section-label {
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #52525B;
+  color: var(--color-muted);
+}
+
+/* ── Animations ──────────────────────────────────────────── */
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(8px) scale(0.96); }
+}
+
+.animate-fade-in {
+  animation: fade-in 400ms ease-out both;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 500ms ease-out both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 300ms ease-out both;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 300ms ease-out both;
+}
+
+.animate-scale-in {
+  animation: scale-in 250ms ease-out both;
+}
+
+/* ── Stagger Delays ──────────────────────────────────────── */
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-700 { animation-delay: 700ms; }
+.delay-800 { animation-delay: 800ms; }
+
+/* ── Focus Styles ────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ── Button Base ─────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--color-secondary);
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+  font-family: inherit;
+}
+
+.btn:hover {
+  border-color: var(--color-muted);
+  color: var(--color-text);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.btn-danger:hover {
+  background: var(--color-danger-soft);
+  border-color: var(--color-danger);
+}
+
+.btn-accent {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.btn-accent:hover {
+  background: var(--color-accent-soft);
+}
+
+/* ── Overlay / Modal backdrop ────────────────────────────── */
+
+.overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade-in 200ms ease-out;
+}
+
+[data-theme="light"] .overlay-backdrop {
+  background: rgba(0, 0, 0, 0.3);
 }
