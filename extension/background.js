@@ -69,7 +69,7 @@ async function pushToLiveBuffer(event) {
 }
 
 function pushRuntimeEvent(event) {
-  chrome.tabs.query({ url: 'http://localhost:5173/*' }, (tabs) => {
+  chrome.tabs.query({ url: ['http://localhost:5173/*', 'https://exposed-dashboard.vercel.app/*'] }, (tabs) => {
     tabs.forEach((tab) => {
       chrome.tabs.sendMessage(tab.id, { type: 'TRACKER_EVENT', payload: event }, () => {
         void chrome.runtime.lastError;
