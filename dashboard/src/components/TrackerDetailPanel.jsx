@@ -56,6 +56,11 @@ export default function TrackerDetailPanel({ tracker, onClose }) {
     ...(isRequestEvent ? [
       { label: 'Domain', value: tracker.trackerDomain, className: 'text-text' },
       { label: 'HTTP Method', value: tracker.method || 'GET', className: 'text-text font-mono' },
+      { 
+        label: 'Payload Size', 
+        value: tracker.blocked ? '0 B (Blocked)' : (tracker.size ? (tracker.size < 1024 ? `${tracker.size} B` : `${(tracker.size / 1024).toFixed(1)} KB`) : 'Pending completed request'),
+        className: 'text-text font-mono' 
+      },
       { label: 'Request URL', value: tracker.requestUrl, className: 'break-all text-muted text-[11px]' }
     ] : [
       { label: 'Identified Domain', value: tracker.trackerDomain || tracker.id, className: 'text-text' }

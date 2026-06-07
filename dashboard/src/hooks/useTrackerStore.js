@@ -101,6 +101,20 @@ export const useTrackerStore = create((set, get) => ({
     }
 
     await get().hydrate();
+  },
+
+  updateTrackerSize: async (requestUrl, size) => {
+    const latestEvent = await db.trackerEvents
+      .where('requestUrl')
+      .equals(requestUrl)
+      .reverse()
+      .first()
+      .catch(() => null);
+
+    if (latestEvent) {
+      await db.trackerEvents.update(latestEvent.id, { size });
+      await get().hydrate();
+    }
   }
 }));
 

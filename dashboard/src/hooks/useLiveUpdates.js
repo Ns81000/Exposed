@@ -12,6 +12,7 @@ export function useLiveUpdates() {
   const setSessionTTL = useTrackerStore((state) => state.setSessionTTL);
   const setResetAt = useTrackerStore((state) => state.setResetAt);
   const setBlockingEnabled = useTrackerStore((state) => state.setBlockingEnabled);
+  const updateTrackerSize = useTrackerStore((state) => state.updateTrackerSize);
 
   useEffect(() => {
     const onMessage = (event) => {
@@ -25,6 +26,10 @@ export function useLiveUpdates() {
 
       if (data.type === 'FINGERPRINT_EVENT') {
         ingestFingerprintEvents(data.payload);
+      }
+
+      if (data.type === 'TRACKER_SIZE_UPDATE') {
+        updateTrackerSize(data.payload.requestUrl, data.payload.size);
       }
 
       if (data.type === 'SYNC_RESPONSE') {

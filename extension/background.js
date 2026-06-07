@@ -2,6 +2,57 @@ let trackers = {};
 let companies = {};
 const MAX_BUFFER = 500;
 const tabMeta = new Map();
+const cnameCache = new Map();
+
+async function checkCNAMETrackers(hostname) {
+  if (cnameCache.has(hostname)) {
+    return cnameCache.get(hostname);
+  }
+
+  if (hostname.includes('cloudflare-dns.com') || hostname.includes('dns.google')) {
+    return null;
+  }
+
+  try {
+    const url = `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(hostname)}&type=CNAME`;
+    const res = await fetch(url, { headers: { 'accept': 'application/dns-json' } });
+    const json = await res.json();
+    
+    if (json.Answer) {
+      const cnameRecord = json.Answer.find(a => a.type === 5);
+      if (cnameRecord && cnameRecord.data) {
+        const cnameHost = cnameRecord.data.replace(/\.$/, '');
+        const root = getRootDomain(cnameHost);
+        
+        if (trackers[root]) {
+          const company = companies[root] || {
+            company: root,
+            category: 'Cloaked Tracker',
+            risk: 'high',
+            description: `CNAME Cloaked tracker resolving to ${cnameHost}`
+          };
+
+          const match = {
+            trackerDomain: root,
+            company: `${company.company} (Cloaked)`,
+            category: company.category,
+            risk: company.risk,
+            description: company.description || 'CNAME cloaked tracker.',
+            learnMore: company.learnMore || ''
+          };
+          
+          cnameCache.set(hostname, match);
+          return match;
+        }
+      }
+    }
+  } catch (e) {
+    console.error('DoH resolve error for', hostname, e);
+  }
+
+  cnameCache.set(hostname, null);
+  return null;
+}
 
 async function loadLists() {
   if (Object.keys(trackers).length && Object.keys(companies).length) return;
@@ -239,7 +290,13 @@ chrome.webRequest.onBeforeRequest.addListener(
 
     await loadLists();
 
-    const match = matchTracker(details.url);
+    let match = matchTracker(details.url);
+    if (!match) {
+      const parsed = safeParseUrl(details.url);
+      if (parsed) {
+        match = await checkCNAMETrackers(parsed.hostname);
+      }
+    }
     if (!match) return;
 
     let tab;
@@ -288,7 +345,13 @@ chrome.webRequest.onErrorOccurred.addListener(
 
     await loadLists();
 
-    const match = matchTracker(details.url);
+    let match = matchTracker(details.url);
+    if (!match) {
+      const parsed = safeParseUrl(details.url);
+      if (parsed) {
+        match = await checkCNAMETrackers(parsed.hostname);
+      }
+    }
     if (!match) return;
 
     let tab;
@@ -321,11 +384,50 @@ chrome.webRequest.onErrorOccurred.addListener(
       requestUrl: details.url,
       method: details.method || 'GET',
       payload,
-      blocked: true
+      blocked: true,
+      size: 0
     };
 
     await pushToLiveBuffer(event);
     pushRuntimeEvent(event);
   },
   { urls: ['<all_urls>'] }
+);
+
+chrome.webRequest.onCompleted.addListener(
+  async (details) => {
+    if (details.tabId < 0) return;
+
+    await loadLists();
+
+    let match = matchTracker(details.url);
+    if (!match) {
+      const parsed = safeParseUrl(details.url);
+      if (parsed) {
+        match = await checkCNAMETrackers(parsed.hostname);
+      }
+    }
+    if (!match) return;
+
+    const contentLengthHeader = details.responseHeaders?.find(
+      (h) => h.name.toLowerCase() === 'content-length'
+    );
+    const size = contentLengthHeader ? parseInt(contentLengthHeader.value, 10) : 0;
+
+    chrome.tabs.query({ url: ['http://localhost:5173/*', 'https://exposed-dashboard.vercel.app/*'] }, (tabs) => {
+      tabs.forEach((tab) => {
+        chrome.tabs.sendMessage(tab.id, { 
+          type: 'TRACKER_SIZE_UPDATE', 
+          payload: { 
+            requestUrl: details.url,
+            size 
+          } 
+        }, () => {
+          void chrome.runtime.lastError;
+        });
+      });
+    });
+  },
+  { urls: ['<all_urls>'] },
+  ['responseHeaders']
 );

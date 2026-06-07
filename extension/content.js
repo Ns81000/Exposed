@@ -53,6 +53,18 @@ function injectSensor() {
           };
         }
       } catch (e) {}
+
+      try {
+        const originalAddEventListener = EventTarget.prototype.addEventListener;
+        EventTarget.prototype.addEventListener = function(type, listener, options) {
+          if (['keydown', 'keypress', 'input', 'change'].includes(type)) {
+            if (this instanceof HTMLInputElement || this instanceof HTMLTextAreaElement || this === window || this === document) {
+              log('InputCapture.' + type);
+            }
+          }
+          return originalAddEventListener.apply(this, arguments);
+        };
+      } catch (e) {}
     })();
   `;
 

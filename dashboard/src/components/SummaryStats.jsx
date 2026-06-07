@@ -9,14 +9,20 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
     
     // Score logic: starts at 100, drops for each tracker (less penalty if blocked), drops heavily for active fingerprinting
     let score = 100;
+    let bytesExfiltrated = 0;
+    let bytesSaved = 0;
+
     events.forEach((e) => {
+      const size = e.size || 0;
       if (e.blocked) {
         if (e.risk === 'high') score -= 3;
         else if (e.risk === 'medium') score -= 1;
+        bytesSaved += 12 * 1024; // Estimate 12KB saved per blocked request
       } else {
         if (e.risk === 'high') score -= 15;
         else if (e.risk === 'medium') score -= 5;
         else score -= 2;
+        bytesExfiltrated += size > 0 ? size : (8 * 1024); // Estimate 8KB baseline if size is 0
       }
     });
 
@@ -42,6 +48,14 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
       gradeColor = '#3b82f6'; // Blue
     }
 
+    const formatBytes = (bytes) => {
+      if (bytes === 0) return '0 KB';
+      const kb = bytes / 1024;
+      if (kb < 1024) return `${kb.toFixed(1)} KB`;
+      const mb = kb / 1024;
+      return `${mb.toFixed(1)} MB`;
+    };
+
     return {
       total,
       blocked,
@@ -49,7 +63,9 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
       fingerprintsCount: fingerprints.length,
       score,
       grade,
-      gradeColor
+      gradeColor,
+      exfiltratedStr: formatBytes(bytesExfiltrated),
+      savedStr: formatBytes(bytesSaved)
     };
   }, [events, fingerprints]);
 
@@ -66,14 +82,14 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
       value: stats.total, 
       icon: Tag, 
       color: 'var(--color-accent)', 
-      subtext: `${stats.total - stats.blocked} allowed to run` 
+      subtext: `${stats.total - stats.blocked} allowed · ${stats.exfiltratedStr} load` 
     },
     { 
       label: 'Blocked Shield', 
       value: `${stats.blockedPct}%`, 
       icon: ShieldAlert, 
       color: stats.blocked > 0 ? '#10b981' : 'var(--color-border)', 
-      subtext: `${stats.blocked} of ${stats.total} blocked` 
+      subtext: `${stats.blocked} blocked · ${stats.savedStr} saved` 
     },
     { 
       label: 'Fingerprints', 

@@ -23,6 +23,20 @@ db.version(2).stores({
   });
 });
 
+db.version(3).stores({
+  sites: '++id, &domain, firstSeen, lastSeen, totalTrackers',
+  visits: '++id, visitId, siteDomain, timestamp, pageTitle, pageUrl, trackerCount, fingerprintCount',
+  trackerEvents: '++id, [visitId+requestUrl], visitId, siteDomain, timestamp, trackerDomain, company, category, risk, payload, method, blocked, size',
+  fingerprintEvents: '++id, visitId, siteDomain, timestamp, api, stack',
+  archives: '++id, &date, createdAt'
+}).upgrade(tx => {
+  return tx.trackerEvents.toCollection().modify(event => {
+    if (event.size === undefined) {
+      event.size = 0;
+    }
+  });
+});
+
 export async function upsertSite(domain, timestamp) {
   const existing = await db.sites.where('domain').equals(domain).first();
   if (existing) {
@@ -103,7 +117,8 @@ export async function recordTrackerEvent(event) {
     requestUrl: event.requestUrl,
     payload: event.payload || null,
     method: event.method || 'GET',
-    blocked: Boolean(event.blocked)
+    blocked: Boolean(event.blocked),
+    size: event.size || 0
   });
 }
 
