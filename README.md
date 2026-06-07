@@ -1,519 +1,252 @@
 # 🚨 Exposed
 
-> **"uBlock hides them. Exposed names them."**
+<div align="center">
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Chrome Extension](https://img.shields.io/badge/platform-Chrome%20Extension-green.svg)
-![React](https://img.shields.io/badge/react-18.3-61dafb.svg)
-![Vite](https://img.shields.io/badge/vite-5.4-646cff.svg)
+> **"uBlock Origin hides them. Exposed names, unmasks, and analyzes them."**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](./LICENSE)
+[![Chrome Extension](https://img.shields.io/badge/Platform-Chrome%20Extension-green.svg?style=for-the-badge)](https://developer.chrome.com/docs/extensions)
+[![React](https://img.shields.io/badge/React-18.3-61dafb.svg?style=for-the-badge&logo=react)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646cff.svg?style=for-the-badge&logo=vite)](https://vite.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8.svg?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
+[![D3.js](https://img.shields.io/badge/D3.js-7.9-f9a03f.svg?style=for-the-badge&logo=d3.js)](https://d3js.org)
+
+Exposed is a local-first, decentralized privacy-intelligence platform that intercepts, visualizes, and audits the hidden tracking networks active on every website you visit. 
+
+[Explore Architecture](#-architecture-&-data-flow) • [How to Run](#-quick-start) • [Database Schema](#-database-&-storage-layer) • [Security Policy](#-security-&-privacy-first)
+
+</div>
 
 ---
 
 ## 📖 What is Exposed?
 
-**Exposed** is a privacy-intelligence platform that reveals the hidden corporate surveillance network active on every website you visit. Unlike ad blockers that silently eliminate trackers, Exposed *exposes* them—showing you exactly who is watching, what they collect, and why it matters.
+Most modern privacy tools (like uBlock Origin, Brave, or AdBlock) block trackers silently. While this keeps you safe, it keeps you in the dark about who is actively trying to surveil you, what data they are capturing, and how they bypass your browser settings.
 
-### The Problem
+**Exposed takes the opposite approach: capture the surveillance, inspect the payloads, and visualize the threat landscape.**
 
-Every modern website loads dozens of third-party trackers without your knowledge:
-- **Ad pixels** tracking your browsing behavior
-- **Session recorders** capturing user interactions
-- **Fingerprinting scripts** building unique profiles of you
-- **Analytics beacons** reporting your activity back to companies
-
-Tools like uBlock Origin block these requests silently. Exposed takes the opposite approach: **let them run, then show you what happened.**
-
-### The Solution
-
-Two tightly integrated components working together:
-
-1. **Chrome Extension** — Acts as your surveillance sensor, intercepting network requests and matching them against 50,000+ known trackers
-2. **React Dashboard** — Visualizes the entire tracking ecosystem with interactive D3 graphs, timeline views, and detailed tracker information
-
-All data stays on your machine. Zero cloud. Zero servers. Zero accounts.
+Two tightly integrated components work together:
+1. **Chrome Extension (Sensor Layer)**: Intercepts network requests in real-time, inspects payload data, unmasks DNS CNAME cloaks, and injects behavioral sensors to trap browser fingerprinting attempts.
+2. **React Dashboard (Visualization Layer)**: Renders a comprehensive dark-mode console displaying D3 force-directed networks, visit timelines, parsed exfiltration grids, and detailed profiling alerts.
 
 ---
 
-## ✨ Key Features
+## ✨ Advanced Features
 
-### 🔍 **Real-Time Tracker Detection**
-Automatically intercepts and identifies every third-party request using the uBlock Origin tracker database. See who's watching *while* you browse.
+### 🔍 Real-Time Request Payload Decryption
+Captures query parameters and POST body JSON data in real-time. If a tracker exfiltrates tracking identifiers, device dimensions, or session IDs, Exposed decodes them and formats them into an easy-to-read key-value grid.
 
-### 📊 **Interactive D3.js Visualization**
-Explore the tracking network as a force-directed graph. Click nodes to see detailed information about each tracker's parent company, category, and risk level.
+### 🔗 DNS-over-HTTPS CNAME Unmasking
+Trackers frequently hide behind "first-party" subdomains (e.g. `analytics.yourbank.com` pointing to `metrics.adobe.com`) to bypass browser blocklists. Exposed runs asynchronous CNAME DNS resolution queries using Cloudflare's secure JSON DNS-over-HTTPS (DoH) API, catching and flagging cloaked trackers as `Company (Cloaked)` in the timeline.
 
-### 📅 **Sessions & Archives**
-Daily sessions auto-archive. Browse historical data, track patterns over time, and understand long-term exposure. Auto-delete after a configurable period (default: 7 days).
+### ⚙️ Behavioral Fingerprint Sensors
+Instruments browser prototype interfaces to detect scripts trying to build hardware and network profiles of you. Exposed logs and shows JavaScript call stacks for:
+* **Canvas Profiling**: Calls to `toDataURL` and `getImageData`.
+* **WebGL Identifiers**: Queries to `getParameter` querying graphics rendering units.
+* **Audio Fingerprinting**: Creating custom audio oscillators via `createOscillator`.
+* **WebRTC Leaks**: Initiating WebRTC peer connections via `createOffer` to find local IP addresses.
+* **Input Capture Heuristics**: Recording keyloggers registering high-frequency keyboard (`keydown`, `keypress`) or change handlers on sensitive input elements.
 
-### 📤 **Export as HTML Reports**
-Generate standalone, shareable HTML reports of your session data. No external dependencies—everything embedded in a single file.
+### 🛡️ Dynamic Blocker Shield (Opt-In)
+Equipped with an interactive togglable blocker. Built on Chrome's high-performance `declarativeNetRequest` API, when enabled, it intercepts and drops network requests matching 50,000+ compiled tracking domains and CNAME vectors, showing you a red **Blocked** status.
 
-### 🔐 **100% Local-First**
-- **No cloud backend.** All data lives in your browser's IndexedDB.
-- **No account required.** No signup, no email, no password.
-- **No data leaves your machine.** We can't see it. Hackers can't see it. Advertisers definitely can't see it.
-- **Open source.** Audit every line. Verify the tracker list. Trust the code.
+### 📊 D3.js Force-Directed Tracker Network
+Visualizes trackers as interactive node-graph relationships. It features dynamic zoom/drag controls, risk level node coloring, and responsive layout adjustments (such as fullscreen modes). It is highly optimized to prevent render flickering or simulation restarts when background bandwidth data updates.
 
-### 🖥️ **Desktop-Optimized**
-Chrome on Windows, macOS, or Linux. Not a mobile tool—intentionally designed for in-depth analysis on a proper screen.
+### 🏆 Privacy Scoring & Grading Engine
+Evaluates visited sites, subtracting points based on tracking activity:
+* **Risk Levels**: Allowed High-Risk trackers subtract `-15` points, Medium-Risk subtract `-5`, Low-Risk subtract `-2`.
+* **Fingerprint Penalties**: Active fingerprinting attempts trigger a heavy `-25` points deduction.
+* **Blocker Coverage**: Blocked trackers only carry a minor penalty (`-3` for high risk, `-1` for medium risk).
+* **Grades**: Scores scale from 0 to 100, mapped to descriptive safety grades (A, B, C, D, F) and colored accordingly.
+
+### 📂 Standalone Offline HTML Reports
+Enables downloading complete, interactive reports of site analyses. The exported reports are beautifully designed in dark mode, containing summary stats, tabbed views, search filters, and collapsible grids displaying query parameters and call stacks—completely functional without internet access.
 
 ---
 
-## 🛠️ How It Works
+## 🌳 Architecture & Data Flow
 
+Exposed operates fully inside the browser sandbox, separating intercept telemetry from state management and database writes. Below is the data pipeline visual:
+
+```mermaid
+flowchart TD
+    subgraph Browser Context ["Browser Context"]
+        A["Browser Request / Site Load"] -->|Intercept| B["background.js: Extension Worker"]
+    end
+
+    subgraph Extension Analysis ["Extension Analysis"]
+        B -->|Check Hostname| C[("trackers.json DB")]
+        B -->|Enrich Metadata| D[("companies.json DB")]
+        B -->|Push Event| E["chrome.storage.local: liveBuffer"]
+        B -->|Broadcast Event| F["chrome.tabs.sendMessage"]
+    end
+
+    subgraph Content Script Bridge ["Content Script Bridge"]
+        F -->|Listen & Forward| G["content.js: Content Script"]
+        G -->|window.postMessage| H["useLiveUpdates.js: Dashboard Hook"]
+    end
+
+    subgraph React Dashboard Store ["React Dashboard Store"]
+        H -->|Action Ingestion| I["useTrackerStore.js: Zustand Store"]
+        I -->|Record Transaction| J[("Dexie.js / IndexedDB")]
+        I -->|Re-render UI| K["Dashboard.jsx: React View"]
+    end
+
+    subgraph Visual Layer ["Visual Layer"]
+        K -->|Render D3 Graph| L["NodeGraph.jsx: Force Graph"]
+    end
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        YOUR BROWSER                             │
-│                                                                 │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │           CHROME EXTENSION (Sensor Layer)               │  │
-│  │                                                          │  │
-│  │  • Intercepts all network requests                      │  │
-│  │  • Matches against uBlock tracker DB (50,000+ sources)  │  │
-│  │  • Classifies by company, category, risk level          │  │
-│  │  • Stores locally in IndexedDB                          │  │
-│  └──────────────────────┬───────────────────────────────────┘  │
-│                         │  Real-time messaging                  │
-│                         ↓                                       │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │          REACT DASHBOARD (Visualization Layer)          │  │
-│  │                                                          │  │
-│  │  ┌──────────────────────────────────────────────────┐  │  │
-│  │  │ D3.js Node Graph | Visit Timeline | Tracker Info │  │  │
-│  │  └──────────────────────────────────────────────────┘  │  │
-│  │  ┌──────────────────────────────────────────────────┐  │  │
-│  │  │ Daily Archives | HTML Export | Settings Panel    │  │  │
-│  │  └──────────────────────────────────────────────────┘  │  │
-│  └──────────────────────────────────────────────────────────┘  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### 🔄 The Data Flow
-
-1. **User browses normally** — All pages load exactly as they would without the extension
-2. **Extension intercepts requests** — Every HTTP/HTTPS request is analyzed
-3. **Tracker matching** — Unknown hosts are matched against the uBlock tracker database
-4. **Classification** — Trackers are grouped by company, category, and risk level
-5. **Storage** — All data saved locally in browser's IndexedDB
-6. **Real-time sync** — Dashboard receives live updates via Chrome messaging API
-7. **Visualization** — Interactive graphs, timelines, and details appear instantly
 
 ---
 
-## 📁 Project Structure
+## 📁 Directory Structure
 
 ```
 exposed/
 │
 ├── extension/                      # Chrome Extension (Manifest V3)
-│   ├── manifest.json              # Extension config & permissions
-│   ├── background.js              # Service worker - request interceptor
-│   ├── content.js                 # Page metadata extraction
-│   ├── popup.html / popup.js       # Extension popup UI
+│   ├── manifest.json              # Extension schema, rules, and permissions
+│   ├── background.js              # Service Worker - unmasks CNAME, captures payloads, compiles blocklists
+│   ├── content.js                 # Content script - hooks API calls, relays tab message bridges
+│   ├── main.js                    # Injected script - overrides prototype APIs to catch fingerprinting
+│   ├── popup.html / popup.js       # Popup connection indicator
 │   ├── data/
-│   │   ├── trackers.json          # Compiled uBlock tracker list
-│   │   └── companies.json         # Domain → Company + risk mapping
-│   └── icons/                     # 16/48/128px extension icons
+│   │   ├── trackers.json          # Compiled uBlock tracker domains list
+│   │   └── companies.json         # Company meta metadata & risk level metrics
+│   └── icons/                     # Generated extension icons (16/48/128px)
 │
-└── dashboard/                      # React + Vite Dashboard
-    ├── index.html
-    ├── vite.config.js             # Vite build configuration
-    ├── tailwind.config.js          # Design system config
-    ├── package.json
-    ├── postcss.config.js
-    ├── public/
-    ├── dist/                       # Built & optimized for Vercel
+└── dashboard/                      # React SPA Dashboard (Vite)
+    ├── index.html                 # HTML entry point
+    ├── vite.config.js             # Vite compiler rules
+    ├── tailwind.config.js          # Design system theme classes
+    ├── package.json               # Frontend dependencies
+    ├── public/                    # Favicons and brand graphics
     └── src/
-        ├── main.jsx               # React entry point
-        ├── App.jsx                # Routing (Landing → Dashboard)
+        ├── main.jsx               # React DOM bootstrapper
+        ├── App.jsx                # UI Router (Landing Page <-> Dashboard Console)
         ├── components/
-        │   ├── Landing.jsx        # Public landing page
-        │   ├── Dashboard.jsx       # Main tracker visualization
-        │   ├── MobileGate.jsx      # Desktop-only warning
-        │   ├── NodeGraph.jsx       # D3.js force-directed graph
-        │   ├── Sidebar.jsx         # Sites list panel
-        │   ├── VisitTimeline.jsx   # Per-site visit history
-        │   ├── TrackerDetailPanel.jsx  # Detailed tracker info
-        │   ├── SettingsPanel.jsx   # Session TTL & data control
-        │   ├── DailyArchive.jsx    # Archive browser
-        │   ├── ExportButton.jsx    # HTML export generator
-        │   └── ConnectPrompt.jsx   # Extension connection status
+        │   ├── Landing.jsx        # Dashboard landing page
+        │   ├── Dashboard.jsx       # Main console orchestrator
+        │   ├── MobileGate.jsx      # Mobile display blocker (Desktop Optimized)
+        │   ├── NodeGraph.jsx       # D3 Force-Directed Network Graph
+        │   ├── Sidebar.jsx         # Site navigation menu & daily archives
+        │   ├── VisitTimeline.jsx   # Visited pages tracker chronology
+        │   ├── TrackerDetailPanel.jsx # Decoded HTTP parameter & payload grids
+        │   ├── FingerprintPanel.jsx  # Fingerprint heuristic alerts & stack traces
+        │   ├── SettingsModal.jsx   # Retention configurations & blocker toggles
+        │   ├── SummaryStats.jsx    # Privacy grades, block ratios, and exfiltrated size cards
+        │   └── ExportButton.jsx    # Interactive HTML report downloader
         ├── hooks/
-        │   ├── useTrackerStore.js  # Zustand store (IndexedDB bridge)
-        │   └── useLiveUpdates.js   # Chrome messaging listener
+        │   ├── useTrackerStore.js  # Zustand State Management (Dexie DB bridge)
+        │   └── useLiveUpdates.js   # Extension postMessage receiver
         ├── db/
-        │   └── schema.js           # Dexie.js IndexedDB schema
-        ├── utils/
-        │   ├── archiver.js         # Session auto-archiving
-        │   ├── exportHtml.js       # HTML report generation
-        │   └── riskColor.js        # Risk-level color coding
-        └── styles/
-            └── globals.css         # Design system variables
+        │   └── schema.js           # IndexedDB schemas via Dexie.js
+        └── utils/
+            ├── archiver.js         # Daily data archiver & automatic cleanup
+            ├── exportHtml.js       # Offline dashboard compiler template
+            └── riskColor.js        # Global risk color tokens
 ```
+
+---
+
+## 💾 Database & Storage Layer
+
+All captured tracker telemetry is saved locally on your device inside **IndexedDB** using **Dexie.js**.
+
+### Dexie Schema Configuration
+
+```javascript
+db.version(3).stores({
+  sites: 'domain, lastSeen, totalTrackers',
+  visits: 'visitId, siteDomain, timestamp, trackerCount, fingerprintCount',
+  trackerEvents: '++id, [visitId+requestUrl], visitId, siteDomain, timestamp, trackerDomain, company, category, risk, payload, method, blocked, size',
+  fingerprintEvents: '++id, visitId, siteDomain, timestamp, api, trackerDomain, stack',
+  archives: 'date, data, createdAt'
+});
+```
+
+### Table Specifications
+
+| Table | Primary Key | Keys / Columns Indexed | Purpose |
+|---|---|---|---|
+| `sites` | `domain` | `lastSeen`, `totalTrackers` | List of target hostnames visited and analyzed. |
+| `visits` | `visitId` | `siteDomain`, `timestamp` | Specific page visit sessions containing counter metrics. |
+| `trackerEvents` | Auto `id` | `[visitId+requestUrl]`, `siteDomain`, `timestamp`, `company`, `risk` | Detailed telemetry entries for intercepted scripts. |
+| `fingerprintEvents` | Auto `id` | `visitId`, `siteDomain`, `api`, `trackerDomain` | Log of active profiling events and call stack records. |
+| `archives` | `date` | `createdAt` | Compact daily summaries containing serializations of site history. |
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 📋 Prerequisites
+* **Google Chrome** (or Chromium-based browsers like Edge, Brave, Opera)
+* **Node.js 18+**
+* **pnpm** package manager
 
-- **Chrome** (Windows, macOS, or Linux)
-- **Node.js** 18+ and **pnpm**
+### Setup Instructions
 
-### Installation
-
-#### 1. Clone the Repository
-
+#### 1. Clone & Navigate
 ```bash
 git clone https://github.com/Ns81000/Exposed.git
 cd Exposed
 ```
 
-#### 2. Install Dashboard Dependencies
+#### 2. Load Chrome Extension
+1. Open Google Chrome and enter `chrome://extensions` in the address bar.
+2. Toggle the **Developer mode** switch in the top-right corner.
+3. Click the **Load unpacked** button in the top-left.
+4. Select the `extension` folder located inside the cloned `Exposed` directory.
+5. The **Exposed** symbol should appear in your extensions list.
 
+#### 3. Run React Dashboard
+Install packages and start the Vite local server:
 ```bash
-cd dashboard
+# Install and build at root level
 pnpm install
-pnpm build
-```
 
-#### 3. Load the Extension in Chrome
-
-1. Open **chrome://extensions**
-2. Enable **Developer mode** (toggle in top right)
-3. Click **Load unpacked**
-4. Select the `extension/` folder from this repository
-5. The Exposed icon should appear in your Chrome toolbar
-
-#### 4. Start the Dashboard
-
-```bash
-# From the dashboard/ directory
+# Run Vite development server
 pnpm dev
 ```
+The console will be served at [http://localhost:5173](http://localhost:5173).
 
-The dashboard will be available at **http://localhost:5173** (or the next available port).
-
-#### 5. Start Using It
-
-- Click the Exposed icon in your Chrome toolbar to see a live connection status
-- Browse normally—trackers will appear in the dashboard in real-time
-- Click on any domain in the sidebar to see detailed tracker activity
-- Explore the D3 graph, visit timeline, and tracker profiles
+#### 4. Begin Auditing
+Open a new browser tab, visit any website (e.g. news sites, social media, shopping portals), and navigate back to the dashboard. You will see trackers populated and visualized in real-time.
 
 ---
 
-## 🎨 Design System
+## 🛡️ Security & Privacy First
 
-Exposed follows a **calm, minimal design philosophy** with zero visual clutter:
+Exposed is built for security analysts, privacy advocates, and educational researchers. It adheres to strict offline-first principles:
 
-| Aspect | Value |
-|--------|-------|
-| **Background** | `#09090B` (near-black dark) |
-| **Text (Primary)** | `#FAFAFA` (near-white) |
-| **Text (Secondary)** | `#A1A1AA` (medium gray) |
-| **Surface Levels** | `#111111`, `#1A1A1A`, `#242424` (4-step hierarchy) |
-| **Risk Colors** | 🔴 High: `#DC2626` • 🟠 Medium: `#D97706` • 🔵 Low: `#2563EB` |
-| **Type Scale** | 11px (labels), 13px (body), 15px (headers), 24px (display) |
-| **Font** | Inter or system-ui (no external font loads) |
-| **Interactions** | Ghost buttons only, no shadows or gradients |
-| **Animations** | Opacity & transform only, capped at 150ms |
-| **Spacing** | 4px grid (all spacing in multiples of 4) |
-
----
-
-## 🌳 Architecture Deep Dive
-
-### Extension Layer
-
-The extension runs as a Manifest V3 service worker, intercepting all network requests:
-
-```javascript
-// Simplified flow
-chrome.webRequest.onBeforeRequest.addListener(
-  (details) => {
-    const hostname = new URL(details.url).hostname;
-    const tracker = matchAgainstDatabase(hostname);
-    
-    if (tracker) {
-      // Store + broadcast to dashboard
-      chrome.storage.local.set({ lastTracker: tracker });
-      chrome.runtime.sendMessage({ type: 'TRACKER_FOUND', data: tracker });
-    }
-  },
-  { urls: ['<all_urls>'] }
-);
-```
-
-### Dashboard Layer
-
-The dashboard is a React SPA using:
-
-- **Zustand** for state management (synced with IndexedDB)
-- **Dexie.js** for structured local database
-- **D3.js** for force-directed graph visualization
-- **Tailwind CSS** for styling
-- **Vite** for blazing-fast builds
-
-Real-time updates flow from the extension to the dashboard via `chrome.runtime.sendMessage`:
-
-```javascript
-// In dashboard
-useEffect(() => {
-  window.addEventListener('message', (event) => {
-    if (event.source !== window) return;
-    if (event.data.source !== 'EXPOSED_EXTENSION') return;
-    
-    // Tracker found! Update store, re-render graph
-    updateTrackerStore(event.data.tracker);
-  });
-}, []);
-```
-
----
-
-## 💾 Data & Storage
-
-All data is stored in **IndexedDB** with the following schema:
-
-```javascript
-{
-  sites: [
-    { domain: "example.com", firstSeen: Date, trackerCount: Number }
-  ],
-  trackers: [
-    { 
-      company: "Google LLC",
-      domain: "google-analytics.com",
-      category: "Analytics",
-      riskLevel: "high"
-    }
-  ],
-  trackerEvents: [
-    {
-      timestamp: Date,
-      siteDomain: "example.com",
-      trackingDomain: "google-analytics.com",
-      companyName: "Google LLC"
-    }
-  ],
-  visits: [
-    {
-      domain: "example.com",
-      timestamp: Date,
-      path: "/page-path",
-      section: "main"
-    }
-  ],
-  archives: [
-    {
-      date: "2026-03-20",
-      sitesCount: 42,
-      trackersCount: 1203,
-      createdAt: Date
-    }
-  ]
-}
-```
-
----
-
-## 📦 Dependencies
-
-### Frontend
-
-```json
-{
-  "react": "18.3.1",
-  "react-dom": "18.3.1",
-  "react-router-dom": "6.30.1",
-  "d3": "7.9.0",
-  "zustand": "5.0.8",
-  "dexie": "4.0.8",
-  "lucide-react": "0.542.0",
-  "tailwindcss": "3.4.17",
-  "vite": "5.4.20"
-}
-```
-
-### Why These?
-
-- **React + React Router** → Modern component architecture with client-side routing
-- **D3.js** → Industry-standard for complex data visualization
-- **Zustand** → Lightweight state management (vs Redux bloat)
-- **Dexie.js** → Clean wrapper around IndexedDB
-- **Tailwind CSS** → Utility-first styling with design system constraints
-- **Vite** → Near-instant hot module replacement + optimized builds
-
----
-
-## 🛡️ Security & Privacy
-
-### What Exposed Does NOT Do
-
-- ❌ It does **not** block any requests (no content filtering)
-- ❌ It does **not** send data to any external server
-- ❌ It does **not** require an account or cloud login
-- ❌ It does **not** work on mobile (desktop only, by design)
-- ❌ It does **not** use analytics, crash reporting, or telemetry
-
-### What This Means
-
-Your browsing data is **100% private**:
-- ✅ Open source code—audit every line
-- ✅ Local-first architecture—zero external dependencies
-- ✅ Verifiable tracker database—inspect the uBlock lists yourself
-- ✅ Transparent data model—understand exactly what gets stored
-
----
-
-## 📦 Deployment
-
-### Vercel (Dashboard)
-
-The dashboard is production-ready for Vercel deployment:
-
-1. **Push to GitHub** (linked to your Vercel account)
-2. **Set Build Command:** `cd dashboard && pnpm install && pnpm build`
-3. **Set Output Directory:** `dashboard/dist`
-4. **Deploy**
-
-```bash
-# Local preview
-pnpm build
-pnpm preview
-```
-
-### Chrome Web Store (Extension)
-
-To submit the extension to the Chrome Web Store:
-
-1. Bundle the `extension/` folder as a `.zip`
-2. Create a developer account at [Chrome Web Store](https://chrome.google.com/webstore/category/extensions)
-3. Upload the ZIP and fill in metadata
-4. Wait for review (~1-3 days)
-
----
-
-## 🧪 Development
-
-### Running Locally
-
-**Terminal 1 — Dashboard Dev Server:**
-```bash
-cd dashboard
-pnpm dev
-# Opens http://localhost:5173
-```
-
-**Terminal 2 — Extension Development:**
-- Keep the extension loaded in chrome://extensions (Developer mode)
-- Changes to extension code require a refresh in Chrome
-- Use the dashboard's dev server for instant feedback on UI changes
-
-### Hot Reload Workflow
-
-1. **Dashboard changes** → See instantly (Vite HMR)
-2. **Extension code changes** → Refresh the extension in chrome://extensions, then refresh the dashboard page
-3. **Tracker database changes** → Copy new data/trackers.json, refresh dashboard
-
----
-
-## 🎯 Roadmap
-
-### Current (v1.0)
-
-- ✅ Real-time tracker detection
-- ✅ D3.js visualization
-- ✅ Daily auto-archive
-- ✅ HTML export
-- ✅ LocalStorage configuration
-- ✅ Landing page + mobile gate
-
-### Future (v1.1+)
-
-- [ ] Firefox extension support
-- [ ] Tracker pattern detection (fingerprinting, session recording, etc.)
-- [ ] Company profile pages with risk assessments
-- [ ] Tracker blocking toggle (opt-in)
-- [ ] Data usage analytics (bandwidth, CPU cost of trackers)
-- [ ] Browser sync via encrypted backup
+* **Zero Cloud Connectors**: Exposed does not run remote APIs, server databases, or user accounts. Everything operates on client hardware.
+* **No Telemetry Outbound**: Exposed never logs usage metrics, crash reports, or exfiltrated domains to its authors or third parties.
+* **Inspectable Data**: Your database is transparent. You can inspect all IndexedDB entries using Chrome Developer Tools (`F12` -> Application -> IndexedDB).
+* **Full Auditability**: The codebase contains zero binaries, minimized wrappers, or unvetted libraries. You can audit every line of JavaScript and CSS.
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Please follow these steps:
+Contributions are welcome! Please follow these guidelines:
 
-1. **Fork** the repository
-2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Make your changes** and test thoroughly
-4. **Commit with clear messages** (`git commit -m 'Add amazing feature'`)
-5. **Push to your fork** (`git push origin feature/amazing-feature`)
-6. **Open a Pull Request** with a clear description
-
-### Code Style
-
-- Use **ES6+** syntax
-- **JSX for React components** (proper indentation, clear structure)
-- **No console.log in production** code
-- **Comments only for complex logic** (code should be self-documenting)
-- **Test changes** before submitting PRs
+1. **Fork** the repository and create your feature branch (`git checkout -b feature/amazing-feature`).
+2. **Format** your code cleanly. Keep components modular and self-documenting.
+3. **Verify** that code compiles without warnings by running `pnpm build` in the `dashboard` folder.
+4. **Submit** a Pull Request describing your changes, testing methodologies, and UI screenshots if applicable.
 
 ---
 
 ## 📄 License
 
-**MIT License** — Use Exposed freely in personal and commercial projects.
-
-See [LICENSE](./LICENSE) for full details.
-
----
-
-## 🙋 Support
-
-### Issues & Bug Reports
-
-Found a bug? Please open an issue on [GitHub Issues](https://github.com/Ns81000/Exposed/issues) with:
-- What you were doing
-- What you expected
-- What actually happened
-- Your browser version + OS
-
-### Questions & Discussions
-
-Have questions about how Exposed works? Check [GitHub Discussions](https://github.com/Ns81000/Exposed/discussions) or open a new discussion thread.
-
----
-
-## 📚 Resources
-
-- **[uBlock Origin](https://github.com/gorhill/uBlock)** — Tracker database source
-- **[OWASP Top 10](https://owasp.org/www-project-top-ten/)** — Privacy/security context
-- **[Privacy International](https://privacy.international/)** — Tracker research
-- **[D3.js Documentation](https://d3js.org/)** — Graph visualization
-- **[IndexedDB Guide](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)** — Local storage
-
----
-
-## 👥 Authors
-
-- **Ns8pc** — Core architecture, extension, dashboard design
-
----
-
-## 🎓 Educational Purpose
-
-Exposed is designed to educate users about corporate surveillance on the web. Understanding the tracking ecosystem is the first step toward digital privacy.
-
-Use responsibly. Stay informed. Stay private.
+Exposed is open-source software licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for details.
 
 ---
 
 <div align="center">
 
-**"The best time to be paranoid about privacy was yesterday. The second-best time is now."**
+**"The best time to protect your privacy was yesterday. The second-best time is now."**
 
 [⬆ back to top](#-exposed)
 
