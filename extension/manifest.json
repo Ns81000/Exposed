@@ -3,7 +3,7 @@
   "name": "Exposed",
   "version": "1.0.0",
   "description": "uBlock hides them. Exposed names them.",
-  "permissions": ["webRequest", "storage", "tabs"],
+  "permissions": ["webRequest", "storage", "tabs", "declarativeNetRequest"],
   "host_permissions": ["<all_urls>"],
   "icons": {
     "16": "icons/icon16.png",

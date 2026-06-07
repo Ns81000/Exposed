@@ -7,9 +7,11 @@ function readExtensionSync() {
 
 export function useLiveUpdates() {
   const ingestEvents = useTrackerStore((state) => state.ingestEvents);
+  const ingestFingerprintEvents = useTrackerStore((state) => state.ingestFingerprintEvents);
   const setConnected = useTrackerStore((state) => state.setConnected);
   const setSessionTTL = useTrackerStore((state) => state.setSessionTTL);
   const setResetAt = useTrackerStore((state) => state.setResetAt);
+  const setBlockingEnabled = useTrackerStore((state) => state.setBlockingEnabled);
 
   useEffect(() => {
     const onMessage = (event) => {
@@ -21,10 +23,15 @@ export function useLiveUpdates() {
         ingestEvents(data.payload);
       }
 
+      if (data.type === 'FINGERPRINT_EVENT') {
+        ingestFingerprintEvents(data.payload);
+      }
+
       if (data.type === 'SYNC_RESPONSE') {
         setConnected(Boolean(data.payload?.connected));
         setSessionTTL(data.payload?.sessionTTL || 7);
         setResetAt(data.payload?.resetAt || null);
+        setBlockingEnabled(Boolean(data.payload?.blockingEnabled));
         if (Array.isArray(data.payload?.liveBuffer) && data.payload.liveBuffer.length > 0) {
           ingestEvents(data.payload.liveBuffer);
         }
@@ -48,6 +55,9 @@ export function useLiveUpdates() {
       if (changes.resetAt) {
         setResetAt(changes.resetAt.newValue || null);
       }
+      if (changes.blockingEnabled) {
+        setBlockingEnabled(Boolean(changes.blockingEnabled.newValue));
+      }
     };
 
     window.addEventListener('message', onMessage);
@@ -64,5 +74,6 @@ export function useLiveUpdates() {
         window.chrome.storage.onChanged.removeListener(onStorageChanged);
       }
     };
-  }, [ingestEvents, setConnected, setSessionTTL, setResetAt]);
+  }, [ingestEvents, ingestFingerprintEvents, setConnected, setSessionTTL, setResetAt, setBlockingEnabled]);
 }
+

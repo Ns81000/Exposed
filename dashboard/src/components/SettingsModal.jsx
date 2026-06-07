@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { X, Clock, Trash2, Info } from 'lucide-react';
+import { X, Clock, Trash2, Info, ShieldAlert } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 
-export default function SettingsModal({ open, onClose, ttl, onTTLChange, onDeleteAll, deletingAll }) {
+export default function SettingsModal({ open, onClose, ttl, onTTLChange, onDeleteAll, deletingAll, blockingEnabled, onBlockingToggle }) {
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -53,6 +53,31 @@ export default function SettingsModal({ open, onClose, ttl, onTTLChange, onDelet
             </select>
           </div>
 
+          {/* Tracker Blocker Shield */}
+          <div className="border-t border-border pt-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1.5 flex-1 pr-4">
+                <div className="flex items-center gap-2">
+                  <ShieldAlert size={14} className="text-muted" />
+                  <p className="section-label">Tracker Blocking Shield</p>
+                </div>
+                <p className="text-[12px] text-muted">
+                  Actively block identified surveillance networks in real-time. Telemetry will still log blocked attempts.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={blockingEnabled}
+                onClick={() => onBlockingToggle(!blockingEnabled)}
+                className={`w-9 h-5 rounded-full p-[2px] transition-colors duration-150 focus:outline-none border border-border flex items-center ${blockingEnabled ? 'bg-accent border-accent' : 'bg-raised border-border'}`}
+                title={blockingEnabled ? 'Disable Blocker' : 'Enable Blocker'}
+              >
+                <div className={`w-3.5 h-3.5 rounded-full bg-text transition-transform duration-150 ${blockingEnabled ? 'translate-x-4 bg-bg' : 'translate-x-0 bg-muted'}`} />
+              </button>
+            </div>
+          </div>
+
           {/* Danger Zone */}
           <div className="border-t border-border pt-5 space-y-3">
             <div className="flex items-center gap-2">
@@ -91,3 +116,4 @@ export default function SettingsModal({ open, onClose, ttl, onTTLChange, onDelet
     </div>
   );
 }
+

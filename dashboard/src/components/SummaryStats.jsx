@@ -1,35 +1,87 @@
 import { useMemo } from 'react';
-import { Shield, Building2, AlertTriangle, Tag } from 'lucide-react';
+import { Shield, AlertTriangle, Tag, ShieldAlert } from 'lucide-react';
 
-export default function SummaryStats({ events }) {
+export default function SummaryStats({ events = [], fingerprints = [] }) {
   const stats = useMemo(() => {
-    if (!events.length) return null;
-
-    const companies = new Set(events.map((e) => e.company));
-    const highRisk = events.filter((e) => e.risk === 'high').length;
-    const highPct = Math.round((highRisk / events.length) * 100);
-
-    const catCounts = {};
+    const total = events.length;
+    const blocked = events.filter((e) => e.blocked).length;
+    const blockedPct = total > 0 ? Math.round((blocked / total) * 100) : 0;
+    
+    // Score logic: starts at 100, drops for each tracker (less penalty if blocked), drops heavily for active fingerprinting
+    let score = 100;
     events.forEach((e) => {
-      catCounts[e.category] = (catCounts[e.category] || 0) + 1;
+      if (e.blocked) {
+        if (e.risk === 'high') score -= 3;
+        else if (e.risk === 'medium') score -= 1;
+      } else {
+        if (e.risk === 'high') score -= 15;
+        else if (e.risk === 'medium') score -= 5;
+        else score -= 2;
+      }
     });
-    const topCategory = Object.entries(catCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
+
+    if (fingerprints.length > 0) {
+      score -= 25;
+    }
+
+    score = Math.max(0, Math.min(100, score));
+
+    let grade = 'A';
+    let gradeColor = '#10b981'; // Green
+    if (score < 55) {
+      grade = 'F';
+      gradeColor = '#ef4444'; // Red
+    } else if (score < 70) {
+      grade = 'D';
+      gradeColor = '#f97316'; // Orange
+    } else if (score < 80) {
+      grade = 'C';
+      gradeColor = '#f59e0b'; // Amber
+    } else if (score < 90) {
+      grade = 'B';
+      gradeColor = '#3b82f6'; // Blue
+    }
 
     return {
-      total: events.length,
-      companies: companies.size,
-      highPct,
-      topCategory
+      total,
+      blocked,
+      blockedPct,
+      fingerprintsCount: fingerprints.length,
+      score,
+      grade,
+      gradeColor
     };
-  }, [events]);
-
-  if (!stats) return null;
+  }, [events, fingerprints]);
 
   const cards = [
-    { label: 'Total Trackers', value: stats.total, icon: Shield, color: 'var(--color-accent)' },
-    { label: 'Companies', value: stats.companies, icon: Building2, color: 'var(--color-risk-medium)' },
-    { label: 'High Risk', value: `${stats.highPct}%`, icon: AlertTriangle, color: 'var(--color-risk-high)' },
-    { label: 'Top Category', value: stats.topCategory, icon: Tag, color: 'var(--color-risk-low)' }
+    { 
+      label: 'Privacy Grade', 
+      value: stats.grade, 
+      icon: Shield, 
+      color: stats.gradeColor, 
+      subtext: `Safety Score: ${stats.score}/100` 
+    },
+    { 
+      label: 'Total Trackers', 
+      value: stats.total, 
+      icon: Tag, 
+      color: 'var(--color-accent)', 
+      subtext: `${stats.total - stats.blocked} allowed to run` 
+    },
+    { 
+      label: 'Blocked Shield', 
+      value: `${stats.blockedPct}%`, 
+      icon: ShieldAlert, 
+      color: stats.blocked > 0 ? '#10b981' : 'var(--color-border)', 
+      subtext: `${stats.blocked} of ${stats.total} blocked` 
+    },
+    { 
+      label: 'Fingerprints', 
+      value: stats.fingerprintsCount, 
+      icon: AlertTriangle, 
+      color: stats.fingerprintsCount > 0 ? '#ef4444' : 'var(--color-border)', 
+      subtext: stats.fingerprintsCount > 0 ? 'Active profiling detected' : 'No profiling detected' 
+    }
   ];
 
   return (
@@ -37,16 +89,20 @@ export default function SummaryStats({ events }) {
       {cards.map((card, i) => (
         <div
           key={card.label}
-          className="border border-border bg-surface px-4 py-3 animate-fade-in"
+          className="border border-border bg-surface px-4 py-3 animate-fade-in flex flex-col justify-between"
           style={{ animationDelay: `${i * 80}ms` }}
         >
-          <div className="flex items-center gap-2 mb-2">
-            <card.icon size={14} style={{ color: card.color }} strokeWidth={2} />
-            <p className="section-label">{card.label}</p>
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <card.icon size={14} style={{ color: card.color }} strokeWidth={2} />
+              <p className="section-label">{card.label}</p>
+            </div>
+            <p className="text-[26px] font-medium text-text leading-none">{card.value}</p>
           </div>
-          <p className="text-[20px] font-medium text-text leading-none">{card.value}</p>
+          <p className="text-[10px] text-muted mt-2 tracking-wide uppercase">{card.subtext}</p>
         </div>
       ))}
     </div>
   );
 }
+

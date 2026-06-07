@@ -78,9 +78,69 @@ function pushRuntimeEvent(event) {
   });
 }
 
-chrome.runtime.onInstalled.addListener(async () => {
-  await chrome.storage.local.set({ connected: true, sessionTTL: 7, liveBuffer: [] });
+function pushFingerprintEvent(event) {
+  chrome.tabs.query({ url: ['http://localhost:5173/*', 'https://exposed-dashboard.vercel.app/*'] }, (tabs) => {
+    tabs.forEach((tab) => {
+      chrome.tabs.sendMessage(tab.id, { type: 'FINGERPRINT_EVENT', payload: event }, () => {
+        void chrome.runtime.lastError;
+      });
+    });
+  });
+}
+
+async function updateBlockingRules() {
+  if (!chrome.declarativeNetRequest) return;
+  const { blockingEnabled = false } = await chrome.storage.local.get('blockingEnabled');
+  
+  const existingRules = await chrome.declarativeNetRequest.getDynamicRules();
+  const existingRuleIds = existingRules.map(r => r.id);
+  
+  if (!blockingEnabled) {
+    if (existingRuleIds.length > 0) {
+      await chrome.declarativeNetRequest.updateDynamicRules({
+        removeRuleIds: existingRuleIds
+      });
+    }
+    return;
+  }
+
   await loadLists();
+  
+  const rules = Object.keys(trackers).map((domain, index) => {
+    return {
+      id: index + 1,
+      priority: 1,
+      action: { type: 'block' },
+      condition: {
+        urlFilter: `||${domain}`,
+        resourceTypes: [
+          'main_frame', 'sub_frame', 'stylesheet', 'script', 'image', 
+          'font', 'object', 'xmlhttprequest', 'ping', 'csp_report', 
+          'media', 'websocket', 'other'
+        ]
+      }
+    };
+  });
+
+  await chrome.declarativeNetRequest.updateDynamicRules({
+    removeRuleIds: existingRuleIds,
+    addRules: rules
+  });
+}
+
+chrome.runtime.onInstalled.addListener(async () => {
+  await chrome.storage.local.set({ connected: true, sessionTTL: 7, liveBuffer: [], blockingEnabled: false });
+  await loadLists();
+  await updateBlockingRules().catch(console.error);
+});
+
+// Sync rules on startup/worker wakeup
+loadLists().then(updateBlockingRules).catch(console.error);
+
+chrome.storage.onChanged.addListener(async (changes, areaName) => {
+  if (areaName === 'local' && changes.blockingEnabled) {
+    await updateBlockingRules().catch(console.error);
+  }
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -89,6 +149,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       pageUrl: message.payload?.pageUrl,
       pageTitle: message.payload?.pageTitle,
       timestamp: message.payload?.timestamp || new Date().toISOString()
+    });
+    return;
+  }
+
+  if (message?.type === 'FINGERPRINT_ALERT' && typeof sender?.tab?.id === 'number') {
+    const tabId = sender.tab.id;
+    chrome.tabs.get(tabId, (tab) => {
+      if (chrome.runtime.lastError || !tab) return;
+      const tabUrl = safeParseUrl(tab.url);
+      if (!tabUrl) return;
+
+      const siteDomain = getRootDomain(tabUrl.hostname);
+      
+      const event = {
+        visitId: createVisitId(siteDomain),
+        siteDomain,
+        timestamp: new Date().toISOString(),
+        api: message.payload?.api,
+        stack: message.payload?.stack
+      };
+
+      pushFingerprintEvent(event);
     });
     return;
   }
@@ -117,6 +199,40 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   tabMeta.delete(tabId);
 });
 
+function extractPayload(details) {
+  const method = details.method || 'GET';
+  let payload = null;
+
+  const parsedReqUrl = safeParseUrl(details.url);
+  if (parsedReqUrl && parsedReqUrl.search) {
+    const params = {};
+    for (const [key, val] of parsedReqUrl.searchParams.entries()) {
+      params[key] = val;
+    }
+    payload = JSON.stringify(params);
+  }
+
+  if (details.requestBody) {
+    if (details.requestBody.formData) {
+      payload = JSON.stringify(details.requestBody.formData);
+    } else if (details.requestBody.raw && details.requestBody.raw.length > 0) {
+      try {
+        const decoder = new TextDecoder('utf-8');
+        const rawParts = details.requestBody.raw.map(part => {
+          if (part.bytes) {
+            return decoder.decode(new Uint8Array(part.bytes));
+          }
+          return '';
+        });
+        payload = rawParts.join('');
+      } catch {
+        payload = '[Raw Data Binary]';
+      }
+    }
+  }
+  return payload;
+}
+
 chrome.webRequest.onBeforeRequest.addListener(
   async (details) => {
     if (details.tabId < 0) return;
@@ -139,6 +255,8 @@ chrome.webRequest.onBeforeRequest.addListener(
     const siteDomain = getRootDomain(tabUrl.hostname);
     const metadata = tabMeta.get(details.tabId);
 
+    const payload = extractPayload(details);
+
     const event = {
       visitId: createVisitId(siteDomain),
       siteDomain,
@@ -151,7 +269,59 @@ chrome.webRequest.onBeforeRequest.addListener(
       risk: match.risk,
       description: match.description,
       learnMore: match.learnMore,
-      requestUrl: details.url
+      requestUrl: details.url,
+      method: details.method || 'GET',
+      payload,
+      blocked: false
+    };
+
+    await pushToLiveBuffer(event);
+    pushRuntimeEvent(event);
+  },
+  { urls: ['<all_urls>'] },
+  ['requestBody']
+);
+
+chrome.webRequest.onErrorOccurred.addListener(
+  async (details) => {
+    if (details.tabId < 0) return;
+
+    await loadLists();
+
+    const match = matchTracker(details.url);
+    if (!match) return;
+
+    let tab;
+    try {
+      tab = await chrome.tabs.get(details.tabId);
+    } catch {
+      return;
+    }
+
+    const tabUrl = safeParseUrl(tab.url);
+    if (!tabUrl) return;
+
+    const siteDomain = getRootDomain(tabUrl.hostname);
+    const metadata = tabMeta.get(details.tabId);
+
+    const payload = extractPayload(details);
+
+    const event = {
+      visitId: createVisitId(siteDomain),
+      siteDomain,
+      pageTitle: metadata?.pageTitle || tab.title || siteDomain,
+      pageUrl: metadata?.pageUrl || tab.url,
+      timestamp: new Date().toISOString(),
+      trackerDomain: match.trackerDomain,
+      company: match.company,
+      category: match.category,
+      risk: match.risk,
+      description: match.description,
+      learnMore: match.learnMore,
+      requestUrl: details.url,
+      method: details.method || 'GET',
+      payload,
+      blocked: true
     };
 
     await pushToLiveBuffer(event);
