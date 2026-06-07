@@ -5,17 +5,17 @@ export default function ConnectPrompt() {
         <p className="section-label">Extension Connection</p>
         <h1 className="mt-4 text-[24px] font-normal text-text">Connect your Exposed extension</h1>
         <p className="mt-4 text-[13px] text-secondary">
-          Load the unpacked extension from the extension folder, then refresh this page.
+          Load the unpacked extension from the folder into Chrome to view your tracking data.
         </p>
         <ol className="mt-6 space-y-2 text-[13px] text-secondary list-decimal list-inside">
-          <li>Open chrome://extensions</li>
-          <li>Enable developer mode</li>
-          <li>Click load unpacked and select the extension folder</li>
+          <li>Open <code>chrome://extensions</code></li>
+          <li>Enable <strong>Developer mode</strong></li>
+          <li>Click <strong>Load unpacked</strong> and select the <code>extension/</code> folder</li>
         </ol>
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="mt-6 border border-border px-4 py-2 text-[13px] text-secondary hover:border-muted hover:text-text transition-all duration-150"
+          className="mt-6 border border-border px-4 py-2 text-[13px] text-secondary hover:border-muted hover:text-text transition-all duration-150 cursor-pointer"
         >
           Retry Connection
         </button>

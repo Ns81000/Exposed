@@ -33,7 +33,7 @@ export default function MobileGate() {
           <ol className="space-y-5 text-left">
             <li>
               <p className="text-[11px] text-[#52525B] uppercase tracking-wider mb-2">
-                Clone the repository
+                Get the Extension
               </p>
               <div className="bg-[#1A1A1A] rounded border border-[#27272A] p-3">
                 <p className="font-mono text-[11px] text-[#A1A1AA] break-words">
@@ -43,17 +43,7 @@ export default function MobileGate() {
             </li>
             <li>
               <p className="text-[11px] text-[#52525B] uppercase tracking-wider mb-2">
-                Install & build dashboard
-              </p>
-              <div className="bg-[#1A1A1A] rounded border border-[#27272A] p-3">
-                <p className="font-mono text-[11px] text-[#A1A1AA] break-words">
-                  cd dashboard && pnpm install && pnpm build
-                </p>
-              </div>
-            </li>
-            <li>
-              <p className="text-[11px] text-[#52525B] uppercase tracking-wider mb-2">
-                Load extension in Chrome
+                Load in Chrome
               </p>
               <p className="text-[13px] text-[#A1A1AA] space-y-1">
                 <span className="block">1. Go to chrome://extensions</span>
@@ -64,20 +54,10 @@ export default function MobileGate() {
             </li>
             <li>
               <p className="text-[11px] text-[#52525B] uppercase tracking-wider mb-2">
-                Start dashboard server
-              </p>
-              <div className="bg-[#1A1A1A] rounded border border-[#27272A] p-3">
-                <p className="font-mono text-[11px] text-[#A1A1AA] break-words">
-                  cd dashboard && pnpm dev
-                </p>
-              </div>
-            </li>
-            <li>
-              <p className="text-[11px] text-[#52525B] uppercase tracking-wider mb-2">
-                Open dashboard
+                Open Dashboard
               </p>
               <p className="text-[13px] text-[#A1A1AA]">
-                Navigate to localhost:5173 in your desktop browser.
+                Visit exposed-dashboard.vercel.app/dashboard on your desktop browser.
               </p>
             </li>
           </ol>

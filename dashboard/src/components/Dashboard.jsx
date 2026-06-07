@@ -14,8 +14,7 @@ import { cleanExpiredSessions, runDailyArchive } from '../utils/archiver';
 import { clearAllTrackingData } from '../db/schema';
 
 function isMobileView() {
-  const mobileAgent = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  return mobileAgent || window.innerWidth < 1024;
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 }
 
 export default function Dashboard() {
