@@ -201,7 +201,7 @@ export default function Landing() {
               <li className="text-[13px] text-secondary leading-relaxed animate-fade-in delay-500">
                 <span className="text-text font-medium">5. Open the dashboard</span>
                 <div className="mt-2">
-                  Navigate to <span className="text-text">http://localhost:5173</span> and start browsing.
+                  Open the dashboard at <a href="https://exposed-dashboard.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline font-medium">exposed-dashboard.vercel.app</a> (or use your local server at <span className="text-text">http://localhost:5173</span>) and start browsing.
                 </div>
               </li>
             </ol>
