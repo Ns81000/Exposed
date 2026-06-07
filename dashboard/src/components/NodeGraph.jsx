@@ -53,6 +53,7 @@ export default function NodeGraph({ events, onNodeClick }) {
   const ref = useRef(null);
   const containerRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const prevStructureRef = useRef('');
 
   useEffect(() => {
     const onFullscreenChange = () => {
@@ -69,13 +70,50 @@ export default function NodeGraph({ events, onNodeClick }) {
     if (!ref.current) return;
 
     const svg = d3.select(ref.current);
-    svg.selectAll('*').remove();
-    if (events.length === 0) return;
+
+    if (events.length === 0) {
+      svg.selectAll('*').remove();
+      prevStructureRef.current = '';
+      return;
+    }
 
     const colors = getThemeColors();
     const element = ref.current;
     const width = element.clientWidth || 900;
     const height = element.clientHeight || 360;
+
+    // Build unique tracking company counts to detect structural changes
+    const counts = {};
+    events.forEach((event) => {
+      if (!counts[event.company]) {
+        counts[event.company] = {
+          count: 0,
+          risk: event.risk
+        };
+      }
+      counts[event.company].count += 1;
+    });
+
+    const siteDomain = events[0]?.siteDomain || 'site';
+    const sortedCompanies = Object.keys(counts).sort();
+    const serializedStructure = JSON.stringify({
+      siteDomain,
+      colors,
+      width,
+      height,
+      trackers: sortedCompanies.map(company => ({
+        company,
+        count: counts[company].count,
+        risk: counts[company].risk
+      }))
+    });
+
+    if (serializedStructure === prevStructureRef.current) {
+      return;
+    }
+    prevStructureRef.current = serializedStructure;
+
+    svg.selectAll('*').remove();
 
     const { nodes, links } = buildGraph(events);
     const graphLayer = svg.append('g');
@@ -187,7 +225,7 @@ export default function NodeGraph({ events, onNodeClick }) {
     });
 
     return () => simulation.stop();
-  }, [events, onNodeClick]);
+  }, [events, onNodeClick, isFullscreen]);
 
   useEffect(() => {
     const cleanup = drawGraph();
