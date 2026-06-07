@@ -29,6 +29,13 @@ Two tightly integrated components work together:
 1. **Chrome Extension (Sensor Layer)**: Intercepts network requests in real-time, inspects payload data, unmasks DNS CNAME cloaks, and injects behavioral sensors to trap browser fingerprinting attempts.
 2. **React Dashboard (Visualization Layer)**: Renders a comprehensive dark-mode console displaying D3 force-directed networks, visit timelines, parsed exfiltration grids, and detailed profiling alerts.
 
+> [!IMPORTANT]
+> **Why Exposed is a Vital Tool for Cybersecurity Professionals & Privacy Engineers**
+> * **Behavioral Adware & Spyware Auditing**: Instantly detect if embedded scripts are registering silent keyboard listeners (keyloggers), capturing inputs, or profiling system canvas/WebGL/Audio runtimes.
+> * **DNS CNAME De-cloaking**: De-cloak tracking assets hiding behind masqueraded first-party subdomains to identify evasion tactics and blocklist bypasses.
+> * **Payload Exfiltration Analysis**: Inspect exact query parameters and POST bodies in real time to document *what* PII (Personally Identifiable Information), session IDs, or device footprints are being leaked.
+> * **GDPR/CCPA Compliance Audits**: Verify compliance standards on web applications by exporting self-contained, interactive HTML report files as auditable proof of tracker behaviour.
+
 ---
 
 ## ✨ Advanced Features
