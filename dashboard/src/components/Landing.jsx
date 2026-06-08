@@ -39,18 +39,34 @@ export default function Landing() {
       {/* Hero */}
       <section className="flex-1 px-6 py-28 flex items-center justify-center relative">
         <div className="max-w-3xl mx-auto text-center z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 border border-border bg-surface-1 text-[11px] text-secondary font-semibold tracking-wider uppercase rounded-full mb-8 animate-fade-in">
+          {/* Centered Brand Emblem */}
+          <div className="flex flex-col items-center gap-3.5 mb-8 animate-fade-in">
+            <div className="relative group cursor-default">
+              {/* Subtle ambient glow behind the icon */}
+              <div className="absolute -inset-2 bg-gradient-to-tr from-accent/35 to-accent/5 rounded-2xl blur-xl opacity-60 group-hover:opacity-95 transition duration-500" />
+              {/* The glassmorphic outer container */}
+              <div className="relative flex items-center justify-center p-3.5 rounded-2xl bg-surface-1/90 border border-border/80 shadow-2xl backdrop-blur-md transition-all duration-300 group-hover:border-accent/40 group-hover:scale-105">
+                <BrandIcon size={48} showBackground={false} />
+              </div>
+            </div>
+            {/* Brand Wordmark */}
+            <div className="flex items-center gap-2 mt-1">
+              <BrandLogo className="text-[20px]" />
+            </div>
+          </div>
+
+          <div className="inline-flex items-center gap-2 px-3 py-1 border border-border bg-surface-1 text-[11px] text-secondary font-semibold tracking-wider uppercase rounded-full mb-8 animate-fade-in delay-100">
             <span className="w-1.5 h-1.5 rounded-full bg-success inline-block animate-pulse" />
             Local-first · Open source
           </div>
-          <h2 className="text-[36px] md:text-[52px] font-display font-bold leading-[1.1] mb-6 text-text tracking-tight animate-fade-in delay-100">
+          <h2 className="text-[36px] md:text-[52px] font-display font-bold leading-[1.1] mb-6 text-text tracking-tight animate-fade-in delay-200">
             uBlock hides them.<br />
             <span className="text-accent">Exposed names them.</span>
           </h2>
-          <p className="text-[16px] text-secondary leading-relaxed mb-10 max-w-2xl mx-auto font-normal animate-fade-in delay-200">
+          <p className="text-[16px] text-secondary leading-relaxed mb-10 max-w-2xl mx-auto font-normal animate-fade-in delay-300">
             See every tracker on every website. Understand who is watching, what they collect, and why it matters — all without leaving your browser.
           </p>
-          <div className="flex items-center justify-center gap-4 animate-fade-in delay-300">
+          <div className="flex items-center justify-center gap-4 animate-fade-in delay-400">
             <button
               onClick={() => navigate('/dashboard')}
               className="px-7 py-3 text-[14px] bg-[#f7f8f8] text-[#010102] font-semibold rounded-full hover:bg-[#e2e8f0] transition-all duration-150 flex items-center gap-1.5 shadow-lg shadow-white/5"
