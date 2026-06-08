@@ -89,12 +89,23 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     // Extract connections: Top 7 sites and Top 8 tracker companies
     const siteDomainCounts = {};
     const companyCounts = {};
-    const connections = [];
+    const connectionMap = {};
 
     events.forEach(e => {
       siteDomainCounts[e.siteDomain] = (siteDomainCounts[e.siteDomain] || 0) + 1;
       companyCounts[e.company] = (companyCounts[e.company] || 0) + 1;
-      connections.push({ site: e.siteDomain, company: e.company, risk: e.risk });
+      
+      // Group by site domain and company to deduplicate overlapping lines
+      const key = `${e.siteDomain}::${e.company}`;
+      if (!connectionMap[key]) {
+        connectionMap[key] = {
+          site: e.siteDomain,
+          company: e.company,
+          risk: e.risk,
+          count: 0
+        };
+      }
+      connectionMap[key].count += 1;
     });
 
     const topSites = Object.keys(siteDomainCounts)
@@ -105,8 +116,8 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .sort((a, b) => companyCounts[b] - companyCounts[a])
       .slice(0, 8);
 
-    // Keep only connections relating to top sites and top companies
-    const filteredConnections = connections.filter(
+    // Keep only unique connections relating to top sites and top companies
+    const uniqueConnections = Object.values(connectionMap).filter(
       c => topSites.includes(c.site) && topCompanies.includes(c.company)
     );
 
@@ -126,7 +137,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
 
     const links = bipartiteG.append('g')
       .selectAll('path')
-      .data(filteredConnections)
+      .data(uniqueConnections)
       .join('path')
       .attr('d', d => {
         const yStart = leftScale(d.site);
@@ -135,16 +146,23 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       })
       .attr('fill', 'none')
       .attr('stroke', d => riskAccent(d.risk))
-      .attr('stroke-width', 1.5)
-      .attr('stroke-opacity', d => hoveredCompany === null ? 0.25 : (d.company === hoveredCompany ? 0.85 : 0.04))
-      .style('transition', 'stroke-opacity 180ms ease, stroke-width 180ms ease');
+      .attr('stroke-width', d => 1.2 + Math.log2(d.count) * 0.8) // Log thickness based on request volume
+      .attr('stroke-opacity', d => hoveredCompany === null ? 0.22 : (d.company === hoveredCompany ? 0.9 : 0.01))
+      .style('transition', 'stroke-opacity 220ms ease, stroke-width 220ms ease');
+
+    // Helper to check connection between site and hovered company
+    const hasConnection = (siteDomain, companyName) => {
+      return uniqueConnections.some(c => c.site === siteDomain && c.company === companyName);
+    };
 
     // Left Node Group (Sites)
     const leftNodes = bipartiteG.append('g')
       .selectAll('g')
       .data(topSites)
       .join('g')
-      .attr('transform', d => `translate(${leftX}, ${leftScale(d)})`);
+      .attr('transform', d => `translate(${leftX}, ${leftScale(d)})`)
+      .style('opacity', d => hoveredCompany === null ? 1 : (hasConnection(d, hoveredCompany) ? 1 : 0.18))
+      .style('transition', 'opacity 220ms ease');
 
     leftNodes.append('circle')
       .attr('r', 5)
@@ -166,6 +184,8 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .join('g')
       .attr('transform', d => `translate(${rightX}, ${rightScale(d)})`)
       .style('cursor', 'pointer')
+      .style('opacity', d => hoveredCompany === null ? 1 : (d === hoveredCompany ? 1 : 0.18))
+      .style('transition', 'opacity 220ms ease')
       .on('mouseenter', (event, d) => setHoveredCompany(d))
       .on('mouseleave', () => setHoveredCompany(null));
 
@@ -194,7 +214,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
 
     const width = bandwidthRef.current.clientWidth || 800;
     const height = 220;
-    const margin = { top: 15, right: 20, bottom: 30, left: 50 };
+    const margin = { top: 20, right: 20, bottom: 30, left: 55 };
 
     // Sort visits chronologically
     const sortedVisits = [...visits].sort((a, b) => a.timestamp - b.timestamp);
@@ -225,57 +245,195 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     );
 
     const yScale = d3.scaleLinear()
-      .domain([0, yMax * 1.1])
+      .domain([0, yMax * 1.15])
       .range([height - margin.bottom, margin.top]);
+
+    // Setup linear gradients for premium glows
+    const defs = svg.append('defs');
+
+    const gradExfiltrated = defs.append('linearGradient')
+      .attr('id', 'grad-exfiltrated')
+      .attr('x1', '0%').attr('y1', '0%')
+      .attr('x2', '0%').attr('y2', '100%');
+    gradExfiltrated.append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', 'var(--color-accent)')
+      .attr('stop-opacity', 0.16);
+    gradExfiltrated.append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', 'var(--color-accent)')
+      .attr('stop-opacity', 0.0);
+
+    const gradSaved = defs.append('linearGradient')
+      .attr('id', 'grad-saved')
+      .attr('x1', '0%').attr('y1', '0%')
+      .attr('x2', '0%').attr('y2', '100%');
+    gradSaved.append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', 'var(--color-success)')
+      .attr('stop-opacity', 0.16);
+    gradSaved.append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', 'var(--color-success)')
+      .attr('stop-opacity', 0.0);
 
     // Axes
     const xAxis = d3.axisBottom(xScale).ticks(5).tickFormat(d3.timeFormat('%I:%M %p'));
-    const yAxis = d3.axisLeft(yScale).ticks(4).tickFormat(d => `${d} KB`);
+    const yAxis = d3.axisLeft(yScale).ticks(4).tickFormat(d => `${Math.round(d)} KB`);
 
     svg.append('g')
       .attr('transform', `translate(0, ${height - margin.bottom})`)
-      .attr('color', 'var(--color-muted)')
+      .attr('color', 'var(--color-border)')
       .call(xAxis)
       .attr('font-size', '9px')
-      .attr('font-family', 'JetBrains Mono, monospace');
+      .attr('font-family', 'JetBrains Mono, monospace')
+      .selectAll('text')
+      .attr('fill', 'var(--color-secondary)');
 
     svg.append('g')
       .attr('transform', `translate(${margin.left}, 0)`)
-      .attr('color', 'var(--color-muted)')
+      .attr('color', 'var(--color-border)')
       .call(yAxis)
       .attr('font-size', '9px')
-      .attr('font-family', 'JetBrains Mono, monospace');
+      .attr('font-family', 'JetBrains Mono, monospace')
+      .selectAll('text')
+      .attr('fill', 'var(--color-secondary)');
 
-    // Area generator for exfiltrated payload
+    // Area generators
     const areaExfiltrated = d3.area()
       .x(d => xScale(d.date))
       .y0(yScale(0))
       .y1(d => yScale(d.exfiltrated))
       .curve(d3.curveMonotoneX);
 
-    svg.append('path')
-      .datum(chartData)
-      .attr('fill', 'var(--color-accent-soft)')
-      .attr('stroke', 'var(--color-accent)')
-      .attr('stroke-width', 1.5)
-      .attr('d', areaExfiltrated)
-      .attr('opacity', 0.85);
-
-    // Area generator for blocked/saved payload
     const areaSaved = d3.area()
       .x(d => xScale(d.date))
       .y0(yScale(0))
       .y1(d => yScale(d.saved))
       .curve(d3.curveMonotoneX);
 
+    // Render shaded areas
     svg.append('path')
       .datum(chartData)
-      .attr('fill', 'rgba(40, 205, 65, 0.06)')
+      .attr('fill', 'url(#grad-exfiltrated)')
+      .attr('d', areaExfiltrated);
+
+    svg.append('path')
+      .datum(chartData)
+      .attr('fill', 'url(#grad-saved)')
+      .attr('d', areaSaved);
+
+    // Render crisp border strokes
+    svg.append('path')
+      .datum(chartData)
+      .attr('fill', 'none')
+      .attr('stroke', 'var(--color-accent)')
+      .attr('stroke-width', 2)
+      .attr('d', d3.line().x(d => xScale(d.date)).y(d => yScale(d.exfiltrated)).curve(d3.curveMonotoneX));
+
+    svg.append('path')
+      .datum(chartData)
+      .attr('fill', 'none')
       .attr('stroke', 'var(--color-success)')
+      .attr('stroke-width', 2)
+      .attr('d', d3.line().x(d => xScale(d.date)).y(d => yScale(d.saved)).curve(d3.curveMonotoneX));
+
+    // Interactive hover scanner line
+    const hoverLine = svg.append('line')
+      .attr('y1', margin.top)
+      .attr('y2', height - margin.bottom)
+      .attr('stroke', 'var(--color-muted)')
+      .attr('stroke-width', 1)
       .attr('stroke-dasharray', '3,3')
+      .style('opacity', 0)
+      .style('pointer-events', 'none');
+
+    // Glowing coordinate dots
+    const focusDotExfiltrated = svg.append('circle')
+      .attr('r', 4)
+      .attr('fill', 'var(--color-accent)')
+      .attr('stroke', 'var(--color-surface-1)')
       .attr('stroke-width', 1.5)
-      .attr('d', areaSaved)
-      .attr('opacity', 0.85);
+      .style('opacity', 0)
+      .style('pointer-events', 'none');
+
+    const focusDotSaved = svg.append('circle')
+      .attr('r', 4)
+      .attr('fill', 'var(--color-success)')
+      .attr('stroke', 'var(--color-surface-1)')
+      .attr('stroke-width', 1.5)
+      .style('opacity', 0)
+      .style('pointer-events', 'none');
+
+    // Tooltip overlay element
+    const tooltip = d3.select(bandwidthRef.current.parentNode)
+      .selectAll('.timeline-tooltip')
+      .data([null])
+      .join('div')
+      .attr('class', 'timeline-tooltip')
+      .style('position', 'absolute')
+      .style('pointer-events', 'none')
+      .style('background', 'var(--color-surface-2)')
+      .style('border', '1px solid var(--color-border)')
+      .style('padding', '6px 10px')
+      .style('border-radius', '6px')
+      .style('font-size', '10.5px')
+      .style('font-family', 'JetBrains Mono, monospace')
+      .style('box-shadow', '0 4px 16px rgba(0,0,0,0.4)')
+      .style('opacity', 0)
+      .style('z-index', 10);
+
+    const bisectDate = d3.bisector(d => d.date).left;
+
+    // Invisible cursor tracking rectangle
+    svg.append('rect')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('fill', 'none')
+      .attr('pointer-events', 'all')
+      .on('mouseover', () => {
+        hoverLine.style('opacity', 0.6);
+        focusDotExfiltrated.style('opacity', 1);
+        focusDotSaved.style('opacity', 1);
+        tooltip.style('opacity', 1);
+      })
+      .on('mouseout', () => {
+        hoverLine.style('opacity', 0);
+        focusDotExfiltrated.style('opacity', 0);
+        focusDotSaved.style('opacity', 0);
+        tooltip.style('opacity', 0);
+      })
+      .on('mousemove', (event) => {
+        const xPos = d3.pointer(event)[0];
+        const datePos = xScale.invert(xPos);
+        const index = bisectDate(chartData, datePos, 1);
+        const d0 = chartData[index - 1];
+        const d1 = chartData[index];
+        if (!d0 || !d1) return;
+        const d = datePos - d0.date > d1.date - datePos ? d1 : d0;
+        
+        const xCoord = xScale(d.date);
+        
+        hoverLine.attr('x1', xCoord).attr('x2', xCoord);
+        focusDotExfiltrated.attr('cx', xCoord).attr('cy', yScale(d.exfiltrated));
+        focusDotSaved.attr('cx', xCoord).attr('cy', yScale(d.saved));
+
+        // Position tooltip intelligently inside bounds
+        const tooltipW = 150;
+        const tx = Math.min(xCoord + 15, width - tooltipW - 10);
+        const ty = yScale(Math.max(d.exfiltrated, d.saved)) - 30;
+
+        tooltip
+          .style('left', `${tx}px`)
+          .style('top', `${ty}px`)
+          .html(`
+            <div style="font-weight: 600; color: var(--color-text); margin-bottom: 2px;">
+              ${d3.timeFormat('%I:%M %p')(d.date)}
+            </div>
+            <div style="color: var(--color-accent)">Leaked: ${d.exfiltrated.toFixed(1)} KB</div>
+            <div style="color: var(--color-success)">Blocked: ${d.saved.toFixed(1)} KB</div>
+          `);
+      });
 
   }, [visits, events]);
 
