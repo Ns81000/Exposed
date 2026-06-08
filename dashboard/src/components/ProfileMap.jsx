@@ -554,7 +554,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
       <header className="acrylic-panel px-6 py-5 flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="section-label tracking-wider">Surveillance Mapping</p>
-          <h1 className="text-[22px] font-display font-bold text-text mt-1 tracking-tight">Identity Shadow Profile</h1>
+          <h1 className="text-[22px] font-sans font-semibold text-text mt-1 tracking-tight">Identity Shadow Profile</h1>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2 border border-accent/20 bg-accent-soft px-3 py-1.5 rounded-lg text-accent text-[11px] font-mono">
@@ -740,7 +740,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
                       textAnchor="middle"
                       dy={26}
                       fontSize="9.5px"
-                      fontFamily="Outfit"
+                      fontFamily="Inter"
                       fontWeight={isActive ? '700' : '600'}
                       fill={isActive ? cat.color : 'var(--color-text)'}
                       style={{ transition: 'fill 200ms ease' }}
@@ -789,7 +789,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
                       dx={comp.x > mapData.cx ? 14 : -14}
                       dy="0.31em"
                       fontSize="10px"
-                      fontFamily="Outfit"
+                      fontFamily="Inter"
                       fontWeight={isActive ? '700' : '500'}
                       fill={isActive || isHovered ? 'var(--color-accent)' : 'var(--color-secondary)'}
                       style={{ transition: 'fill 200ms ease' }}
@@ -810,7 +810,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
                   top: `${Math.max(tooltipPos.y - 40, 10)}px`
                 }}
               >
-                <div className="font-display font-semibold text-text text-[12px] mb-1">
+                <div className="font-sans font-semibold text-text text-[12px] mb-1">
                   {hoveredNode.id}
                 </div>
                 <div className="text-[10px] text-muted font-mono uppercase tracking-wider">
@@ -829,7 +829,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
             <div className="pb-3 border-b border-border flex items-center justify-between">
               <div>
                 <p className="section-label">Shadow Persona</p>
-                <h3 className="text-[16px] font-display font-bold text-text mt-1">Reconstructed Dossier</h3>
+                <h3 className="text-[16px] font-sans font-semibold text-text mt-1">Reconstructed Dossier</h3>
               </div>
               {/* Threat Score */}
               <div className="flex flex-col items-center">
@@ -857,7 +857,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
                 </span>
                 <span className="text-[10px] text-muted font-mono">{sites.length} Active Sites</span>
               </div>
-              <h4 className="text-[14px] font-display font-semibold text-text leading-snug">{reconstructedPersona.title}</h4>
+              <h4 className="text-[14px] font-sans font-semibold text-text leading-snug">{reconstructedPersona.title}</h4>
               <p className="text-[11.5px] leading-relaxed opacity-90">{reconstructedPersona.desc}</p>
             </div>
 
@@ -894,7 +894,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
                 <div className="pb-3 border-b border-border flex items-center justify-between">
                   <div>
                     <span className="text-[9px] font-mono text-muted uppercase tracking-wider">{selectedDetails.subtitle}</span>
-                    <h4 className="text-[15px] font-display font-bold text-text mt-0.5">{selectedDetails.title}</h4>
+                    <h4 className="text-[15px] font-sans font-semibold text-text mt-0.5">{selectedDetails.title}</h4>
                   </div>
                   {selectedDetails.risk && (
                     <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded" style={{ backgroundColor: `${riskAccent(selectedDetails.risk)}15`, color: riskAccent(selectedDetails.risk), border: `1px solid ${riskAccent(selectedDetails.risk)}25` }}>
@@ -957,7 +957,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
                 <Building2 size={24} className="text-muted mb-3" />
-                <h4 className="font-display font-semibold text-[13px] text-text mb-1">Radar Inspector</h4>
+                <h4 className="font-sans font-semibold text-[13px] text-text mb-1">Radar Inspector</h4>
                 <p className="text-[11px] text-secondary max-w-xs font-normal leading-normal">
                   Click a tracker company node or a data category bubble to audit leaking nodes.
                 </p>
@@ -985,7 +985,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
         <div className="stat-card space-y-3">
           <div className="flex items-center gap-2 pb-2 border-b border-border">
             <Database size={15} className="text-riskHigh" />
-            <h4 className="font-display font-semibold text-[13px] text-text">Contact Identity Leakage</h4>
+            <h4 className="font-sans font-semibold text-[13px] text-text">Contact Identity Leakage</h4>
           </div>
           <div className="space-y-1.5 max-h-[120px] overflow-y-auto scrollbar pr-1">
             {profile.pii.values.size > 0 ? (
@@ -1005,7 +1005,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
         <div className="stat-card space-y-3">
           <div className="flex items-center gap-2 pb-2 border-b border-border">
             <Fingerprint size={15} className="text-accent" />
-            <h4 className="font-display font-semibold text-[13px] text-text">Device Blueprint Hashes</h4>
+            <h4 className="font-sans font-semibold text-[13px] text-text">Device Blueprint Hashes</h4>
           </div>
           <div className="space-y-1.5 max-h-[120px] overflow-y-auto scrollbar pr-1">
             {profile.fingerprint.values.size > 0 ? (
@@ -1025,7 +1025,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
         <div className="stat-card space-y-3">
           <div className="flex items-center gap-2 pb-2 border-b border-border">
             <Tag size={15} className="text-riskLow" />
-            <h4 className="font-display font-semibold text-[13px] text-text">Campaign Referral Tags</h4>
+            <h4 className="font-sans font-semibold text-[13px] text-text">Campaign Referral Tags</h4>
           </div>
           <div className="space-y-1.5 max-h-[120px] overflow-y-auto scrollbar pr-1">
             {profile.marketing.values.size > 0 ? (
@@ -1053,7 +1053,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
           {categoryDistribution.map(cat => (
             <div key={cat.id} className="flex flex-col gap-2 p-3 bg-surface-2/30 border border-border/50 rounded-lg">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-display font-semibold text-text">{cat.label}</span>
+                <span className="text-[11px] font-sans font-semibold text-text">{cat.label}</span>
                 <span className="font-mono text-[13px] font-bold tabular-nums" style={{ color: cat.color }}>{cat.count}</span>
               </div>
               <div className="h-1.5 w-full bg-surface-3 rounded-full overflow-hidden">

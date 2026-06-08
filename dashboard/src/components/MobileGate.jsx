@@ -12,7 +12,7 @@ export default function MobileGate() {
           <div className="w-12 h-12 rounded-xl bg-accent flex items-center justify-center mx-auto mb-5">
             <Monitor size={22} className="text-white" />
           </div>
-          <h1 className="text-[24px] font-display font-bold tracking-tight mb-2 text-text">
+          <h1 className="text-[24px] font-sans font-semibold tracking-tight mb-2 text-text">
             Desktop Only
           </h1>
           <p className="text-[13.5px] text-secondary leading-relaxed font-normal">

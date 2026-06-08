@@ -2,62 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Theme Tokens (Premium Tactical Obsidian) ───────────────── */
+/* ── Theme Tokens (Fused Linear × Raycast) ───────────────── */
 
 :root {
-  /* Premium Obsidian Dark Theme */
-  --color-bg: #07080a;                  /* Obsidian Jet Black */
-  --color-surface-1: #0e0f12;           /* Deep Carbon Matte */
-  --color-surface-2: #14161b;           /* Medium Graphite */
-  --color-surface-3: #1c1e24;           /* Active Charcoal */
-  --color-border: rgba(255, 255, 255, 0.05); /* Precise, thin dark lines */
-  --color-border-hover: rgba(255, 107, 0, 0.25); /* Accent-tinted hover borders */
-  --color-text: #f4f3ee;                 /* Warm Bone Cream / Paper text */
-  --color-secondary: #9a9893;            /* Muted Sandstone Gray */
-  --color-muted: #54524e;                /* Deep Clay Dust */
-  --color-accent: #ff6a00;               /* Tactical Cyber-Amber */
-  --color-accent-hover: #ff8533;         /* Bright Flight Amber */
-  --color-accent-soft: rgba(255, 106, 0, 0.06); /* Soft amber scanner highlight */
-  --color-accent-solid: rgba(255, 106, 0, 0.16); /* Solid neon sweep overlay */
+  /* Linear Dark Theme System */
+  --color-bg: #010102;                  /* Linear Deep Black */
+  --color-surface-1: #0f1011;           /* Linear Surface 1 */
+  --color-surface-2: #141516;           /* Linear Surface 2 */
+  --color-surface-3: #18191a;           /* Linear Surface 3 */
+  --color-border: #23252a;              /* Linear hairline border */
+  --color-border-hover: #34343a;        /* Linear hairline-strong border */
+  --color-text: #f7f8f8;                 /* Linear Ink */
+  --color-secondary: #d0d6e0;            /* Linear Ink-muted */
+  --color-muted: #8a8f98;                /* Linear Ink-subtle */
+  --color-accent: #5e6ad2;               /* Linear Primary Lavender */
+  --color-accent-hover: #828fff;         /* Linear Primary Lavender Hover */
+  --color-accent-soft: rgba(94, 106, 210, 0.08); /* Derived Soft Lavender */
+  --color-accent-solid: rgba(94, 106, 210, 0.18); /* Derived Lavender Overlay */
   
-  /* Tactical Alert Mapping */
-  --color-risk-high: #ff3344;            /* Surgical Laser Red */
-  --color-risk-medium: #ffaa00;          /* Warning Yellow / Gold */
-  --color-risk-low: #28cd41;             /* Moss Green / Safe Emerald */
-  --color-danger: #ff3344;
-  --color-danger-soft: rgba(255, 51, 68, 0.06);
-  --color-success: #28cd41;
+  /* Raycast Category Accent Mapping for Alerts/Risks */
+  --color-risk-high: #ff6161;            /* Raycast Accent Red */
+  --color-risk-medium: #ffc533;          /* Raycast Accent Yellow */
+  --color-risk-low: #59d499;             /* Raycast Accent Green */
+  --color-danger: #ff6161;
+  --color-danger-soft: rgba(255, 97, 97, 0.06);
+  --color-success: #59d499;
+  --color-info-blue: #57c1ff;            /* Raycast Accent Blue */
 
   color: var(--color-text);
   background: var(--color-bg);
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-feature-settings: "calt", "kern", "liga", "ss03";
   color-scheme: dark;
-}
-
-[data-theme="light"] {
-  /* Premium Vintage Ivory Theme (Leica & Manual Aesthetic) */
-  --color-bg: #faf9f6;                  /* Soft Antique Ivory Paper */
-  --color-surface-1: #ffffff;           /* Pure White Surface */
-  --color-surface-2: #f1efea;           /* Light Clay Sandstone */
-  --color-surface-3: #e6e3db;           /* Structured Sandstone */
-  --color-border: rgba(0, 0, 0, 0.06);
-  --color-border-hover: rgba(230, 81, 0, 0.3);
-  --color-text: #181816;                 /* Warm Charcoal Ink */
-  --color-secondary: #585550;            /* Warm Slate */
-  --color-muted: #949089;                /* Soft Graphite */
-  --color-accent: #e65100;               /* Burned Amber */
-  --color-accent-hover: #bf360c;         /* Rust Orange */
-  --color-accent-soft: rgba(230, 81, 0, 0.05);
-  --color-accent-solid: rgba(230, 81, 0, 0.12);
-  
-  --color-risk-high: #c62828;
-  --color-risk-medium: #ef6c00;
-  --color-risk-low: #2e7d32;
-  --color-danger: #c62828;
-  --color-danger-soft: rgba(198, 40, 40, 0.04);
-  --color-success: #2e7d32;
-
-  color-scheme: light;
 }
 
 /* ── Base Resets & Global Visuals ─────────────────────────── */
@@ -76,7 +52,7 @@ body,
 }
 
 body {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.5;
   color: var(--color-secondary);
   -webkit-font-smoothing: antialiased;
@@ -224,7 +200,7 @@ html.transitioning *::after {
   outline-offset: 1px;
 }
 
-/* ── Button Base (Industrial Tactile Feel) ───────────────── */
+/* ── Button Base (Linear rounded.md) ─────────────────────── */
 
 .btn {
   display: inline-flex;
@@ -233,11 +209,11 @@ html.transitioning *::after {
   border: 1px solid var(--color-border);
   background: var(--color-surface-1);
   padding: 8px 15px;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--color-secondary);
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 8px; /* 8px per spec */
   transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
   font-family: inherit;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
@@ -267,22 +243,14 @@ html.transitioning *::after {
 }
 
 .btn-danger:hover {
-  background: rgba(255, 51, 68, 0.12);
+  background: rgba(255, 97, 97, 0.12);
   border-color: var(--color-danger);
   color: var(--color-text);
 }
 
-[data-theme="light"] .btn-danger {
-  background: rgba(198, 40, 40, 0.05);
-}
-
-[data-theme="light"] .btn-danger:hover {
-  background: rgba(198, 40, 40, 0.1);
-}
-
 .btn-accent {
   background: var(--color-accent);
-  color: #000000;
+  color: #ffffff;
   font-weight: 600;
   border: 1px solid transparent;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 2px rgba(0, 0, 0, 0.2);
@@ -291,19 +259,7 @@ html.transitioning *::after {
 .btn-accent:hover {
   background: var(--color-accent-hover);
   border-color: transparent;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 14px rgba(255, 106, 0, 0.3);
-}
-
-[data-theme="light"] .btn-accent {
-  color: #ffffff;
-  border: 1px solid transparent;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .btn-accent:hover {
-  background: var(--color-accent-hover);
-  border-color: transparent;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 12px rgba(230, 81, 0, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 14px rgba(94, 106, 210, 0.3);
 }
 
 /* ── Overlay / Modal backdrop (Scrim opacity parity) ──────── */
@@ -311,7 +267,7 @@ html.transitioning *::after {
 .overlay-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(4, 5, 7, 0.8);
+  background: rgba(1, 1, 2, 0.8);
   backdrop-filter: blur(12px);
   z-index: 50;
   display: flex;
@@ -320,19 +276,14 @@ html.transitioning *::after {
   animation: fade-in 200ms ease-out;
 }
 
-[data-theme="light"] .overlay-backdrop {
-  background: rgba(24, 24, 22, 0.35);
-  backdrop-filter: blur(8px);
-}
-
-/* ── Panel System (Tactile, corner-shadow depth) ──────────── */
+/* ── Panel System (Linear rounded.lg + hairline border) ───── */
 
 .panel, .acrylic-panel {
   background: var(--color-surface-1);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 12px; /* 12px per spec */
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
-  transition: border-color 200ms ease, box-shadow 200ms ease;
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
   position: relative;
 }
 
@@ -348,10 +299,6 @@ html.transitioning *::after {
   pointer-events: none;
 }
 
-[data-theme="light"] .panel::after, [data-theme="light"] .acrylic-panel::after {
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.02), transparent);
-}
-
 .panel:hover, .acrylic-panel:hover {
   border-color: var(--color-border-hover);
   box-shadow: 0 6px 28px -2px rgba(0, 0, 0, 0.5);
@@ -359,24 +306,11 @@ html.transitioning *::after {
 
 .panel-interactive:hover {
   border-color: var(--color-border-hover);
-  box-shadow: 0 6px 32px -4px rgba(255, 106, 0, 0.12);
+  box-shadow: 0 6px 32px -4px rgba(94, 106, 210, 0.12);
   transform: translateY(-1px);
 }
 
-[data-theme="light"] .panel, [data-theme="light"] .acrylic-panel {
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04);
-}
-
-[data-theme="light"] .panel:hover, [data-theme="light"] .acrylic-panel:hover {
-  border-color: var(--color-border-hover);
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.06);
-}
-
-[data-theme="light"] .panel-interactive:hover {
-  box-shadow: 0 6px 24px -4px rgba(230, 81, 0, 0.08);
-}
-
-/* ── Tactical Backgrounds (Out-of-the-box experience) ─────── */
+/* ── Tactical Backgrounds (Linear style scans) ─────────────── */
 
 .mesh-bg {
   position: absolute;
@@ -415,15 +349,6 @@ html.transitioning *::after {
   pointer-events: none;
 }
 
-[data-theme="light"] .mesh-bg::before {
-  opacity: 0.1;
-  background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
-}
-
-[data-theme="light"] .mesh-bg::after {
-  opacity: 0.02;
-}
-
 /* ── Dot Grid Background ────────────────────────────────── */
 
 .dot-grid-bg {
@@ -435,17 +360,18 @@ html.transitioning *::after {
 /* ── Typography & Display overrides ──────────────────────── */
 
 h1, h2, h3, .font-display {
-  font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
-  letter-spacing: -0.015em;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-feature-settings: "calt", "kern", "liga", "ss03";
+  letter-spacing: -0.02em;
   color: var(--color-text);
 }
 
-/* ── Stat Card (Tactical panel overlay) ───────────────────── */
+/* ── Stat Card (Linear rounded.lg) ───────────────────────── */
 
 .stat-card {
   background: var(--color-surface-1);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 12px; /* 12px per spec */
   padding: 20px;
   box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.3);
   transition: border-color 200ms ease, box-shadow 200ms ease;
@@ -453,13 +379,5 @@ h1, h2, h3, .font-display {
 
 .stat-card:hover {
   border-color: var(--color-border-hover);
-  box-shadow: 0 4px 24px -2px rgba(255, 106, 0, 0.06);
-}
-
-[data-theme="light"] .stat-card {
-  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.03);
-}
-
-[data-theme="light"] .stat-card:hover {
-  box-shadow: 0 4px 16px -2px rgba(230, 81, 0, 0.04);
+  box-shadow: 0 4px 24px -2px rgba(94, 106, 210, 0.06);
 }

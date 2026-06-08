@@ -161,7 +161,7 @@ export default function Dashboard() {
           <header className="acrylic-panel px-6 py-5 flex items-center justify-between animate-fade-in">
             <div>
               <p className="section-label tracking-wider">Active Site</p>
-              <h1 className="text-[22px] font-display font-bold text-text mt-1 tracking-tight">{selectedDomain || 'Waiting for data'}</h1>
+              <h1 className="text-[22px] font-sans font-semibold text-text mt-1 tracking-tight">{selectedDomain || 'Waiting for data'}</h1>
             </div>
             <ExportButton site={site} visits={visitsForSite} events={eventsForSite} fingerprints={fingerprintsForSite} />
           </header>
@@ -237,7 +237,7 @@ export default function Dashboard() {
                   <div className="w-11 h-11 rounded-xl bg-accent-soft flex items-center justify-center mb-5 text-accent">
                     <Eye size={20} />
                   </div>
-                  <h3 className="font-display font-semibold text-[15px] text-text mb-2">Privacy Inspector</h3>
+                  <h3 className="font-sans font-semibold text-[15px] text-text mb-2">Privacy Inspector</h3>
                   <p className="text-[12px] text-secondary leading-relaxed max-w-xs mb-6 font-normal">
                     Select a tracker node from the graph or click a visit event to audit company profiles and payloads.
                   </p>

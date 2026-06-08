@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Settings, Sun, Moon, ChevronDown, ChevronRight, Archive, Eye, Network, User } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { Search, Settings, ChevronDown, ChevronRight, Archive, Eye, Network, User } from 'lucide-react';
 import DailyArchive from './DailyArchive';
 
 function formatRelative(isoTime) {
@@ -43,7 +42,6 @@ export default function Sidebar({
   activeView = 'console',
   onViewChange
 }) {
-  const { theme, toggleTheme } = useTheme();
   const [search, setSearch] = useState('');
   const [archiveOpen, setArchiveOpen] = useState(false);
 
@@ -188,7 +186,7 @@ export default function Sidebar({
       </div>
 
       {/* Footer Actions */}
-      <div className="border-t border-border px-5 py-3 flex items-center justify-between">
+      <div className="border-t border-border px-5 py-3.5 flex items-center">
         <button
           type="button"
           onClick={onOpenSettings}
@@ -196,15 +194,6 @@ export default function Sidebar({
         >
           <Settings size={15} />
           <span className="text-[12px] font-sans">Settings</span>
-        </button>
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className="flex items-center gap-1.5 text-muted hover:text-text transition-colors duration-150 font-medium"
-          title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-        >
-          {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-          <span className="text-[12px] font-sans">{theme === 'dark' ? 'Light' : 'Dark'}</span>
         </button>
       </div>
     </aside>

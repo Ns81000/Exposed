@@ -312,7 +312,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .attr('dy', '0.31em')
       .attr('text-anchor', 'end')
       .attr('font-size', '11px')
-      .attr('font-family', 'Plus Jakarta Sans, sans-serif')
+      .attr('font-family', 'Inter, sans-serif')
       .attr('font-weight', d => hoveredSite === d ? '600' : '500')
       .attr('fill', d => hoveredSite === d ? 'var(--color-accent)' : 'var(--color-text)')
       .text(d => d.length > 20 ? d.substring(0, 18) + '...' : d)
@@ -345,7 +345,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .attr('dy', '0.31em')
       .attr('text-anchor', 'start')
       .attr('font-size', '11.5px')
-      .attr('font-family', 'Outfit, sans-serif')
+      .attr('font-family', 'Inter, sans-serif')
       .attr('font-weight', d => hoveredCompany === d ? '600' : '500')
       .attr('fill', d => hoveredCompany === d ? 'var(--color-accent)' : 'var(--color-text)')
       .text(d => d)
@@ -604,7 +604,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       <header className="acrylic-panel px-6 py-5 flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="section-label tracking-wider">Dossier Audits</p>
-          <h1 className="text-[22px] font-display font-bold text-text mt-1 tracking-tight">Threat Intelligence</h1>
+          <h1 className="text-[22px] font-sans font-semibold text-text mt-1 tracking-tight">Threat Intelligence</h1>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2 border border-accent/20 bg-accent-soft px-3 py-1.5 rounded-lg text-accent text-[11px] font-mono">
@@ -625,7 +625,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
         <div className="stat-card flex flex-col justify-between min-h-[110px]">
           <div>
             <div className="section-label text-muted">Exfiltration Saved</div>
-            <div className="text-[26px] font-display font-bold text-success mt-1.5 tabular-nums">
+            <div className="text-[26px] font-sans font-semibold text-success mt-1.5 tabular-nums">
               {formatBytes(bandwidthStats.blocked)}
             </div>
           </div>
@@ -638,7 +638,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
         <div className="stat-card flex flex-col justify-between min-h-[110px]">
           <div>
             <div className="section-label text-muted">Exfiltrated Overhead</div>
-            <div className="text-[26px] font-display font-bold text-text mt-1.5 tabular-nums">
+            <div className="text-[26px] font-sans font-semibold text-text mt-1.5 tabular-nums">
               {formatBytes(bandwidthStats.exfiltrated)}
             </div>
           </div>
@@ -651,7 +651,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
         <div className="stat-card flex flex-col justify-between min-h-[110px]">
           <div>
             <div className="section-label text-muted">Heuristics Alerts</div>
-            <div className="text-[26px] font-display font-bold text-riskHigh mt-1.5 tabular-nums">
+            <div className="text-[26px] font-sans font-semibold text-riskHigh mt-1.5 tabular-nums">
               {totalAlerts}
             </div>
           </div>
@@ -666,7 +666,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
         <div className="stat-card flex flex-col justify-between min-h-[110px]">
           <div>
             <div className="section-label text-muted">Parsed Threat Vectors</div>
-            <div className="text-[26px] font-display font-bold text-accent mt-1.5 tabular-nums">
+            <div className="text-[26px] font-sans font-semibold text-accent mt-1.5 tabular-nums">
               {totalLeaks}
             </div>
           </div>
@@ -766,7 +766,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
                         <row.icon size={14} style={{ color: row.color }} />
                       </div>
                       <div>
-                        <h4 className="text-[13px] font-display font-semibold text-text">{row.label}</h4>
+                        <h4 className="text-[13px] font-sans font-semibold text-text">{row.label}</h4>
                         <p className="text-[11px] text-muted leading-tight mt-0.5">{row.desc}</p>
                       </div>
                     </div>
@@ -867,7 +867,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
                 </div>
                 <span className="text-[10px] font-mono text-muted uppercase tracking-wider">Total Leaked</span>
               </div>
-              <span className="text-[18px] font-display font-bold text-accent tabular-nums">{formatBytes(bandwidthStats.exfiltrated)}</span>
+              <span className="text-[18px] font-sans font-semibold text-accent tabular-nums">{formatBytes(bandwidthStats.exfiltrated)}</span>
               <span className="text-[10px] text-muted font-mono">{bandwidthStats.leakedCount} requests</span>
             </div>
             <div className="stat-card flex flex-col gap-2">
@@ -877,7 +877,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
                 </div>
                 <span className="text-[10px] font-mono text-muted uppercase tracking-wider">Total Blocked</span>
               </div>
-              <span className="text-[18px] font-display font-bold text-success tabular-nums">{formatBytes(bandwidthStats.blocked)}</span>
+              <span className="text-[18px] font-sans font-semibold text-success tabular-nums">{formatBytes(bandwidthStats.blocked)}</span>
               <span className="text-[10px] text-muted font-mono">{bandwidthStats.blockedCount} requests</span>
             </div>
             <div className="stat-card flex flex-col gap-2">
@@ -888,7 +888,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
                 <span className="text-[10px] font-mono text-muted uppercase tracking-wider">Protection Rate</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[18px] font-display font-bold text-text tabular-nums">{protectionRate}%</span>
+                <span className="text-[18px] font-sans font-semibold text-text tabular-nums">{protectionRate}%</span>
                 <div className="flex-1 h-1.5 bg-surface-3 rounded-full overflow-hidden">
                   <div className="h-full bg-success rounded-full transition-all duration-500" style={{ width: `${protectionRate}%` }} />
                 </div>
@@ -901,7 +901,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
                 </div>
                 <span className="text-[10px] font-mono text-muted uppercase tracking-wider">Peak Activity</span>
               </div>
-              <span className="text-[18px] font-display font-bold text-text tabular-nums">
+              <span className="text-[18px] font-sans font-semibold text-text tabular-nums">
                 {peakActivity ? peakActivity.hour : '—'}
               </span>
               <span className="text-[10px] text-muted font-mono">
@@ -936,7 +936,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
                 {companyThreats.map((comp, idx) => (
                   <tr key={comp.name} className="hover:bg-surface-2/20 transition-colors">
                     <td className="py-3 pr-3 font-mono text-muted text-[10px]">{idx + 1}</td>
-                    <td className="py-3 pr-3 font-display font-semibold text-text whitespace-nowrap">{comp.name}</td>
+                    <td className="py-3 pr-3 font-sans font-semibold text-text whitespace-nowrap">{comp.name}</td>
                     <td className="py-3 pr-3">
                       <span 
                         className="text-[9px] uppercase font-bold px-2 py-0.5 rounded font-mono"

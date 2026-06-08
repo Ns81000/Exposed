@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { Sun, Moon, Github, Eye, Shield, Network, Lock, ArrowRight } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { Github, Eye, Shield, Network, Lock, ArrowRight } from 'lucide-react';
 
 const GITHUB_URL = 'https://github.com/Ns81000/Exposed';
 
 export default function Landing() {
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="bg-bg text-text min-h-screen flex flex-col relative overflow-hidden font-sans">
@@ -23,14 +21,6 @@ export default function Landing() {
             <h1 className="text-[18px] font-display font-semibold tracking-tight text-text">Exposed</h1>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="w-8 h-8 flex items-center justify-center rounded-lg border border-border bg-surface-1 hover:bg-surface-2 hover:text-text text-secondary transition-all duration-150"
-              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            >
-              {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-            </button>
             <a
               href={GITHUB_URL}
               target="_blank"
@@ -61,18 +51,18 @@ export default function Landing() {
           <div className="flex items-center justify-center gap-4 animate-fade-in delay-300">
             <button
               onClick={() => navigate('/dashboard')}
-              className="btn btn-accent px-7 py-3 text-[14px]"
+              className="px-7 py-3 text-[14px] bg-[#f7f8f8] text-[#010102] font-semibold rounded-full hover:bg-[#e2e8f0] transition-all duration-150 flex items-center gap-1.5 shadow-lg shadow-white/5"
             >
               Open Dashboard
-              <ArrowRight size={16} className="ml-1" />
+              <ArrowRight size={16} className="ml-0.5" />
             </button>
             <a
               href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn px-7 py-3 text-[14px]"
+              className="px-7 py-3 text-[14px] border border-border bg-surface-1 hover:bg-surface-2 text-text font-medium rounded-full transition-all duration-150 flex items-center gap-1.5"
             >
-              <Github size={16} className="mr-1" />
+              <Github size={16} />
               Source Code
             </a>
           </div>

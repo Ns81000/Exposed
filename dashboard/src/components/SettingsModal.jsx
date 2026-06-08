@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import { X, Clock, Trash2, Info, ShieldAlert } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
 
 export default function SettingsModal({ open, onClose, ttl, onTTLChange, onDeleteAll, deletingAll, blockingEnabled, onBlockingToggle }) {
-  const { theme } = useTheme();
 
   useEffect(() => {
     if (!open) return;
@@ -120,8 +118,8 @@ export default function SettingsModal({ open, onClose, ttl, onTTLChange, onDelet
               Exposed v1.0.0 — Local-first surveillance intelligence. All data stays in your browser.
             </p>
             <div className="flex items-center justify-between text-muted mt-2 text-[10px]">
-              <span>Theme: <span className="capitalize text-secondary font-medium">{theme}</span></span>
-              <span>Local IndexedDB</span>
+              <span>Storage: <span className="text-secondary font-medium">Local IndexedDB</span></span>
+              <span>v1.0.0</span>
             </div>
           </div>
         </div>

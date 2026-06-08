@@ -25,8 +25,8 @@ export default {
         success: 'var(--color-success)'
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'system-ui', 'Segoe UI', 'sans-serif'],
-        display: ['Outfit', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'Segoe UI', 'sans-serif'],
+        display: ['Inter', 'system-ui', 'Segoe UI', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace']
       }
     }

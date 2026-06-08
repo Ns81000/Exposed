@@ -81,7 +81,7 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
         </div>
         <div className="flex items-baseline gap-2">
           <p
-            className="text-[40px] font-display font-bold leading-none tracking-tight"
+            className="text-[40px] font-sans font-bold leading-none tracking-tight"
             style={{ color: stats.gradeColor }}
           >
             {stats.grade}
@@ -100,7 +100,7 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
           <p className="section-label text-[10px] tracking-wider">Total Trackers</p>
         </div>
         <div>
-          <p className="text-[28px] font-display font-bold text-text leading-none tracking-tight tabular-nums">{stats.total}</p>
+          <p className="text-[28px] font-sans font-bold text-text leading-none tracking-tight tabular-nums">{stats.total}</p>
           <p className="text-[11px] text-muted mt-2">{stats.total - stats.blocked} allowed · {stats.exfiltratedStr} load</p>
         </div>
       </div>
@@ -115,7 +115,7 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
           <p className="section-label text-[10px] tracking-wider">Blocked Shield</p>
         </div>
         <div>
-          <p className="text-[28px] font-display font-bold text-text leading-none tracking-tight tabular-nums">{stats.blockedPct}%</p>
+          <p className="text-[28px] font-sans font-bold text-text leading-none tracking-tight tabular-nums">{stats.blockedPct}%</p>
           <p className="text-[11px] text-muted mt-2">{stats.blocked} blocked · {stats.savedStr} saved</p>
         </div>
       </div>
@@ -130,7 +130,7 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
           <p className="section-label text-[10px] tracking-wider">Fingerprints</p>
         </div>
         <div>
-          <p className="text-[28px] font-display font-bold text-text leading-none tracking-tight tabular-nums">{stats.fingerprintsCount}</p>
+          <p className="text-[28px] font-sans font-bold text-text leading-none tracking-tight tabular-nums">{stats.fingerprintsCount}</p>
           <p className="text-[11px] text-muted mt-2">{stats.fingerprintsCount > 0 ? 'Active profiling detected' : 'No profiling detected'}</p>
         </div>
       </div>
