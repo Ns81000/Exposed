@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import * as d3 from 'd3';
-import { Shield, Eye, Database, AlertTriangle, ArrowLeftRight, Activity, Cpu } from 'lucide-react';
+import { Shield, Eye, Database, AlertTriangle, ArrowLeftRight, Activity, Cpu, TrendingUp, BarChart3, Zap, Lock, Unlock } from 'lucide-react';
 import { riskAccent } from '../utils/riskColor';
 
 // ── Helper: Recursively extract keys from payload (handles Sentry envelopes / NDJSON) ──
@@ -111,6 +111,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
   const [hoveredSite, setHoveredSite] = useState(null);
   const [bipartiteWidth, setBipartiteWidth] = useState(800);
   const [bandwidthWidth, setBandwidthWidth] = useState(800);
+  const [expandedCategory, setExpandedCategory] = useState(null);
 
   // ResizeObserver for bipartite chart container
   useEffect(() => {
@@ -145,15 +146,19 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
   const bandwidthStats = useMemo(() => {
     let exfiltrated = 0;
     let blocked = 0;
+    let blockedCount = 0;
+    let leakedCount = 0;
     events.forEach(e => {
       const size = e.size || 0;
       if (e.blocked) {
-        blocked += 12 * 1024; // 12KB average saved per blocked asset
+        blocked += 12 * 1024;
+        blockedCount += 1;
       } else {
-        exfiltrated += size > 0 ? size : (8 * 1024); // 8KB average baseline
+        exfiltrated += size > 0 ? size : (8 * 1024);
+        leakedCount += 1;
       }
     });
-    return { exfiltrated, blocked };
+    return { exfiltrated, blocked, blockedCount, leakedCount };
   }, [events]);
 
   const { stats: threatStats, examples: threatExamples } = useMemo(() => parseThreatVectors(events), [events]);
@@ -166,6 +171,45 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     return `${mb.toFixed(1)} MB`;
   };
 
+  // ── Timeline chart data (computed once, reused for chart + summary) ──
+  const chartData = useMemo(() => {
+    if (events.length === 0) return [];
+    const sortedEvents = [...events].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    let runningExfiltrated = 0;
+    let runningSaved = 0;
+    return sortedEvents.map(e => {
+      if (e.blocked) {
+        runningSaved += 12 * 1024;
+      } else {
+        runningExfiltrated += e.size > 0 ? e.size : (8 * 1024);
+      }
+      return {
+        date: new Date(e.timestamp),
+        exfiltrated: runningExfiltrated / 1024,
+        saved: runningSaved / 1024
+      };
+    });
+  }, [events]);
+
+  // ── Company threat breakdown ──
+  const companyThreats = useMemo(() => {
+    const map = {};
+    events.forEach(e => {
+      const company = e.company || 'Unknown';
+      if (!map[company]) {
+        map[company] = { name: company, count: 0, blocked: 0, leaked: 0, risk: e.risk || 'medium', sites: new Set() };
+      }
+      map[company].count += 1;
+      map[company].sites.add(e.siteDomain);
+      if (e.blocked) {
+        map[company].blocked += 1;
+      } else {
+        map[company].leaked += 1;
+      }
+    });
+    return Object.values(map).sort((a, b) => b.count - a.count).slice(0, 8);
+  }, [events]);
+
   // ── D3 Bipartite Matrix (Cross-Site Contamination) ──────────
   useEffect(() => {
     if (!bipartiteRef.current || events.length === 0) return;
@@ -176,7 +220,6 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     const width = bipartiteWidth;
     const height = 380;
     
-    // Extract connections: Top 7 sites and Top 8 tracker companies
     const siteDomainCounts = {};
     const companyCounts = {};
     const connectionMap = new Map();
@@ -201,30 +244,27 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .sort((a, b) => companyCounts[b] - companyCounts[a])
       .slice(0, 8);
 
-    // Keep only connections relating to top sites and top companies
     const connections = Array.from(connectionMap.values());
     const filteredConnections = connections.filter(
       c => topSites.includes(c.site) && topCompanies.includes(c.company)
     );
 
-    // Coordinate mapping
-    const leftX = 140;
-    const rightX = width - 140;
+    const leftX = Math.max(140, width * 0.15);
+    const rightX = Math.min(width - 140, width * 0.85);
     
     const leftScale = d3.scalePoint().domain(topSites).range([40, height - 40]);
     const rightScale = d3.scalePoint().domain(topCompanies).range([30, height - 30]);
 
     const bipartiteG = svg.append('g');
 
-    // Draw connecting lines (smooth cubic curves with controlled tension)
     const drawCurve = d => {
       const yStart = leftScale(d.site);
       const yEnd = rightScale(d.company);
-      const dx = (rightX - leftX) * 0.45; // Curvature control dynamically scales with width
+      const dx = (rightX - leftX) * 0.45;
       return `M ${leftX} ${yStart} C ${leftX + dx} ${yStart}, ${rightX - dx} ${yEnd}, ${rightX} ${yEnd}`;
     };
 
-    const links = bipartiteG.append('g')
+    bipartiteG.append('g')
       .selectAll('path')
       .data(filteredConnections)
       .join('path')
@@ -315,7 +355,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
 
   // ── D3 Bandwidth Savings Timeline Area Chart ───────────────
   useEffect(() => {
-    if (!bandwidthRef.current || events.length === 0) return;
+    if (!bandwidthRef.current || chartData.length === 0) return;
 
     const svg = d3.select(bandwidthRef.current);
     svg.selectAll('*').remove();
@@ -323,25 +363,6 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     const width = bandwidthWidth;
     const height = 220;
     const margin = { top: 15, right: 20, bottom: 30, left: 50 };
-
-    // Sort events chronologically to show event-by-event exfiltration savings
-    const sortedEvents = [...events].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-    // Map aggregate exfiltration sizes event by event
-    let runningExfiltrated = 0;
-    let runningSaved = 0;
-    const chartData = sortedEvents.map(e => {
-      if (e.blocked) {
-        runningSaved += 12 * 1024; // 12KB average saved per blocked asset
-      } else {
-        runningExfiltrated += e.size > 0 ? e.size : (8 * 1024); // 8KB average baseline
-      }
-      return {
-        date: new Date(e.timestamp),
-        exfiltrated: runningExfiltrated / 1024, // KB
-        saved: runningSaved / 1024 // KB
-      };
-    });
 
     const xScale = d3.scaleTime()
       .domain(d3.extent(chartData, d => d.date))
@@ -446,14 +467,14 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .attr('stroke-width', 1.5)
       .attr('d', areaSaved);
 
-    // Scrubber elements (tooltip interactive overlays)
+    // Scrubber elements
     const bisectDate = d3.bisector(d => d.date).left;
 
     const hoverGroup = svg.append('g')
       .attr('class', 'hover-group')
       .style('display', 'none');
 
-    const hoverLine = hoverGroup.append('line')
+    hoverGroup.append('line')
       .attr('class', 'hover-line')
       .attr('y1', margin.top)
       .attr('y2', height - margin.bottom)
@@ -505,7 +526,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
         const yExf = yScale(d.exfiltrated);
         const ySav = yScale(d.saved);
 
-        hoverLine.attr('x1', xPos).attr('x2', xPos);
+        hoverGroup.select('.hover-line').attr('x1', xPos).attr('x2', xPos);
         circleExfiltrated.attr('cx', xPos).attr('cy', yExf);
         circleSaved.attr('cx', xPos).attr('cy', ySav);
 
@@ -550,27 +571,57 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
         }
       });
 
-  }, [events, bandwidthWidth]);
+  }, [chartData, bandwidthWidth]);
 
   // Total parsed leak metrics
   const totalLeaks = threatStats.pii + threatStats.fingerprint + threatStats.behavior + threatStats.marketing;
+
+  // Protection rate
+  const protectionRate = useMemo(() => {
+    if (events.length === 0) return 0;
+    return Math.round((bandwidthStats.blockedCount / events.length) * 100);
+  }, [events, bandwidthStats]);
+
+  // Peak activity period
+  const peakActivity = useMemo(() => {
+    if (events.length === 0) return null;
+    const hourBuckets = {};
+    events.forEach(e => {
+      const hour = new Date(e.timestamp).getHours();
+      hourBuckets[hour] = (hourBuckets[hour] || 0) + 1;
+    });
+    const peakHour = Object.entries(hourBuckets).sort((a, b) => b[1] - a[1])[0];
+    if (!peakHour) return null;
+    const h = parseInt(peakHour[0]);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const displayHour = h % 12 || 12;
+    return { hour: `${displayHour}:00 ${ampm}`, count: peakHour[1] };
+  }, [events]);
   
   return (
     <main className="flex-1 p-5 md:p-6 space-y-6 overflow-y-auto scrollbar animate-fade-in">
       {/* Header */}
-      <header className="acrylic-panel px-6 py-5 flex items-center justify-between">
+      <header className="acrylic-panel px-6 py-5 flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="section-label tracking-wider">Dossier Audits</p>
           <h1 className="text-[22px] font-display font-bold text-text mt-1 tracking-tight">Threat Intelligence</h1>
         </div>
-        <div className="flex items-center gap-2 border border-accent/20 bg-accent-soft px-3 py-1.5 rounded-lg text-accent text-[11px] font-mono">
-          <Activity size={13} className="animate-pulse" />
-          AGGREGATING {totalSites} DOMAINS
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 border border-accent/20 bg-accent-soft px-3 py-1.5 rounded-lg text-accent text-[11px] font-mono">
+            <Activity size={13} className="animate-pulse" />
+            AGGREGATING {totalSites} DOMAINS
+          </div>
+          {protectionRate > 0 && (
+            <div className="flex items-center gap-2 border border-success/20 bg-success/5 px-3 py-1.5 rounded-lg text-success text-[11px] font-mono">
+              <Lock size={13} />
+              {protectionRate}% PROTECTED
+            </div>
+          )}
         </div>
       </header>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
         <div className="stat-card flex flex-col justify-between min-h-[110px]">
           <div>
             <div className="section-label text-muted">Exfiltration Saved</div>
@@ -578,7 +629,10 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
               {formatBytes(bandwidthStats.blocked)}
             </div>
           </div>
-          <div className="text-[10px] text-muted tracking-wide mt-1 uppercase font-mono">Telemetry Blocked</div>
+          <div className="flex items-center justify-between mt-1">
+            <div className="text-[10px] text-muted tracking-wide uppercase font-mono">Telemetry Blocked</div>
+            <span className="text-[10px] font-mono text-success/70">{bandwidthStats.blockedCount} reqs</span>
+          </div>
         </div>
 
         <div className="stat-card flex flex-col justify-between min-h-[110px]">
@@ -588,7 +642,10 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
               {formatBytes(bandwidthStats.exfiltrated)}
             </div>
           </div>
-          <div className="text-[10px] text-muted tracking-wide mt-1 uppercase font-mono">Leaked to Third Parties</div>
+          <div className="flex items-center justify-between mt-1">
+            <div className="text-[10px] text-muted tracking-wide uppercase font-mono">Leaked to Third Parties</div>
+            <span className="text-[10px] font-mono text-riskHigh/70">{bandwidthStats.leakedCount} reqs</span>
+          </div>
         </div>
 
         <div className="stat-card flex flex-col justify-between min-h-[110px]">
@@ -598,7 +655,12 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
               {totalAlerts}
             </div>
           </div>
-          <div className="text-[10px] text-muted tracking-wide mt-1 uppercase font-mono">Fingerprinting Intercepts</div>
+          <div className="flex items-center justify-between mt-1">
+            <div className="text-[10px] text-muted tracking-wide uppercase font-mono">Fingerprinting Intercepts</div>
+            {totalAlerts > 0 && (
+              <span className="w-1.5 h-1.5 rounded-full bg-riskHigh animate-pulse" />
+            )}
+          </div>
         </div>
 
         <div className="stat-card flex flex-col justify-between min-h-[110px]">
@@ -608,29 +670,34 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
               {totalLeaks}
             </div>
           </div>
-          <div className="text-[10px] text-muted tracking-wide mt-1 uppercase font-mono">Telemetry Parameter Scans</div>
+          <div className="flex items-center justify-between mt-1">
+            <div className="text-[10px] text-muted tracking-wide uppercase font-mono">Telemetry Parameter Scans</div>
+            {peakActivity && (
+              <span className="text-[9px] font-mono text-secondary">Peak: {peakActivity.hour}</span>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Cross-Site Contamination Matrix */}
       <section className="acrylic-panel p-5">
-        <div className="px-1 pb-4 border-b border-border flex items-center justify-between">
+        <div className="px-1 pb-4 border-b border-border flex flex-wrap items-center justify-between gap-2">
           <div>
             <p className="section-label text-text">Cross-Site Contamination Map</p>
             <p className="text-[11px] text-muted mt-0.5">Exposing surveillance networks linking your identity across domains.</p>
           </div>
-          <span className="text-[10px] text-accent border border-accent/20 bg-accent-soft px-2 py-0.5 rounded font-mono font-medium">
-            {hoveredCompany ? `CORRELATING: ${hoveredCompany.toUpperCase()}` : 'HOVER COMPANY TO INSPECT LINKS'}
+          <span className="text-[10px] text-accent border border-accent/20 bg-accent-soft px-2 py-0.5 rounded font-mono font-medium whitespace-nowrap">
+            {hoveredCompany ? `CORRELATING: ${hoveredCompany.toUpperCase()}` : hoveredSite ? `INSPECTING: ${hoveredSite.toUpperCase()}` : 'HOVER COMPANY TO INSPECT LINKS'}
           </span>
         </div>
         
-        <div className="relative pt-4 overflow-x-auto">
+        <div className="relative pt-4 overflow-x-auto scrollbar">
           {events.length === 0 ? (
             <div className="h-[280px] flex items-center justify-center text-muted font-mono text-[12px]">
               No cross-site data logs recorded yet.
             </div>
           ) : (
-            <svg ref={bipartiteRef} className="w-full h-[380px]" />
+            <svg ref={bipartiteRef} className="w-full h-[380px]" style={{ minWidth: '500px' }} />
           )}
         </div>
       </section>
@@ -652,7 +719,8 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
                 desc: 'Sensitive descriptors linking requests to accounts or emails.',
                 keys: threatExamples.pii,
                 color: 'var(--color-risk-high)',
-                icon: Database
+                icon: Database,
+                id: 'pii'
               },
               {
                 label: 'Hardware & WebGL Fingerprints',
@@ -660,7 +728,8 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
                 desc: 'Client-side parameter queries used to build canvas/browser hashes.',
                 keys: threatExamples.fingerprint,
                 color: 'var(--color-accent)',
-                icon: Cpu
+                icon: Cpu,
+                id: 'fingerprint'
               },
               {
                 label: 'Behavioral Diagnostics',
@@ -668,7 +737,8 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
                 desc: 'Telemetry logging keystrokes, scroll depth, or focus clicks.',
                 keys: threatExamples.behavior,
                 color: 'var(--color-risk-medium)',
-                icon: AlertTriangle
+                icon: AlertTriangle,
+                id: 'behavior'
               },
               {
                 label: 'Campaign Ad Trackers',
@@ -676,12 +746,20 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
                 desc: 'Unique clicks or affiliate tracking parameters embedded in urls.',
                 keys: threatExamples.marketing,
                 color: 'var(--color-risk-low)',
-                icon: Shield
+                icon: Shield,
+                id: 'marketing'
               }
             ].map(row => {
               const pct = totalLeaks > 0 ? Math.round((row.count / totalLeaks) * 100) : 0;
+              const isExpanded = expandedCategory === row.id;
               return (
-                <div key={row.label} className="border border-border bg-surface-2/30 p-4 rounded-lg flex flex-col gap-3">
+                <div 
+                  key={row.label} 
+                  className={`border bg-surface-2/30 p-4 rounded-lg flex flex-col gap-3 transition-all duration-200 cursor-pointer ${
+                    isExpanded ? 'border-accent/30 bg-surface-2/50' : 'border-border hover:border-border-hover'
+                  }`}
+                  onClick={() => setExpandedCategory(isExpanded ? null : row.id)}
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded bg-surface-3 flex items-center justify-center">
@@ -700,7 +778,10 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
 
                   {/* Horizontal Bar indicator */}
                   <div className="h-1 w-full bg-surface-3 rounded-full overflow-hidden">
-                    <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: row.color }} />
+                    <div 
+                      className="h-full rounded-full transition-all duration-500 ease-out" 
+                      style={{ width: `${pct}%`, backgroundColor: row.color }} 
+                    />
                   </div>
 
                   {/* Examples/Keys found */}
@@ -714,46 +795,171 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
                       </div>
                     </div>
                   )}
+
+                  {/* Expanded details */}
+                  {isExpanded && row.count > 0 && (
+                    <div className="border-t border-border/40 pt-3 space-y-2 animate-fade-in">
+                      <div className="grid grid-cols-3 gap-3 text-[10px] font-mono">
+                        <div className="bg-surface-3/50 rounded p-2">
+                          <span className="text-muted uppercase tracking-wider block mb-0.5">Severity</span>
+                          <span className="font-bold" style={{ color: row.color }}>
+                            {row.id === 'pii' ? 'CRITICAL' : row.id === 'fingerprint' ? 'HIGH' : row.id === 'behavior' ? 'MEDIUM' : 'LOW'}
+                          </span>
+                        </div>
+                        <div className="bg-surface-3/50 rounded p-2">
+                          <span className="text-muted uppercase tracking-wider block mb-0.5">Unique Keys</span>
+                          <span className="text-text font-bold">{row.keys.length}</span>
+                        </div>
+                        <div className="bg-surface-3/50 rounded p-2">
+                          <span className="text-muted uppercase tracking-wider block mb-0.5">Share</span>
+                          <span className="text-text font-bold">{pct}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
           </div>
         </section>
 
-        {/* Bandwidth Savings Timeline */}
-        <section className="acrylic-panel p-5 flex flex-col justify-between min-h-[380px] relative">
-          <div className="pb-3 border-b border-border flex items-center justify-between">
-            <div>
-              <p className="section-label text-text">Exfiltration Savings Timeline</p>
-              <p className="text-[11px] text-muted mt-0.5">Historical bandwidth blocked vs exfiltrated (cumulative).</p>
+        {/* Bandwidth Savings Timeline + Summary Stats */}
+        <div className="space-y-5">
+          <section className="acrylic-panel p-5 flex flex-col justify-between relative" style={{ minHeight: '350px' }}>
+            <div className="pb-3 border-b border-border flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <p className="section-label text-text">Exfiltration Savings Timeline</p>
+                <p className="text-[11px] text-muted mt-0.5">Historical bandwidth blocked vs exfiltrated (cumulative).</p>
+              </div>
+              <div className="flex items-center gap-3 text-[10px] font-mono">
+                <div className="flex items-center gap-1.5 text-accent">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Leaked
+                </div>
+                <div className="flex items-center gap-1.5 text-success">
+                  <span className="w-1.5 h-1.5 rounded-full bg-success" /> Blocked
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-3 text-[10px] font-mono">
-              <div className="flex items-center gap-1.5 text-accent">
-                <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Leaked
+
+            <div className="relative pt-4 flex-1">
+              {events.length === 0 ? (
+                <div className="h-[200px] flex items-center justify-center text-muted font-mono text-[12px]">
+                  No data logs available.
+                </div>
+              ) : (
+                <>
+                  <svg ref={bandwidthRef} className="w-full h-[220px]" />
+                  <div
+                    ref={timelineTooltipRef}
+                    className="absolute pointer-events-none opacity-0 bg-surface-1 border border-border p-2.5 rounded-lg shadow-xl text-[11.5px] min-w-[160px] z-50 transition-opacity duration-120 font-sans"
+                  />
+                </>
+              )}
+            </div>
+          </section>
+
+          {/* Timeline Summary Stats - fills the empty area below the chart */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="stat-card flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-accent/10 flex items-center justify-center">
+                  <TrendingUp size={12} className="text-accent" />
+                </div>
+                <span className="text-[10px] font-mono text-muted uppercase tracking-wider">Total Leaked</span>
               </div>
-              <div className="flex items-center gap-1.5 text-success">
-                <span className="w-1.5 h-1.5 rounded-full bg-success" /> Blocked
+              <span className="text-[18px] font-display font-bold text-accent tabular-nums">{formatBytes(bandwidthStats.exfiltrated)}</span>
+              <span className="text-[10px] text-muted font-mono">{bandwidthStats.leakedCount} requests</span>
+            </div>
+            <div className="stat-card flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-success/10 flex items-center justify-center">
+                  <Lock size={12} className="text-success" />
+                </div>
+                <span className="text-[10px] font-mono text-muted uppercase tracking-wider">Total Blocked</span>
               </div>
+              <span className="text-[18px] font-display font-bold text-success tabular-nums">{formatBytes(bandwidthStats.blocked)}</span>
+              <span className="text-[10px] text-muted font-mono">{bandwidthStats.blockedCount} requests</span>
+            </div>
+            <div className="stat-card flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-riskHigh/10 flex items-center justify-center">
+                  <Zap size={12} className="text-riskHigh" />
+                </div>
+                <span className="text-[10px] font-mono text-muted uppercase tracking-wider">Protection Rate</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[18px] font-display font-bold text-text tabular-nums">{protectionRate}%</span>
+                <div className="flex-1 h-1.5 bg-surface-3 rounded-full overflow-hidden">
+                  <div className="h-full bg-success rounded-full transition-all duration-500" style={{ width: `${protectionRate}%` }} />
+                </div>
+              </div>
+            </div>
+            <div className="stat-card flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-riskMedium/10 flex items-center justify-center">
+                  <BarChart3 size={12} className="text-riskMedium" />
+                </div>
+                <span className="text-[10px] font-mono text-muted uppercase tracking-wider">Peak Activity</span>
+              </div>
+              <span className="text-[18px] font-display font-bold text-text tabular-nums">
+                {peakActivity ? peakActivity.hour : '—'}
+              </span>
+              <span className="text-[10px] text-muted font-mono">
+                {peakActivity ? `${peakActivity.count} events` : 'No data'}
+              </span>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div className="relative pt-4 flex-1">
-            {events.length === 0 ? (
-              <div className="h-[200px] flex items-center justify-center text-muted font-mono text-[12px]">
-                No data logs available.
-              </div>
-            ) : (
-              <>
-                <svg ref={bandwidthRef} className="w-full h-[220px]" />
-                <div
-                  ref={timelineTooltipRef}
-                  className="absolute pointer-events-none opacity-0 bg-surface-1 border border-border p-2.5 rounded-lg shadow-xl text-[11.5px] min-w-[160px] z-50 transition-opacity duration-120 font-sans"
-                />
-              </>
-            )}
+      {/* Top Tracker Companies Table */}
+      {companyThreats.length > 0 && (
+        <section className="acrylic-panel p-5 space-y-4">
+          <div className="pb-3 border-b border-border">
+            <p className="section-label text-text">Surveillance Entity Rankings</p>
+            <p className="text-[11px] text-muted mt-0.5">Top tracker companies by total network leaks across all monitored domains.</p>
+          </div>
+          <div className="overflow-x-auto scrollbar">
+            <table className="w-full text-left border-collapse" style={{ minWidth: '600px' }}>
+              <thead>
+                <tr className="border-b border-border text-[10px] font-mono text-muted uppercase tracking-wider">
+                  <th className="pb-2.5 pr-3 font-semibold">#</th>
+                  <th className="pb-2.5 pr-3 font-semibold">Entity Name</th>
+                  <th className="pb-2.5 pr-3 font-semibold">Risk</th>
+                  <th className="pb-2.5 pr-3 font-semibold">Total Events</th>
+                  <th className="pb-2.5 pr-3 font-semibold">Leaked</th>
+                  <th className="pb-2.5 pr-3 font-semibold">Blocked</th>
+                  <th className="pb-2.5 font-semibold">Sites Affected</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/40 text-[12px]">
+                {companyThreats.map((comp, idx) => (
+                  <tr key={comp.name} className="hover:bg-surface-2/20 transition-colors">
+                    <td className="py-3 pr-3 font-mono text-muted text-[10px]">{idx + 1}</td>
+                    <td className="py-3 pr-3 font-display font-semibold text-text whitespace-nowrap">{comp.name}</td>
+                    <td className="py-3 pr-3">
+                      <span 
+                        className="text-[9px] uppercase font-bold px-2 py-0.5 rounded font-mono"
+                        style={{ 
+                          backgroundColor: `${riskAccent(comp.risk)}15`, 
+                          color: riskAccent(comp.risk), 
+                          border: `1px solid ${riskAccent(comp.risk)}25` 
+                        }}
+                      >
+                        {comp.risk}
+                      </span>
+                    </td>
+                    <td className="py-3 pr-3 font-mono font-bold text-text tabular-nums">{comp.count}</td>
+                    <td className="py-3 pr-3 font-mono text-accent tabular-nums">{comp.leaked}</td>
+                    <td className="py-3 pr-3 font-mono text-success tabular-nums">{comp.blocked}</td>
+                    <td className="py-3 font-mono text-secondary text-[11px] tabular-nums">{comp.sites.size}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
-      </div>
+      )}
     </main>
   );
 }
