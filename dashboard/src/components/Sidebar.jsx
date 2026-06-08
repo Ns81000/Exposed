@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Settings, Sun, Moon, ChevronDown, ChevronRight, Archive, Eye } from 'lucide-react';
+import { Search, Settings, Sun, Moon, ChevronDown, ChevronRight, Archive, Eye, Network } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 import DailyArchive from './DailyArchive';
 
@@ -39,7 +39,9 @@ export default function Sidebar({
   onSelect,
   archives,
   onRefresh,
-  onOpenSettings
+  onOpenSettings,
+  activeView = 'console',
+  onViewChange
 }) {
   const { theme, toggleTheme } = useTheme();
   const [search, setSearch] = useState('');
@@ -62,6 +64,34 @@ export default function Sidebar({
           <h1 className="text-[17px] font-display font-semibold text-text tracking-tight leading-tight">Exposed</h1>
           <span className="text-[10px] text-muted font-medium tracking-wide">v1.0.0</span>
         </div>
+      </div>
+
+      {/* Navigation Views */}
+      <div className="px-4 py-3 border-b border-border flex flex-col gap-1.5">
+        <button
+          type="button"
+          onClick={() => onViewChange && onViewChange('console')}
+          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+            activeView === 'console'
+              ? 'bg-accent-soft text-accent'
+              : 'text-secondary hover:bg-surface-2 hover:text-text'
+          }`}
+        >
+          <Eye size={15} />
+          Site Console
+        </button>
+        <button
+          type="button"
+          onClick={() => onViewChange && onViewChange('analytics')}
+          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+            activeView === 'analytics'
+              ? 'bg-accent-soft text-accent'
+              : 'text-secondary hover:bg-surface-2 hover:text-text'
+          }`}
+        >
+          <Network size={15} />
+          Threat Analytics
+        </button>
       </div>
 
       {/* Search */}
@@ -96,7 +126,10 @@ export default function Sidebar({
               <button
                 key={site.domain}
                 type="button"
-                onClick={() => onSelect(site.domain)}
+                onClick={() => {
+                  onSelect(site.domain);
+                  if (onViewChange) onViewChange('console');
+                }}
                 className={`w-full text-left px-5 py-3 border-b border-border transition-all duration-150 relative ${
                   isActive
                     ? 'bg-accent-soft text-text'
