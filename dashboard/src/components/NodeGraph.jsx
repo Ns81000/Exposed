@@ -77,18 +77,19 @@ const NodeGraph = memo(function NodeGraph({ events, onNodeClick }) {
 
   // ResizeObserver to track container dimension updates dynamically
   useEffect(() => {
-    if (!ref.current) return;
+    const element = ref.current;
+    if (!element) return;
 
     const resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
         setDimensions({
-          width: entry.contentRect.width || ref.current.clientWidth,
-          height: entry.contentRect.height || ref.current.clientHeight
+          width: entry.contentRect.width || element.clientWidth,
+          height: entry.contentRect.height || element.clientHeight
         });
       }
     });
 
-    resizeObserver.observe(ref.current);
+    resizeObserver.observe(element);
     return () => resizeObserver.disconnect();
   }, []);
 

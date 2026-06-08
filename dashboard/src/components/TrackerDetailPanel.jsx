@@ -5,27 +5,32 @@ import { getCategoryStyle } from '../utils/categoryStyles';
 
 function formatPayload(payload) {
   if (!payload) return null;
-  try {
-    const parsed = JSON.parse(payload);
-    if (typeof parsed === 'object' && parsed !== null) {
-      const entries = Object.entries(parsed);
-      if (entries.length === 0) return <span className="text-muted italic text-[11px]">Empty payload</span>;
-      return (
-        <div className="mt-2 space-y-2 bg-surface-2 p-3 font-mono text-[11px] border border-border rounded-lg max-h-[180px] overflow-y-auto scrollbar">
-          {entries.map(([key, val]) => (
-            <div key={key} className="flex flex-col gap-0.5 pb-2 border-b border-border/40 last:border-b-0 last:pb-0">
-              <span className="text-accent font-medium break-all text-[10px] uppercase tracking-wider">{key}</span>
-              <span className="text-text break-all select-all">{String(val)}</span>
-            </div>
-          ))}
-        </div>
-      );
-    }
-  } catch {}
+  
+  let parsed = payload;
+  if (typeof payload === 'string') {
+    try {
+      parsed = JSON.parse(payload);
+    } catch {}
+  }
+
+  if (typeof parsed === 'object' && parsed !== null) {
+    const entries = Object.entries(parsed);
+    if (entries.length === 0) return <span className="text-muted italic text-[11px]">Empty payload</span>;
+    return (
+      <div className="mt-2 space-y-2 bg-surface-2 p-3 font-mono text-[11px] border border-border rounded-lg max-h-[180px] overflow-y-auto scrollbar">
+        {entries.map(([key, val]) => (
+          <div key={key} className="flex flex-col gap-0.5 pb-2 border-b border-border/40 last:border-b-0 last:pb-0">
+            <span className="text-accent font-medium break-all text-[10px] uppercase tracking-wider">{key}</span>
+            <span className="text-text break-all select-all">{typeof val === 'object' ? JSON.stringify(val) : String(val)}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <pre className="mt-2 p-3 bg-surface-2 font-mono text-[11px] border border-border rounded-lg overflow-x-auto break-all whitespace-pre-wrap select-all leading-relaxed">
-      {payload}
+      {String(payload)}
     </pre>
   );
 }
