@@ -34,7 +34,7 @@ Two tightly integrated components work together:
 > * **Behavioral Adware & Spyware Auditing**: Instantly detect if embedded scripts are registering silent keyboard listeners (keyloggers), capturing inputs, or profiling system canvas/WebGL/Audio runtimes.
 > * **DNS CNAME De-cloaking**: De-cloak tracking assets hiding behind masqueraded first-party subdomains to identify evasion tactics and blocklist bypasses.
 > * **Payload Exfiltration Analysis**: Inspect exact query parameters and POST bodies in real time to document *what* PII (Personally Identifiable Information), session IDs, or device footprints are being leaked.
-> * **GDPR/CCPA Compliance Audits**: Verify compliance standards on web applications by exporting self-contained, interactive HTML report files as auditable proof of tracker behaviour.
+> * **GDPR/CCPA Compliance Audits**: Verify compliance standards on web applications by auditing tracker behaviour in real-time.
 
 ---
 
@@ -66,9 +66,6 @@ Evaluates visited sites, subtracting points based on tracking activity:
 * **Fingerprint Penalties**: Active fingerprinting attempts trigger a heavy `-25` points deduction.
 * **Blocker Coverage**: Blocked trackers only carry a minor penalty (`-3` for high risk, `-1` for medium risk).
 * **Grades**: Scores scale from 0 to 100, mapped to descriptive safety grades (A, B, C, D, F) and colored accordingly.
-
-### 📂 Standalone Offline HTML Reports
-Enables downloading complete, interactive reports of site analyses. The exported reports are beautifully designed in dark mode, containing summary stats, tabbed views, search filters, and collapsible grids displaying query parameters and call stacks—completely functional without internet access.
 
 ---
 
@@ -143,7 +140,6 @@ exposed/
         │   ├── FingerprintPanel.jsx  # Fingerprint heuristic alerts & stack traces
         │   ├── SettingsModal.jsx   # Retention configurations & blocker toggles
         │   ├── SummaryStats.jsx    # Privacy grades, block ratios, and exfiltrated size cards
-        │   └── ExportButton.jsx    # Interactive HTML report downloader
         ├── hooks/
         │   ├── useTrackerStore.js  # Zustand State Management (Dexie DB bridge)
         │   └── useLiveUpdates.js   # Extension postMessage receiver
@@ -151,7 +147,6 @@ exposed/
         │   └── schema.js           # IndexedDB schemas via Dexie.js
         └── utils/
             ├── archiver.js         # Daily data archiver & automatic cleanup
-            ├── exportHtml.js       # Offline dashboard compiler template
             └── riskColor.js        # Global risk color tokens
 ```
 

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Github, Shield, Network, Lock, ArrowRight, Eye, Fingerprint, 
   Layers, Database, Cpu, MousePointer, Tag, 
-  ShieldAlert, BarChart3, FileDown, Zap, Activity, Globe
+  ShieldAlert, BarChart3, Zap, Activity, Globe
 } from 'lucide-react';
 import BrandIcon from './BrandIcon';
 import BrandLogo from './BrandLogo';
@@ -259,30 +259,6 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Export Reports */}
-            <div className="space-y-4">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-riskMedium/20 to-riskMedium/5 border border-riskMedium/30 flex items-center justify-center">
-                <FileDown size={26} className="text-riskMedium" />
-              </div>
-              <h4 className="text-[20px] font-display font-bold text-text">Standalone HTML Reports</h4>
-              <p className="text-[14px] text-secondary leading-relaxed">
-                Downloads complete, self-contained dark-mode reports. Contains summary stats, tabbed views, search filters, and collapsible payload grids—fully functional offline.
-              </p>
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <FileDown size={14} className="text-riskMedium mt-0.5 flex-shrink-0" />
-                  <p className="text-[13px] text-secondary">Single-file interactive HTML with inline CSS and JavaScript</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <FileDown size={14} className="text-riskMedium mt-0.5 flex-shrink-0" />
-                  <p className="text-[13px] text-secondary">Perfect for GDPR/CCPA compliance audits and evidence archiving</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <FileDown size={14} className="text-riskMedium mt-0.5 flex-shrink-0" />
-                  <p className="text-[13px] text-secondary">No internet required—share with teams or regulatory bodies</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -521,7 +497,7 @@ export default function Landing() {
                 <h4 className="text-[15px] font-display font-semibold text-text mb-2">Built for Security Analysts</h4>
                 <p className="text-[13px] text-secondary leading-relaxed">
                   Perfect for <strong className="text-text">GDPR/CCPA compliance audits</strong>, behavioral adware analysis, and 
-                  documenting tracker behavior as auditable proof. Export self-contained HTML reports for regulatory submissions.
+                  documenting tracker behavior as auditable proof.
                 </p>
               </div>
             </div>

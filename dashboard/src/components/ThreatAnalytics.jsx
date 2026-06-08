@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import * as d3 from 'd3';
 import { Shield, Eye, Database, AlertTriangle, ArrowLeftRight, Activity, Cpu, TrendingUp, BarChart3, Zap, Lock, Unlock } from 'lucide-react';
 import { riskAccent } from '../utils/riskColor';
-
 // ── Helper: Recursively extract keys from payload (handles Sentry envelopes / NDJSON) ──
 function extractKeysFromPayload(payload) {
   if (!payload) return [];

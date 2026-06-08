@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import BrandIcon from './BrandIcon';
 import ConnectPrompt from './ConnectPrompt';
-import ExportButton from './ExportButton';
 import MobileGate from './MobileGate';
 import NodeGraph from './NodeGraph';
 import SettingsModal from './SettingsModal';
@@ -163,7 +162,6 @@ export default function Dashboard() {
               <p className="section-label tracking-wider">Active Site</p>
               <h1 className="text-[22px] font-sans font-semibold text-text mt-1 tracking-tight">{selectedDomain || 'Waiting for data'}</h1>
             </div>
-            <ExportButton site={site} visits={visitsForSite} events={eventsForSite} fingerprints={fingerprintsForSite} />
           </header>
 
           {/* Summary Stats */}

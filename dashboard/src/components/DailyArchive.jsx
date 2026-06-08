@@ -1,16 +1,16 @@
-import { Download } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { db } from '../db/schema';
-import { exportArchiveReport } from '../utils/exportHtml';
 import { useToast } from './Toast';
 
 export default function DailyArchive({ archives, onRefresh }) {
   const { addToast } = useToast();
 
-  async function exportAndDelete(archive) {
-    exportArchiveReport(archive);
+  async function handleDelete(archive) {
+    const confirmed = window.confirm(`Delete archive for ${archive.date}?`);
+    if (!confirmed) return;
     await db.archives.delete(archive.id);
     await onRefresh();
-    addToast(`Archive for ${archive.date} exported`, 'success');
+    addToast(`Archive for ${archive.date} deleted`, 'info');
   }
 
   if (archives.length === 0) {
@@ -31,11 +31,11 @@ export default function DailyArchive({ archives, onRefresh }) {
           </div>
           <button
             type="button"
-            onClick={() => exportAndDelete(archive)}
-            className="flex items-center gap-1 text-muted hover:text-text transition-colors flex-shrink-0"
-            title="Download and remove"
+            onClick={() => handleDelete(archive)}
+            className="flex items-center gap-1 text-muted hover:text-riskHigh transition-colors flex-shrink-0"
+            title="Delete archive"
           >
-            <Download size={13} />
+            <Trash2 size={13} />
           </button>
         </div>
       ))}
