@@ -3,6 +3,73 @@ import * as d3 from 'd3';
 import { Shield, Eye, Database, AlertTriangle, ArrowLeftRight, Activity, Cpu } from 'lucide-react';
 import { riskAccent } from '../utils/riskColor';
 
+// ── Helper: Recursively extract keys from payload (handles Sentry envelopes / NDJSON) ──
+function extractKeysFromPayload(payload) {
+  if (!payload) return [];
+  
+  if (typeof payload === 'object') {
+    const getKeys = (obj, prefix = '') => {
+      let k = [];
+      for (let key in obj) {
+        if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+        const fullKey = prefix ? `${prefix}.${key}` : key;
+        k.push(fullKey);
+        if (obj[key] && typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+          k = k.concat(getKeys(obj[key], fullKey));
+        }
+      }
+      return k;
+    };
+    return getKeys(payload);
+  }
+
+  const str = payload.trim();
+  const keys = [];
+
+  // Try parsing as NDJSON or space-separated JSON blocks (Sentry envelopes)
+  const parts = str.split(/\n/);
+  parts.forEach(part => {
+    const trimmedPart = part.trim();
+    if (!trimmedPart) return;
+    try {
+      const parsed = JSON.parse(trimmedPart);
+      keys.push(...extractKeysFromPayload(parsed));
+    } catch (e) {
+      // Try splitting by space between JSON objects: } {
+      const subParts = trimmedPart.split(/(?<=\})\s+(?=\{)/);
+      if (subParts.length > 1) {
+        subParts.forEach(sp => {
+          try {
+            const parsedSub = JSON.parse(sp.trim());
+            keys.push(...extractKeysFromPayload(parsedSub));
+          } catch (e2) {
+            // Ignored
+          }
+        });
+      }
+    }
+  });
+
+  if (keys.length > 0) return keys;
+
+  // URL query parameters fallback
+  if (str.includes('=') && (str.includes('&') || !str.startsWith('{'))) {
+    return str.split('&').map(p => p.split('=')[0].trim()).filter(Boolean);
+  }
+
+  // Regex fallback for generic JSON keys
+  const jsonKeyRegex = /"([^"\\]*(?:\\.[^"\\]*)*)"\s*:/g;
+  let match;
+  while ((match = jsonKeyRegex.exec(str)) !== null) {
+    const k = match[1];
+    if (k && k.length < 50) {
+      keys.push(k);
+    }
+  }
+
+  return keys;
+}
+
 // ── Helper: Parse exfiltrated parameters to classify threat vectors ──────
 function parseThreatVectors(events) {
   const stats = { pii: 0, fingerprint: 0, behavior: 0, marketing: 0, other: 0 };
@@ -11,14 +78,7 @@ function parseThreatVectors(events) {
   events.forEach(event => {
     if (!event.payload) return;
     
-    let keys = [];
-    try {
-      const parsed = typeof event.payload === 'string' ? JSON.parse(event.payload) : event.payload;
-      keys = Object.keys(parsed);
-    } catch (e) {
-      // String parsing fallback
-      keys = event.payload.split('&').map(p => p.split('=')[0]);
-    }
+    const keys = extractKeysFromPayload(event.payload);
 
     keys.forEach(key => {
       const lowercaseKey = key.toLowerCase();
@@ -121,20 +181,19 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
 
     const bipartiteG = svg.append('g');
 
-    // Draw connecting lines (smooth cubic curves)
-    const linkGenerator = d3.linkHorizontal()
-      .x(d => d[0])
-      .y(d => d[1]);
+    // Draw connecting lines (smooth cubic curves with controlled tension)
+    const drawCurve = d => {
+      const yStart = leftScale(d.site);
+      const yEnd = rightScale(d.company);
+      const dx = 100; // Curvature control for organic look
+      return `M ${leftX} ${yStart} C ${leftX + dx} ${yStart}, ${rightX - dx} ${yEnd}, ${rightX} ${yEnd}`;
+    };
 
     const links = bipartiteG.append('g')
       .selectAll('path')
       .data(filteredConnections)
       .join('path')
-      .attr('d', d => {
-        const yStart = leftScale(d.site);
-        const yEnd = rightScale(d.company);
-        return linkGenerator({ source: [leftX, yStart], target: [rightX, yEnd] });
-      })
+      .attr('d', drawCurve)
       .attr('fill', 'none')
       .attr('stroke', d => riskAccent(d.risk))
       .attr('stroke-width', d => {
@@ -221,7 +280,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
 
   // ── D3 Bandwidth Savings Timeline Area Chart ───────────────
   useEffect(() => {
-    if (!bandwidthRef.current || visits.length === 0) return;
+    if (!bandwidthRef.current || events.length === 0) return;
 
     const svg = d3.select(bandwidthRef.current);
     svg.selectAll('*').remove();
@@ -230,20 +289,20 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     const height = 220;
     const margin = { top: 15, right: 20, bottom: 30, left: 50 };
 
-    // Sort visits chronologically
-    const sortedVisits = [...visits].sort((a, b) => a.timestamp - b.timestamp);
+    // Sort events chronologically to show event-by-event exfiltration savings
+    const sortedEvents = [...events].sort((a, b) => a.timestamp - b.timestamp);
 
-    // Map aggregate exfiltration sizes
+    // Map aggregate exfiltration sizes event by event
     let runningExfiltrated = 0;
     let runningSaved = 0;
-    const chartData = sortedVisits.map(v => {
-      const siteEvents = events.filter(e => e.visitId === v.visitId);
-      siteEvents.forEach(e => {
-        if (e.blocked) runningSaved += 12 * 1024;
-        else runningExfiltrated += e.size > 0 ? e.size : (8 * 1024);
-      });
+    const chartData = sortedEvents.map(e => {
+      if (e.blocked) {
+        runningSaved += 12 * 1024; // 12KB average saved per blocked asset
+      } else {
+        runningExfiltrated += e.size > 0 ? e.size : (8 * 1024); // 8KB average baseline
+      }
       return {
-        date: new Date(v.timestamp),
+        date: new Date(e.timestamp),
         exfiltrated: runningExfiltrated / 1024, // KB
         saved: runningSaved / 1024 // KB
       };
@@ -456,7 +515,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
         }
       });
 
-  }, [visits, events]);
+  }, [events]);
 
   // Total parsed leak metrics
   const totalLeaks = threatStats.pii + threatStats.fingerprint + threatStats.behavior + threatStats.marketing;
@@ -642,9 +701,9 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
           </div>
 
           <div className="relative pt-4 flex-1">
-            {visits.length === 0 ? (
+            {events.length === 0 ? (
               <div className="h-[200px] flex items-center justify-center text-muted font-mono text-[12px]">
-                No visit logs available.
+                No data logs available.
               </div>
             ) : (
               <>
