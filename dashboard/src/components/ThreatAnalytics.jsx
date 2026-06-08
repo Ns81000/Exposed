@@ -109,6 +109,34 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
   const timelineTooltipRef = useRef(null);
   const [hoveredCompany, setHoveredCompany] = useState(null);
   const [hoveredSite, setHoveredSite] = useState(null);
+  const [bipartiteWidth, setBipartiteWidth] = useState(800);
+  const [bandwidthWidth, setBandwidthWidth] = useState(800);
+
+  // ResizeObserver for bipartite chart container
+  useEffect(() => {
+    if (!bipartiteRef.current) return;
+    const element = bipartiteRef.current;
+    const observer = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        setBipartiteWidth(entry.contentRect.width || element.clientWidth || 800);
+      }
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  // ResizeObserver for bandwidth chart container
+  useEffect(() => {
+    if (!bandwidthRef.current) return;
+    const element = bandwidthRef.current;
+    const observer = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        setBandwidthWidth(entry.contentRect.width || element.clientWidth || 800);
+      }
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   // ── Global Stats ──────────────────────────────────────────
   const totalSites = sites.length;
@@ -145,7 +173,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     const svg = d3.select(bipartiteRef.current);
     svg.selectAll('*').remove();
 
-    const width = bipartiteRef.current.clientWidth || 800;
+    const width = bipartiteWidth;
     const height = 380;
     
     // Extract connections: Top 7 sites and Top 8 tracker companies
@@ -185,7 +213,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     const drawCurve = d => {
       const yStart = leftScale(d.site);
       const yEnd = rightScale(d.company);
-      const dx = 100; // Curvature control for organic look
+      const dx = (rightX - leftX) * 0.45; // Curvature control dynamically scales with width
       return `M ${leftX} ${yStart} C ${leftX + dx} ${yStart}, ${rightX - dx} ${yEnd}, ${rightX} ${yEnd}`;
     };
 
@@ -197,16 +225,16 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .attr('fill', 'none')
       .attr('stroke', d => riskAccent(d.risk))
       .attr('stroke-width', d => {
-        if (hoveredCompany === null && hoveredSite === null) return 1.5;
-        if (hoveredCompany !== null && d.company === hoveredCompany) return 2.5;
-        if (hoveredSite !== null && d.site === hoveredSite) return 2.5;
+        if (hoveredCompany === null && hoveredSite === null) return 1.8;
+        if (hoveredCompany !== null && d.company === hoveredCompany) return 3.0;
+        if (hoveredSite !== null && d.site === hoveredSite) return 3.0;
         return 1.0;
       })
       .attr('stroke-opacity', d => {
         if (hoveredCompany === null && hoveredSite === null) return 0.25;
-        if (hoveredCompany !== null) return d.company === hoveredCompany ? 0.85 : 0.04;
-        if (hoveredSite !== null) return d.site === hoveredSite ? 0.85 : 0.04;
-        return 0.04;
+        if (hoveredCompany !== null) return d.company === hoveredCompany ? 0.85 : 0.06;
+        if (hoveredSite !== null) return d.site === hoveredSite ? 0.85 : 0.06;
+        return 0.06;
       })
       .style('transition', 'stroke-opacity 180ms ease, stroke-width 180ms ease');
 
@@ -228,12 +256,12 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .on('mouseleave', () => setHoveredSite(null));
 
     leftNodes.append('circle')
-      .attr('r', d => hoveredSite === d ? 7 : 5)
+      .attr('r', d => hoveredSite === d ? 8 : 6)
       .attr('fill', 'var(--color-accent)')
       .style('transition', 'r 180ms ease');
 
     leftNodes.append('text')
-      .attr('x', -12)
+      .attr('x', -14)
       .attr('dy', '0.31em')
       .attr('text-anchor', 'end')
       .attr('font-size', '11px')
@@ -261,12 +289,12 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .on('mouseleave', () => setHoveredCompany(null));
 
     rightNodes.append('circle')
-      .attr('r', d => hoveredCompany === d ? 8 : 6)
+      .attr('r', d => hoveredCompany === d ? 9 : 7)
       .attr('fill', d => hoveredCompany === d ? 'var(--color-accent)' : 'var(--color-secondary)')
       .style('transition', 'r 180ms ease, fill 180ms ease');
 
     rightNodes.append('text')
-      .attr('x', 14)
+      .attr('x', 16)
       .attr('dy', '0.31em')
       .attr('text-anchor', 'start')
       .attr('font-size', '11.5px')
@@ -276,7 +304,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .text(d => d)
       .style('transition', 'fill 180ms ease, font-weight 180ms ease');
 
-  }, [events, hoveredCompany, hoveredSite]);
+  }, [events, hoveredCompany, hoveredSite, bipartiteWidth]);
 
   // ── D3 Bandwidth Savings Timeline Area Chart ───────────────
   useEffect(() => {
@@ -285,7 +313,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     const svg = d3.select(bandwidthRef.current);
     svg.selectAll('*').remove();
 
-    const width = bandwidthRef.current.clientWidth || 800;
+    const width = bandwidthWidth;
     const height = 220;
     const margin = { top: 15, right: 20, bottom: 30, left: 50 };
 
@@ -515,7 +543,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
         }
       });
 
-  }, [events]);
+  }, [events, bandwidthWidth]);
 
   // Total parsed leak metrics
   const totalLeaks = threatStats.pii + threatStats.fingerprint + threatStats.behavior + threatStats.marketing;
