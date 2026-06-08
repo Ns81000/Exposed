@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Settings, Sun, Moon, ChevronDown, ChevronRight, Archive, Eye, Network } from 'lucide-react';
+import { Search, Settings, Sun, Moon, ChevronDown, ChevronRight, Archive, Eye, Network, User } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 import DailyArchive from './DailyArchive';
 
@@ -91,6 +91,18 @@ export default function Sidebar({
         >
           <Network size={15} />
           Threat Analytics
+        </button>
+        <button
+          type="button"
+          onClick={() => onViewChange && onViewChange('profile-map')}
+          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+            activeView === 'profile-map'
+              ? 'bg-accent-soft text-accent'
+              : 'text-secondary hover:bg-surface-2 hover:text-text'
+          }`}
+        >
+          <User size={15} />
+          Shadow Profile
         </button>
       </div>
 

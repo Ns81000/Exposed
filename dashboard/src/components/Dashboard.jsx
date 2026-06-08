@@ -11,6 +11,7 @@ import TrackerDetailPanel from './TrackerDetailPanel';
 import FingerprintPanel from './FingerprintPanel';
 import VisitTimeline from './VisitTimeline';
 import ThreatAnalytics from './ThreatAnalytics';
+import ProfileMap from './ProfileMap';
 import { useToast } from './Toast';
 import { useLiveUpdates } from '../hooks/useLiveUpdates';
 import { useTrackerStore } from '../hooks/useTrackerStore';
@@ -269,8 +270,15 @@ export default function Dashboard() {
             </div>
           </div>
         </main>
-      ) : (
+      ) : activeView === 'analytics' ? (
         <ThreatAnalytics
+          sites={sites}
+          visits={visits}
+          events={trackerEvents}
+          fingerprints={fingerprintEvents}
+        />
+      ) : (
+        <ProfileMap
           sites={sites}
           visits={visits}
           events={trackerEvents}
