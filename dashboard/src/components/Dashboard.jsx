@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import BrandIcon from './BrandIcon';
 import ConnectPrompt from './ConnectPrompt';
 import MobileGate from './MobileGate';
@@ -14,6 +14,7 @@ import ProfileMap from './ProfileMap';
 import { useToast } from './Toast';
 import { useLiveUpdates } from '../hooks/useLiveUpdates';
 import { useTrackerStore } from '../hooks/useTrackerStore';
+import { useDemoMode } from '../hooks/useDemoMode';
 import { cleanExpiredSessions, runDailyArchive } from '../utils/archiver';
 import { clearAllTrackingData } from '../db/schema';
 
@@ -46,6 +47,16 @@ export default function Dashboard() {
   const setBlockingEnabled = useTrackerStore((state) => state.setBlockingEnabled);
 
   const { addToast } = useToast();
+
+  const onDemoActivate = useCallback(() => {
+    addToast('DEMO MODE ACTIVE — Ctrl+Shift+D + "exposed" to exit', 'info');
+  }, [addToast]);
+
+  const onDemoDeactivate = useCallback(() => {
+    addToast('Demo mode deactivated — real data restored', 'success');
+  }, [addToast]);
+
+  const demoMode = useDemoMode(onDemoActivate, onDemoDeactivate);
 
   useLiveUpdates();
 
@@ -135,7 +146,7 @@ export default function Dashboard() {
   }
 
   if (isMobile) return <MobileGate />;
-  if (!connected) return <ConnectPrompt />;
+  if (!connected && !demoMode) return <ConnectPrompt />;
 
   return (
     <div className="min-h-screen bg-bg text-secondary flex font-sans">

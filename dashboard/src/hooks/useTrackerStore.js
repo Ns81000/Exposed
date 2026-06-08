@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { db, recordTrackerEvent, recordFingerprintEvent } from '../db/schema';
+import { getDemoData } from '../utils/demoData';
 
 export const useTrackerStore = create((set, get) => ({
   connected: false,
@@ -13,6 +14,7 @@ export const useTrackerStore = create((set, get) => ({
   fingerprintEvents: [],
   archives: [],
   selectedTracker: null,
+  demoMode: sessionStorage.getItem('exposed_demo') === '1',
 
   setConnected: (connected) => set({ connected }),
   setSessionTTL: (sessionTTL) => set({ sessionTTL }),
@@ -35,8 +37,29 @@ export const useTrackerStore = create((set, get) => ({
   },
   setSelectedDomain: (selectedDomain) => set({ selectedDomain }),
   setSelectedTracker: (selectedTracker) => set({ selectedTracker }),
+  setDemoMode: (demoMode) => {
+    if (demoMode) {
+      sessionStorage.setItem('exposed_demo', '1');
+    } else {
+      sessionStorage.removeItem('exposed_demo');
+    }
+    set({ demoMode, connected: true });
+    // Re-hydrate after toggling
+    get().hydrate();
+  },
 
   hydrate: async () => {
+    // Demo mode: use in-memory data instead of IndexedDB
+    if (get().demoMode) {
+      const demo = getDemoData();
+      const previousSelectedDomain = get().selectedDomain;
+      const selectedDomain = demo.sites.some((site) => site.domain === previousSelectedDomain)
+        ? previousSelectedDomain
+        : (demo.sites[0]?.domain || null);
+      set({ ...demo, selectedDomain, connected: true });
+      return;
+    }
+
     const [sites, visits, trackerEvents, archives, fingerprintEvents] = await Promise.all([
       db.sites.orderBy('lastSeen').reverse().toArray(),
       db.visits.orderBy('timestamp').reverse().toArray(),
