@@ -176,17 +176,6 @@ html.transitioning *::after {
   100% { transform: translateY(100%); }
 }
 
-@keyframes link-flow {
-  to {
-    stroke-dashoffset: -20;
-  }
-}
-
-.link-flow-active {
-  stroke-dasharray: 4 4;
-  animation: link-flow 0.8s linear infinite;
-}
-
 .animate-fade-in {
   animation: fade-in 250ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
