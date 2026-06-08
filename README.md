@@ -1,255 +1,587 @@
-# 🚨 expos.ed
-
 <div align="center">
 
-> **"uBlock Origin hides them. expos.ed names, unmasks, and analyzes them."**
+<br>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](./LICENSE)
-[![Chrome Extension](https://img.shields.io/badge/Platform-Chrome%20Extension-green.svg?style=for-the-badge)](https://developer.chrome.com/docs/extensions)
-[![React](https://img.shields.io/badge/React-18.3-61dafb.svg?style=for-the-badge&logo=react)](https://react.dev)
-[![Vite](https://img.shields.io/badge/Vite-5.4-646cff.svg?style=for-the-badge&logo=vite)](https://vite.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8.svg?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
-[![D3.js](https://img.shields.io/badge/D3.js-7.9-f9a03f.svg?style=for-the-badge&logo=d3.js)](https://d3js.org)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="dashboard/public/logo512.png">
+  <source media="(prefers-color-scheme: light)" srcset="dashboard/public/logo512.png">
+  <img alt="expos.ed — Fin Icon" src="dashboard/public/logo512.png" width="100">
+</picture>
 
-expos.ed is a local-first, decentralized privacy-intelligence platform that intercepts, visualizes, and audits the hidden tracking networks active on every website you visit. 
+<br><br>
 
-[Explore Architecture](#-architecture-&-data-flow) • [How to Run](#-quick-start) • [Database Schema](#-database-&-storage-layer) • [Security Policy](#-security-&-privacy-first)
+# expos<!--  -->.ed
+
+**They watch you. Now watch them.**
+
+<br>
+
+<p align="center">
+  <a href="https://exposed-dashboard.vercel.app"><img src="https://img.shields.io/badge/▸_Live_Demo-010102?style=for-the-badge&logoColor=5e6ad2" alt="Live Demo"></a>&nbsp;
+  <a href="https://github.com/Ns81000/Exposed"><img src="https://img.shields.io/badge/Source_Code-010102?style=for-the-badge&logo=github&logoColor=f7f8f8" alt="Source Code"></a>&nbsp;
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/MIT_License-010102?style=for-the-badge&logoColor=5e6ad2" alt="MIT License"></a>
+</p>
+
+<br>
+
+<p>
+  <img src="https://img.shields.io/badge/React-18.3-010102?style=flat-square&logo=react&logoColor=5e6ad2" alt="React">&nbsp;
+  <img src="https://img.shields.io/badge/Vite-5.4-010102?style=flat-square&logo=vite&logoColor=5e6ad2" alt="Vite">&nbsp;
+  <img src="https://img.shields.io/badge/D3.js-7.9-010102?style=flat-square&logo=d3dotjs&logoColor=5e6ad2" alt="D3.js">&nbsp;
+  <img src="https://img.shields.io/badge/Tailwind-3.4-010102?style=flat-square&logo=tailwindcss&logoColor=5e6ad2" alt="Tailwind CSS">&nbsp;
+  <img src="https://img.shields.io/badge/Zustand-5.0-010102?style=flat-square&logoColor=5e6ad2" alt="Zustand">&nbsp;
+  <img src="https://img.shields.io/badge/Manifest-V3-010102?style=flat-square&logo=googlechrome&logoColor=5e6ad2" alt="Manifest V3">&nbsp;
+  <img src="https://img.shields.io/badge/Dexie.js-4.0-010102?style=flat-square&logoColor=5e6ad2" alt="Dexie.js">
+</p>
+
+<br>
+
+<sub>Local-first · Zero cloud · Open source · Decentralized surveillance intelligence</sub>
 
 </div>
 
----
-
-## 📖 What is expos.ed?
-
-Most modern privacy tools (like uBlock Origin, Brave, or AdBlock) block trackers silently. While this keeps you safe, it keeps you in the dark about who is actively trying to surveil you, what data they are capturing, and how they bypass your browser settings.
-
-**expos.ed takes the opposite approach: capture the surveillance, inspect the payloads, and visualize the threat landscape.**
-
-Two tightly integrated components work together:
-1. **Chrome Extension (Sensor Layer)**: Intercepts network requests in real-time, inspects payload data, unmasks DNS CNAME cloaks, and injects behavioral sensors to trap browser fingerprinting attempts.
-2. **React Dashboard (Visualization Layer)**: Renders a comprehensive dark-mode console displaying D3 force-directed networks, visit timelines, parsed exfiltration grids, and detailed profiling alerts.
-
-> [!IMPORTANT]
-> **Why expos.ed is a Vital Tool for Cybersecurity Professionals & Privacy Engineers**
-> * **Behavioral Adware & Spyware Auditing**: Instantly detect if embedded scripts are registering silent keyboard listeners (keyloggers), capturing inputs, or profiling system canvas/WebGL/Audio runtimes.
-> * **DNS CNAME De-cloaking**: De-cloak tracking assets hiding behind masqueraded first-party subdomains to identify evasion tactics and blocklist bypasses.
-> * **Payload Exfiltration Analysis**: Inspect exact query parameters and POST bodies in real time to document *what* PII (Personally Identifiable Information), session IDs, or device footprints are being leaked.
-> * **GDPR/CCPA Compliance Audits**: Verify compliance standards on web applications by auditing tracker behaviour in real-time.
+<br>
 
 ---
 
-## ✨ Advanced Features
+<br>
 
-### 🔍 Real-Time Request Payload Decryption
-Captures query parameters and POST body JSON data in real-time. If a tracker exfiltrates tracking identifiers, device dimensions, or session IDs, expos.ed decodes them and formats them into an easy-to-read key-value grid.
+> **`uBlock Origin hides them. expos.ed names, unmasks, and analyzes them.`**
 
-### 🔗 DNS-over-HTTPS CNAME Unmasking
-Trackers frequently hide behind "first-party" subdomains (e.g. `analytics.yourbank.com` pointing to `metrics.adobe.com`) to bypass browser blocklists. expos.ed runs asynchronous CNAME DNS resolution queries using Cloudflare's secure JSON DNS-over-HTTPS (DoH) API, catching and flagging cloaked trackers as `Company (Cloaked)` in the timeline.
+Most privacy tools block trackers silently — keeping you safe but blind. You never see *who* is watching, *what* data they're siphoning, or *how* they bypass your defenses.
 
-### ⚙️ Behavioral Fingerprint Sensors
-Instruments browser prototype interfaces to detect scripts trying to build hardware and network profiles of you. expos.ed logs and shows JavaScript call stacks for:
-* **Canvas Profiling**: Calls to `toDataURL` and `getImageData`.
-* **WebGL Identifiers**: Queries to `getParameter` querying graphics rendering units.
-* **Audio Fingerprinting**: Creating custom audio oscillators via `createOscillator`.
-* **WebRTC Leaks**: Initiating WebRTC peer connections via `createOffer` to find local IP addresses.
-* **Input Capture Heuristics**: Recording keyloggers registering high-frequency keyboard (`keydown`, `keypress`) or change handlers on sensitive input elements.
+**expos.ed** flips the paradigm: it captures surveillance in real-time, decrypts the payloads, maps the corporate network behind it, and renders the entire threat landscape as an interactive intelligence dashboard — all without a single byte leaving your machine.
 
-### 🛡️ Dynamic Blocker Shield (Opt-In)
-Equipped with an interactive togglable blocker. Built on Chrome's high-performance `declarativeNetRequest` API, when enabled, it intercepts and drops network requests matching 50,000+ compiled tracking domains and CNAME vectors, showing you a red **Blocked** status.
+<br>
 
-### 📊 D3.js Force-Directed Tracker Network
-Visualizes trackers as interactive node-graph relationships. It features dynamic zoom/drag controls, risk level node coloring, and responsive layout adjustments (such as fullscreen modes). It is highly optimized to prevent render flickering or simulation restarts when background bandwidth data updates.
+<div align="center">
 
-### 🏆 Privacy Scoring & Grading Engine
-Evaluates visited sites, subtracting points based on tracking activity:
-* **Risk Levels**: Allowed High-Risk trackers subtract `-15` points, Medium-Risk subtract `-5`, Low-Risk subtract `-2`.
-* **Fingerprint Penalties**: Active fingerprinting attempts trigger a heavy `-25` points deduction.
-* **Blocker Coverage**: Blocked trackers only carry a minor penalty (`-3` for high risk, `-1` for medium risk).
-* **Grades**: Scores scale from 0 to 100, mapped to descriptive safety grades (A, B, C, D, F) and colored accordingly.
+| 🔬 Intercept | 🧬 Analyze | 🗺️ Visualize |
+|:---:|:---:|:---:|
+| Real-time network request capture with payload decryption | DNS CNAME de-cloaking, fingerprint heuristics, PII classification | D3.js force graphs, orbital radar maps, bipartite matrices |
+
+</div>
+
+<br>
 
 ---
 
-## 🌳 Architecture & Data Flow
+<br>
 
-Exposed operates fully inside the browser sandbox, separating intercept telemetry from state management and database writes. Below is the data pipeline visual:
+## ⚡ Platform Architecture
 
-```mermaid
-flowchart TD
-    subgraph Browser Context ["Browser Context"]
-        A["Browser Request / Site Load"] -->|Intercept| B["background.js: Extension Worker"]
-    end
+<br>
 
-    subgraph Extension Analysis ["Extension Analysis"]
-        B -->|Check Hostname| C[("trackers.json DB")]
-        B -->|Enrich Metadata| D[("companies.json DB")]
-        B -->|Push Event| E["chrome.storage.local: liveBuffer"]
-        B -->|Broadcast Event| F["chrome.tabs.sendMessage"]
-    end
+expos.ed is a two-component system that operates entirely within the browser sandbox:
 
-    subgraph Content Script Bridge ["Content Script Bridge"]
-        F -->|Listen & Forward| G["content.js: Content Script"]
-        G -->|window.postMessage| H["useLiveUpdates.js: Dashboard Hook"]
-    end
-
-    subgraph React Dashboard Store ["React Dashboard Store"]
-        H -->|Action Ingestion| I["useTrackerStore.js: Zustand Store"]
-        I -->|Record Transaction| J[("Dexie.js / IndexedDB")]
-        I -->|Re-render UI| K["Dashboard.jsx: React View"]
-    end
-
-    subgraph Visual Layer ["Visual Layer"]
-        K -->|Render D3 Graph| L["NodeGraph.jsx: Force Graph"]
-    end
-```
-
----
-
-## 📁 Directory Structure
+<br>
 
 ```
-exposed/
-│
-├── extension/                      # Chrome Extension (Manifest V3)
-│   ├── manifest.json              # Extension schema, rules, and permissions
-│   ├── background.js              # Service Worker - unmasks CNAME, captures payloads, compiles blocklists
-│   ├── content.js                 # Content script - hooks API calls, relays tab message bridges
-│   ├── main.js                    # Injected script - overrides prototype APIs to catch fingerprinting
-│   ├── popup.html / popup.js       # Popup connection indicator
-│   ├── data/
-│   │   ├── trackers.json          # Compiled uBlock tracker domains list
-│   │   └── companies.json         # Company meta metadata & risk level metrics
-│   └── icons/                     # Generated extension icons (16/48/128px)
-│
-└── dashboard/                      # React SPA Dashboard (Vite)
-    ├── index.html                 # HTML entry point
-    ├── vite.config.js             # Vite compiler rules
-    ├── tailwind.config.js          # Design system theme classes
-    ├── package.json               # Frontend dependencies
-    ├── public/                    # Favicons and brand graphics
-    └── src/
-        ├── main.jsx               # React DOM bootstrapper
-        ├── App.jsx                # UI Router (Landing Page <-> Dashboard Console)
-        ├── components/
-        │   ├── Landing.jsx        # Dashboard landing page
-        │   ├── Dashboard.jsx       # Main console orchestrator
-        │   ├── MobileGate.jsx      # Mobile display blocker (Desktop Optimized)
-        │   ├── NodeGraph.jsx       # D3 Force-Directed Network Graph
-        │   ├── Sidebar.jsx         # Site navigation menu & daily archives
-        │   ├── VisitTimeline.jsx   # Visited pages tracker chronology
-        │   ├── TrackerDetailPanel.jsx # Decoded HTTP parameter & payload grids
-        │   ├── FingerprintPanel.jsx  # Fingerprint heuristic alerts & stack traces
-        │   ├── SettingsModal.jsx   # Retention configurations & blocker toggles
-        │   ├── SummaryStats.jsx    # Privacy grades, block ratios, and exfiltrated size cards
-        ├── hooks/
-        │   ├── useTrackerStore.js  # Zustand State Management (Dexie DB bridge)
-        │   └── useLiveUpdates.js   # Extension postMessage receiver
-        ├── db/
-        │   └── schema.js           # IndexedDB schemas via Dexie.js
-        └── utils/
-            ├── archiver.js         # Daily data archiver & automatic cleanup
-            └── riskColor.js        # Global risk color tokens
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         BROWSER CONTEXT                                │
+│                                                                        │
+│  ┌───────────────────────────┐    ┌──────────────────────────────────┐ │
+│  │   CHROME EXTENSION        │    │   REACT DASHBOARD                │ │
+│  │   ─────────────────       │    │   ────────────────               │ │
+│  │                           │    │                                  │ │
+│  │   background.js           │    │   Console View                   │ │
+│  │   ├─ webRequest intercept │    │   ├─ D3 force-directed graph     │ │
+│  │   ├─ CNAME DoH resolver   │◀──▶│   ├─ Visit timeline             │ │
+│  │   ├─ Payload decoder      │IPC │   ├─ Fingerprint alerts          │ │
+│  │   └─ Blocklist compiler   │    │   └─ Privacy scoring engine      │ │
+│  │                           │    │                                  │ │
+│  │   content.js + main.js    │    │   Threat Analytics               │ │
+│  │   ├─ Canvas sensor        │    │   ├─ Bipartite contamination map │ │
+│  │   ├─ WebGL sensor         │    │   ├─ Bandwidth leak timeline     │ │
+│  │   ├─ Audio sensor         │    │   └─ Exfiltration classification │ │
+│  │   ├─ WebRTC sensor        │    │                                  │ │
+│  │   └─ Keylogger sensor     │    │   Shadow Profile                 │ │
+│  │                           │    │   ├─ Orbital persona radar       │ │
+│  │   trackers.json (50k+)    │    │   ├─ Live telemetry ledger       │ │
+│  │   companies.json          │    │   └─ De-anonymization scoring    │ │
+│  │                           │    │                                  │ │
+│  └───────────────────────────┘    └──────────────────────────────────┘ │
+│                                                                        │
+│              ┌─────────────────────────────────┐                       │
+│              │   IndexedDB via Dexie.js        │                       │
+│              │   All data stored locally        │                       │
+│              │   No cloud. No accounts.         │                       │
+│              └─────────────────────────────────┘                       │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
+
+<br>
 
 ---
 
-## 💾 Database & Storage Layer
+<br>
 
-All captured tracker telemetry is saved locally on your device inside **IndexedDB** using **Dexie.js**.
+## 🔮 Intelligence Capabilities
 
-### Dexie Schema Configuration
+<br>
 
-```javascript
-db.version(3).stores({
-  sites: 'domain, lastSeen, totalTrackers',
-  visits: 'visitId, siteDomain, timestamp, trackerCount, fingerprintCount',
-  trackerEvents: '++id, [visitId+requestUrl], visitId, siteDomain, timestamp, trackerDomain, company, category, risk, payload, method, blocked, size',
-  fingerprintEvents: '++id, visitId, siteDomain, timestamp, api, trackerDomain, stack',
-  archives: 'date, data, createdAt'
-});
+### 🔗 DNS-over-HTTPS CNAME De-cloaking
+
+Trackers hide behind first-party subdomains to bypass blocklists. expos.ed resolves CNAME chains using Cloudflare's secure DoH API:
+
+```
+analytics.yourbank.com  →  CNAME  →  metrics.adobe.com
+     "First-party"                      Exposed!
 ```
 
-### Table Specifications
+Every cloaked tracker is flagged as `Company (Cloaked)` in the timeline with full chain visibility.
 
-| Table | Primary Key | Keys / Columns Indexed | Purpose |
-|---|---|---|---|
-| `sites` | `domain` | `lastSeen`, `totalTrackers` | List of target hostnames visited and analyzed. |
-| `visits` | `visitId` | `siteDomain`, `timestamp` | Specific page visit sessions containing counter metrics. |
-| `trackerEvents` | Auto `id` | `[visitId+requestUrl]`, `siteDomain`, `timestamp`, `company`, `risk` | Detailed telemetry entries for intercepted scripts. |
-| `fingerprintEvents` | Auto `id` | `visitId`, `siteDomain`, `api`, `trackerDomain` | Log of active profiling events and call stack records. |
-| `archives` | `date` | `createdAt` | Compact daily summaries containing serializations of site history. |
+<br>
+
+### 🧬 Behavioral Fingerprint Sensors
+
+Injected into the `MAIN` world, expos.ed instruments browser prototype APIs to catch scripts building hardware profiles:
+
+| Sensor | API Monitored | Detection Method |
+|:--|:--|:--|
+| **Canvas** | `toDataURL`, `getImageData` | Prototype override trapping |
+| **WebGL** | `getParameter` (GPU queries) | Parameter interception |
+| **Audio** | `createOscillator` | AudioContext monitoring |
+| **WebRTC** | `createOffer` (local IP leak) | RTCPeerConnection hook |
+| **Keylogger** | `keydown`, `keypress`, `change` | High-frequency listener detection |
+
+Each detection includes the full **JavaScript call stack** for forensic tracing.
+
+<br>
+
+### 🔍 Real-Time Payload Inspection
+
+Every intercepted request is decoded and classified:
+
+```
+POST  →  tracker.facebook.com/tr
+         ├─ PII:          email, user_id, profile_name
+         ├─ Fingerprint:  screen_width, platform, user_agent
+         ├─ Behavior:     scroll_depth, click_x, key_count
+         └─ Marketing:    utm_source, fbclid, gclid
+```
+
+Payloads are parsed from URL query strings, JSON bodies, and NDJSON/Sentry envelopes — then formatted into searchable key-value grids with **2,800+ parameter classifiers**.
+
+<br>
+
+### 🛡️ Dynamic Blocker Shield
+
+An opt-in high-performance blocking engine built on Chrome's `declarativeNetRequest` API:
+
+- **50,000+** compiled tracking domains from uBlock Origin filter lists
+- CNAME-aware blocking that catches cloaked vectors
+- Real-time `Blocked` / `Allowed` status per request
+- Shield protection bonus reduces privacy score penalties
+
+<br>
+
+### 📊 Privacy Scoring Engine
+
+Every site receives an algorithmic privacy grade calculated in real-time:
+
+```
+Score: 100 (start)
+  ├─ High-risk tracker (allowed):     -15 pts
+  ├─ Medium-risk tracker (allowed):    -5 pts
+  ├─ Low-risk tracker (allowed):       -2 pts
+  ├─ Active fingerprinting detected:  -25 pts
+  ├─ High-risk tracker (blocked):      -3 pts  ← shield bonus
+  └─ Medium-risk tracker (blocked):    -1 pts  ← shield bonus
+
+Grade Scale: A (90-100) → B (80-89) → C (70-79) → D (55-69) → F (0-54)
+```
+
+<br>
 
 ---
 
-## 🚀 Quick Start
+<br>
 
-### 📋 Prerequisites
-* **Google Chrome** (or Chromium-based browsers like Edge, Brave, Opera)
-* **Node.js 18+**
-* **pnpm** package manager
+## 🖥️ Three Dashboard Views
 
-### Setup Instructions
+<br>
 
-#### 1. Clone & Navigate
+<table>
+<tr>
+<td width="33%" align="center">
+
+### Console
+
+**Real-Time Surveillance Monitor**
+
+- D3 force-directed network graph
+- Chronological visit timeline
+- Fingerprint alert panel
+- Tracker detail inspector
+- Live privacy grade scoring
+
+</td>
+<td width="33%" align="center">
+
+### Threat Analytics
+
+**Cross-Site Intelligence**
+
+- Bipartite contamination matrix
+- Bandwidth savings area chart
+- Exfiltration vector classification
+- Company threat breakdown
+- Protection rate metrics
+
+</td>
+<td width="33%" align="center">
+
+### Shadow Profile
+
+**Digital Persona Reconstruction**
+
+- Orbital radar visualization
+- Identity de-anonymization scoring
+- Live telemetry ledger (paginated)
+- Company node inspection
+- Searchable parameter database
+
+</td>
+</tr>
+</table>
+
+<br>
+
+---
+
+<br>
+
+## 🏗️ Technical Stack
+
+<br>
+
+<div align="center">
+
+| Layer | Technology | Purpose |
+|:--|:--|:--|
+| **Extension Runtime** | Manifest V3 Service Worker | Network interception, CNAME resolution, blocker engine |
+| **Fingerprint Sensors** | Content Script + `MAIN` world injection | Browser API prototype overrides |
+| **Frontend Framework** | React 18.3 + Vite 5.4 | Component architecture with HMR |
+| **State Management** | Zustand 5.0 | Reactive global store with DB bridge |
+| **Data Persistence** | Dexie.js 4.0 (IndexedDB) | Local-first structured storage |
+| **Visualization** | D3.js 7.9 | Force simulation, area charts, bipartite graphs |
+| **Styling** | Tailwind CSS 3.4 | Linear × Raycast fusion design system |
+| **Typography** | Inter + JetBrains Mono + Outfit | Display, body, and monospace hierarchies |
+| **IPC Bridge** | `window.postMessage` | Extension ↔ Dashboard communication |
+| **DNS Resolution** | Cloudflare DoH JSON API | Async CNAME unmasking |
+
+</div>
+
+<br>
+
+### Design System
+
+The UI is built on a custom **Linear × Raycast** fusion design language:
+
+```css
+--color-bg:          #010102     /* Deep black canvas            */
+--color-surface-1:   #0f1011     /* Primary surface              */
+--color-surface-2:   #141516     /* Elevated surface             */
+--color-accent:      #5e6ad2     /* Primary lavender             */
+--color-risk-high:   #ff6161     /* Threat — critical            */
+--color-risk-medium: #ffc533     /* Threat — elevated            */
+--color-risk-low:    #59d499     /* Threat — nominal             */
+--color-success:     #59d499     /* Shield protection            */
+```
+
+Glass panels with `backdrop-blur`, hairline borders, radar sweep animations, and monospace tactical labels.
+
+<br>
+
+---
+
+<br>
+
+## 💾 Data Architecture
+
+<br>
+
+All telemetry is stored exclusively in **IndexedDB** on your local device via Dexie.js:
+
+```
+ExposedDB
+├── sites             PK: domain        ← Visited hostnames
+├── visits            PK: visitId       ← Page session records
+├── trackerEvents     PK: ++id          ← Network intercept logs
+│                     IDX: [visitId+requestUrl], company, risk, size
+├── fingerprintEvents PK: ++id          ← API profiling attempts
+│                     IDX: visitId, api, siteDomain
+└── archives          PK: date          ← Compressed daily snapshots
+```
+
+- **Auto-archiving** compresses daily summaries for long-term retention
+- **Configurable TTL** with automatic session expiry (default: 7 days)
+- **Full transparency** — inspect all data via DevTools → Application → IndexedDB
+
+<br>
+
+---
+
+<br>
+
+## 🔒 Security & Privacy Principles
+
+<br>
+
+<table>
+<tr>
+<td width="25%" align="center">
+
+**Zero Cloud**
+
+No APIs, no servers,
+no databases.
+Everything runs on
+your hardware.
+
+</td>
+<td width="25%" align="center">
+
+**Zero Telemetry**
+
+expos.ed never logs
+usage metrics, crash
+reports, or domain
+lists to anyone.
+
+</td>
+<td width="25%" align="center">
+
+**Zero Accounts**
+
+No signup, no email,
+no password. Install
+and start auditing
+immediately.
+
+</td>
+<td width="25%" align="center">
+
+**Full Auditability**
+
+Open source code.
+Zero binaries. Zero
+minified wrappers.
+Inspect every line.
+
+</td>
+</tr>
+</table>
+
+<br>
+
+> Perfect for **GDPR/CCPA compliance audits**, behavioral adware investigation, and documenting tracker behavior as forensic evidence.
+
+<br>
+
+---
+
+<br>
+
+## 🚀 Getting Started
+
+<br>
+
+### Prerequisites
+
+- **Google Chrome** (or Chromium-based: Edge, Brave, Opera, Arc)
+- **Node.js 18+**
+- **pnpm** package manager
+
+<br>
+
+### 1 · Clone the repository
+
 ```bash
 git clone https://github.com/Ns81000/Exposed.git
 cd Exposed
 ```
 
-#### 2. Load Chrome Extension
-1. Open Google Chrome and enter `chrome://extensions` in the address bar.
-2. Toggle the **Developer mode** switch in the top-right corner.
-3. Click the **Load unpacked** button in the top-left.
-4. Select the `extension` folder located inside the cloned `Exposed` directory.
-5. The **expos.ed** symbol should appear in your extensions list.
+### 2 · Install dashboard dependencies
 
-#### 3. Run React Dashboard
-Install packages and start the Vite local server:
 ```bash
-# Install and build at root level
-pnpm install
+cd dashboard && pnpm install
+```
 
-# Run Vite development server
+### 3 · Load the Chrome Extension
+
+```
+chrome://extensions  →  Enable Developer mode  →  Load unpacked  →  Select extension/ folder
+```
+
+### 4 · Launch the dashboard
+
+```bash
 pnpm dev
 ```
-The console will be served at [http://localhost:5173](http://localhost:5173).
 
-#### 4. Begin Auditing
-Open a new browser tab, visit any website (e.g. news sites, social media, shopping portals), and navigate back to the dashboard. You will see trackers populated and visualized in real-time.
+Dashboard serves at **`http://localhost:5173`**
+
+Or use the deployed version → [**exposed-dashboard.vercel.app**](https://exposed-dashboard.vercel.app/)
+
+<br>
+
+### 5 · Browse and observe
+
+Open any website in a new tab. Return to the dashboard. Tracker data populates in real-time.
+
+<br>
+
+---
+
+<br>
+
+## 📂 Project Structure
+
+<br>
+
+```
+exposed/
+├── extension/                          Chrome Extension (Manifest V3)
+│   ├── manifest.json                  Schema, permissions, content script config
+│   ├── background.js                  Service Worker — intercept, decode, resolve CNAME
+│   ├── content.js                     Content script — message bridge to dashboard
+│   ├── main.js                        MAIN world — fingerprint prototype overrides
+│   ├── popup.html / popup.js          Extension popup indicator
+│   ├── data/
+│   │   ├── trackers.json             50k+ compiled tracker domains
+│   │   └── companies.json            Company metadata & risk classifications
+│   └── icons/                         Extension icons (16/48/128px)
+│
+└── dashboard/                          React SPA (Vite)
+    ├── index.html                     Entry point
+    ├── vite.config.js                 Build configuration
+    ├── tailwind.config.js             Linear × Raycast design tokens
+    ├── vercel.json                    Deployment routing
+    ├── public/
+    │   ├── logo512.png               Fin brand icon
+    │   └── favicon.png               Browser favicon
+    └── src/
+        ├── main.jsx                   React DOM bootstrapper
+        ├── App.jsx                    Route controller (Landing ↔ Dashboard)
+        ├── components/
+        │   ├── Landing.jsx           Marketing landing page
+        │   ├── Dashboard.jsx          Console orchestrator (3 views)
+        │   ├── NodeGraph.jsx          D3 force-directed network graph
+        │   ├── ThreatAnalytics.jsx   Cross-site intelligence panel
+        │   ├── ProfileMap.jsx         Shadow profile orbital radar
+        │   ├── Sidebar.jsx            Navigation & site archive list
+        │   ├── SummaryStats.jsx       Privacy grades & stat cards
+        │   ├── VisitTimeline.jsx      Chronological event log
+        │   ├── TrackerDetailPanel.jsx Decoded payload inspector
+        │   ├── FingerprintPanel.jsx   Fingerprint alert & stack traces
+        │   ├── SettingsModal.jsx      TTL config & blocker toggle
+        │   ├── BrandIcon.jsx          Fin SVG icon component
+        │   ├── BrandLogo.jsx          "expos.ed" wordmark component
+        │   ├── ConnectPrompt.jsx      Extension connection screen
+        │   ├── MobileGate.jsx         Desktop-only gate
+        │   ├── Toast.jsx              Notification system
+        │   └── ThemeProvider.jsx      Theme context
+        ├── hooks/
+        │   ├── useTrackerStore.js    Zustand store (Dexie.js bridge)
+        │   └── useLiveUpdates.js      Extension postMessage receiver
+        ├── db/
+        │   └── schema.js              IndexedDB schema (v1 → v3 migrations)
+        ├── styles/
+        │   └── globals.css            Design system tokens & animations
+        └── utils/
+            ├── archiver.js            Daily archiver & TTL cleanup
+            └── riskColor.js           Risk level color mapping
+```
+
+<br>
 
 ---
 
-## 🛡️ Security & Privacy First
+<br>
 
-expos.ed is built for security analysts, privacy advocates, and educational researchers. It adheres to strict offline-first principles:
+## 🔄 Data Flow
 
-* **Zero Cloud Connectors**: expos.ed does not run remote APIs, server databases, or user accounts. Everything operates on client hardware.
-* **No Telemetry Outbound**: expos.ed never logs usage metrics, crash reports, or exfiltrated domains to its authors or third parties.
-* **Inspectable Data**: Your database is transparent. You can inspect all IndexedDB entries using Chrome Developer Tools (`F12` -> Application -> IndexedDB).
-* **Full Auditability**: The codebase contains zero binaries, minimized wrappers, or unvetted libraries. You can audit every line of JavaScript and CSS.
+<br>
+
+```mermaid
+flowchart LR
+    subgraph EXT["Extension Layer"]
+        A["🌐 Browser Request"] --> B["background.js"]
+        B --> C["trackers.json\n50k+ domains"]
+        B --> D["companies.json\nRisk metadata"]
+        B --> E["CNAME DoH\nresolver"]
+    end
+
+    subgraph BRIDGE["IPC Bridge"]
+        B --> F["chrome.storage.local\nliveBuffer"]
+        B --> G["chrome.tabs\nsendMessage"]
+        G --> H["content.js"]
+        H --> I["window.postMessage"]
+    end
+
+    subgraph DASH["Dashboard Layer"]
+        I --> J["useLiveUpdates\nhook"]
+        J --> K["useTrackerStore\nZustand"]
+        K --> L["Dexie.js\nIndexedDB"]
+        K --> M["React\nComponents"]
+    end
+
+    subgraph VIEWS["Visualization"]
+        M --> N["🕸️ Console\nForce Graph"]
+        M --> O["📊 Analytics\nBipartite Matrix"]
+        M --> P["👤 Profile\nOrbital Radar"]
+    end
+```
+
+<br>
 
 ---
+
+<br>
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these guidelines:
+<br>
 
-1. **Fork** the repository and create your feature branch (`git checkout -b feature/amazing-feature`).
-2. **Format** your code cleanly. Keep components modular and self-documenting.
-3. **Verify** that code compiles without warnings by running `pnpm build` in the `dashboard` folder.
-4. **Submit** a Pull Request describing your changes, testing methodologies, and UI screenshots if applicable.
+1. **Fork** the repository and branch from `main`
+2. **Code** — keep components modular, follow the existing Linear × Raycast design language
+3. **Build** — verify with `cd dashboard && pnpm build` (zero warnings)
+4. **Submit** a Pull Request with description, testing notes, and screenshots
+
+<br>
 
 ---
+
+<br>
 
 ## 📄 License
 
-Exposed is open-source software licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for details.
+Open-source under the **MIT License** — see [LICENSE](./LICENSE) for details.
+
+<br>
 
 ---
 
+<br>
+
 <div align="center">
 
-**"The best time to protect your privacy was yesterday. The second-best time is now."**
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="dashboard/public/favicon.png">
+  <source media="(prefers-color-scheme: light)" srcset="dashboard/public/favicon.png">
+  <img alt="expos.ed" src="dashboard/public/favicon.png" width="28">
+</picture>
 
-[⬆ back to top](#-exposed)
+<br><br>
+
+**expos<!--  -->.ed** — Local-first surveillance intelligence.
+
+<sub>See every tracker. Understand every payload. Trust no cloud.</sub>
+
+<br><br>
+
+[Live Demo](https://exposed-dashboard.vercel.app/) · [Report Issue](https://github.com/Ns81000/Exposed/issues) · [Source Code](https://github.com/Ns81000/Exposed)
 
 </div>
