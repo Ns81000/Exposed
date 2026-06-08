@@ -191,18 +191,19 @@ export default function NodeGraph({ events, onNodeClick }) {
         .attr('stroke-dasharray', '3,6');
     });
 
-    // Links — solid, colored by risk, subtle
+    // Links — smooth curves, colored by risk, subtle
     const linkGroup = graphLayer.append('g');
     const link = linkGroup
-      .selectAll('line')
+      .selectAll('path')
       .data(links)
-      .join('line')
+      .join('path')
+      .attr('fill', 'none')
       .attr('stroke', d => {
         const targetNode = nodes.find(n => n.id === d.target);
         return targetNode ? riskAccent(targetNode.risk) : colors.muted;
       })
-      .attr('stroke-width', 1)
-      .attr('stroke-opacity', 0.2);
+      .attr('stroke-width', 1.5)
+      .attr('stroke-opacity', 0.25);
 
     // Node groups
     const node = graphLayer
@@ -398,11 +399,12 @@ export default function NodeGraph({ events, onNodeClick }) {
     }
 
     // Render initial coordinates immediately
-    link
-      .attr('x1', d => d.source.x)
-      .attr('y1', d => d.source.y)
-      .attr('x2', d => d.target.x)
-      .attr('y2', d => d.target.y);
+    link.attr('d', d => {
+      const dx = d.target.x - d.source.x;
+      const dy = d.target.y - d.source.y;
+      const dr = Math.sqrt(dx * dx + dy * dy) * 1.2; // slight arc curvature
+      return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+    });
 
     node.attr('transform', d => `translate(${d.x},${d.y})`);
 
@@ -437,11 +439,12 @@ export default function NodeGraph({ events, onNodeClick }) {
 
     // Register active tick handler for manual drags
     simulation.on('tick', () => {
-      link
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y);
+      link.attr('d', d => {
+        const dx = d.target.x - d.source.x;
+        const dy = d.target.y - d.source.y;
+        const dr = Math.sqrt(dx * dx + dy * dy) * 1.2;
+        return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+      });
 
       node.attr('transform', d => `translate(${d.x},${d.y})`);
     });

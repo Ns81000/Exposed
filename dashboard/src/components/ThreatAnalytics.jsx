@@ -318,7 +318,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     const margin = { top: 15, right: 20, bottom: 30, left: 50 };
 
     // Sort events chronologically to show event-by-event exfiltration savings
-    const sortedEvents = [...events].sort((a, b) => a.timestamp - b.timestamp);
+    const sortedEvents = [...events].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
     // Map aggregate exfiltration sizes event by event
     let runningExfiltrated = 0;
