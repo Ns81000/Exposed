@@ -174,17 +174,17 @@ export function exportSiteReport(site, visits, events, fingerprints = []) {
   <title>Exposed Report - ${escapeHtml(site.domain)}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --color-bg: #09090b;
-      --color-surface: #18181b;
-      --color-border: #27272a;
-      --color-text: #fafafa;
-      --color-muted: #a1a1aa;
-      --color-accent: #3b82f6;
-      --color-danger: #ef4444;
-      --color-success: #10b981;
+      --color-bg: #07080a;
+      --color-surface: #0e0f12;
+      --color-border: rgba(255, 255, 255, 0.05);
+      --color-text: #f4f3ee;
+      --color-muted: #9a9893;
+      --color-accent: #ff6a00;
+      --color-danger: #ff3344;
+      --color-success: #28cd41;
     }
 
     * { box-sizing: border-box; }
@@ -193,12 +193,12 @@ export function exportSiteReport(site, visits, events, fingerprints = []) {
       padding: 40px 32px;
       background-color: var(--color-bg);
       color: var(--color-text);
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
       line-height: 1.5;
     }
 
     h1, h2, h3, .brand-logo {
-      font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+      font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
       font-weight: 500;
       margin: 0;
     }
@@ -215,7 +215,7 @@ export function exportSiteReport(site, visits, events, fingerprints = []) {
     .brand-logo {
       font-size: 26px;
       font-weight: 700;
-      background: linear-gradient(135deg, #ef4444 0%, #f97316 50%, #3b82f6 100%);
+      background: linear-gradient(135deg, #ff3344 0%, #ff6a00 50%, #ffaa00 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: 0.08em;
@@ -661,17 +661,17 @@ export function exportArchiveReport(archive) {
   <title>Exposed Archive - ${escapeHtml(archive.date)}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --color-bg: #09090b;
-      --color-surface: #18181b;
-      --color-border: #27272a;
-      --color-text: #fafafa;
-      --color-muted: #a1a1aa;
-      --color-accent: #3b82f6;
-      --color-danger: #ef4444;
-      --color-success: #10b981;
+      --color-bg: #07080a;
+      --color-surface: #0e0f12;
+      --color-border: rgba(255, 255, 255, 0.05);
+      --color-text: #f4f3ee;
+      --color-muted: #9a9893;
+      --color-accent: #ff6a00;
+      --color-danger: #ff3344;
+      --color-success: #28cd41;
     }
 
     * { box-sizing: border-box; }
@@ -680,12 +680,12 @@ export function exportArchiveReport(archive) {
       padding: 40px 32px;
       background-color: var(--color-bg);
       color: var(--color-text);
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
       line-height: 1.5;
     }
 
     h1, h2, h3, .brand-logo {
-      font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+      font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
       font-weight: 500;
       margin: 0;
     }
@@ -702,7 +702,7 @@ export function exportArchiveReport(archive) {
     .brand-logo {
       font-size: 26px;
       font-weight: 700;
-      background: linear-gradient(135deg, #ef4444 0%, #f97316 50%, #3b82f6 100%);
+      background: linear-gradient(135deg, #ff3344 0%, #ff6a00 50%, #ffaa00 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: 0.08em;

@@ -20,8 +20,11 @@ function formatRelative(isoTime) {
 
 function riskDot(events) {
   if (!events) return null;
-  const hasHigh = events > 10;
-  const color = hasHigh ? 'var(--color-risk-high)' : 'var(--color-risk-medium)';
+  const color = events > 10
+    ? 'var(--color-risk-high)'
+    : events > 3
+      ? 'var(--color-risk-medium)'
+      : 'var(--color-risk-low)';
   return (
     <span
       className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0"
@@ -63,7 +66,7 @@ export default function Sidebar({
 
       {/* Search */}
       <div className="px-4 py-3 border-b border-border">
-        <div className="flex items-center gap-2 bg-surface-2 border border-border rounded-lg px-2.5 py-1.5 transition-colors duration-150 focus-within:border-accent/50">
+        <div className="flex items-center gap-2 bg-surface-2 border border-border rounded-lg px-2.5 py-1.5 transition-colors duration-150 focus-within:border-accent-solid">
           <Search size={14} className="text-muted flex-shrink-0" />
           <input
             type="text"
@@ -96,7 +99,7 @@ export default function Sidebar({
                 onClick={() => onSelect(site.domain)}
                 className={`w-full text-left px-5 py-3 border-b border-border transition-all duration-150 relative ${
                   isActive
-                    ? 'bg-accent/10 dark:bg-accent/20 text-text'
+                    ? 'bg-accent-soft text-text'
                     : 'text-secondary hover:bg-surface-2'
                 }`}
               >

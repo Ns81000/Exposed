@@ -2,29 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Theme Tokens ─────────────────────────────────────────── */
+/* ── Theme Tokens (Premium Tactical Obsidian) ───────────────── */
 
 :root {
-  /* Dark theme (default) — warm neutrals, single accent */
-  --color-bg: #0C0E12;
-  --color-surface-1: #14161C;
-  --color-surface-2: #1A1D25;
-  --color-surface-3: #22252E;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-hover: rgba(255, 255, 255, 0.16);
-  --color-text: #EAECF0;
-  --color-secondary: #8B8FA3;
-  --color-muted: #4B5064;
-  --color-accent: #38BDF8;
-  --color-accent-hover: #7DD3FC;
-  --color-accent-soft: rgba(56, 189, 248, 0.12);
-  --color-accent-solid: rgba(56, 189, 248, 0.2);
-  --color-risk-high: #F87171;
-  --color-risk-medium: #FBBF24;
-  --color-risk-low: #60A5FA;
-  --color-danger: #F87171;
-  --color-danger-soft: rgba(248, 113, 113, 0.08);
-  --color-success: #34D399;
+  /* Premium Obsidian Dark Theme */
+  --color-bg: #07080a;                  /* Obsidian Jet Black */
+  --color-surface-1: #0e0f12;           /* Deep Carbon Matte */
+  --color-surface-2: #14161b;           /* Medium Graphite */
+  --color-surface-3: #1c1e24;           /* Active Charcoal */
+  --color-border: rgba(255, 255, 255, 0.05); /* Precise, thin dark lines */
+  --color-border-hover: rgba(255, 107, 0, 0.25); /* Accent-tinted hover borders */
+  --color-text: #f4f3ee;                 /* Warm Bone Cream / Paper text */
+  --color-secondary: #9a9893;            /* Muted Sandstone Gray */
+  --color-muted: #54524e;                /* Deep Clay Dust */
+  --color-accent: #ff6a00;               /* Tactical Cyber-Amber */
+  --color-accent-hover: #ff8533;         /* Bright Flight Amber */
+  --color-accent-soft: rgba(255, 106, 0, 0.06); /* Soft amber scanner highlight */
+  --color-accent-solid: rgba(255, 106, 0, 0.16); /* Solid neon sweep overlay */
+  
+  /* Tactical Alert Mapping */
+  --color-risk-high: #ff3344;            /* Surgical Laser Red */
+  --color-risk-medium: #ffaa00;          /* Warning Yellow / Gold */
+  --color-risk-low: #28cd41;             /* Moss Green / Safe Emerald */
+  --color-danger: #ff3344;
+  --color-danger-soft: rgba(255, 51, 68, 0.06);
+  --color-success: #28cd41;
 
   color: var(--color-text);
   background: var(--color-bg);
@@ -33,30 +35,32 @@
 }
 
 [data-theme="light"] {
-  --color-bg: #FAFBFC;
-  --color-surface-1: #FFFFFF;
-  --color-surface-2: #F3F4F6;
-  --color-surface-3: #E5E7EB;
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-hover: rgba(0, 0, 0, 0.16);
-  --color-text: #111827;
-  --color-secondary: #4B5563;
-  --color-muted: #9CA3AF;
-  --color-accent: #0284C7;
-  --color-accent-hover: #0369A1;
-  --color-accent-soft: rgba(2, 132, 199, 0.08);
-  --color-accent-solid: rgba(2, 132, 199, 0.15);
-  --color-risk-high: #DC2626;
-  --color-risk-medium: #D97706;
-  --color-risk-low: #2563EB;
-  --color-danger: #DC2626;
-  --color-danger-soft: rgba(220, 38, 38, 0.06);
-  --color-success: #059669;
+  /* Premium Vintage Ivory Theme (Leica & Manual Aesthetic) */
+  --color-bg: #faf9f6;                  /* Soft Antique Ivory Paper */
+  --color-surface-1: #ffffff;           /* Pure White Surface */
+  --color-surface-2: #f1efea;           /* Light Clay Sandstone */
+  --color-surface-3: #e6e3db;           /* Structured Sandstone */
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-border-hover: rgba(230, 81, 0, 0.3);
+  --color-text: #181816;                 /* Warm Charcoal Ink */
+  --color-secondary: #585550;            /* Warm Slate */
+  --color-muted: #949089;                /* Soft Graphite */
+  --color-accent: #e65100;               /* Burned Amber */
+  --color-accent-hover: #bf360c;         /* Rust Orange */
+  --color-accent-soft: rgba(230, 81, 0, 0.05);
+  --color-accent-solid: rgba(230, 81, 0, 0.12);
+  
+  --color-risk-high: #c62828;
+  --color-risk-medium: #ef6c00;
+  --color-risk-low: #2e7d32;
+  --color-danger: #c62828;
+  --color-danger-soft: rgba(198, 40, 40, 0.04);
+  --color-success: #2e7d32;
 
   color-scheme: light;
 }
 
-/* ── Base Resets ──────────────────────────────────────────── */
+/* ── Base Resets & Global Visuals ─────────────────────────── */
 
 * {
   box-sizing: border-box;
@@ -68,6 +72,7 @@ body,
   margin: 0;
   min-height: 100%;
   background: var(--color-bg);
+  scroll-behavior: smooth;
 }
 
 body {
@@ -78,7 +83,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Theme Transition ────────────────────────────────────── */
+/* ── Custom Theme Transition ─────────────────────────────── */
 
 html.transitioning,
 html.transitioning *,
@@ -96,7 +101,8 @@ html.transitioning *::after {
 }
 
 .scrollbar::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
+  height: 5px;
 }
 
 .scrollbar::-webkit-scrollbar-track {
@@ -105,100 +111,110 @@ html.transitioning *::after {
 
 .scrollbar::-webkit-scrollbar-thumb {
   background: var(--color-surface-3);
-  border-radius: 2px;
+  border-radius: 3px;
 }
 
-/* ── Section Label ───────────────────────────────────────── */
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
+/* ── Section Label (Monospace detailing) ──────────────────── */
 
 .section-label {
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  font-size: 10px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-muted);
   font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 /* ── Animations ──────────────────────────────────────────── */
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(10px); }
+  from { opacity: 0; transform: translateX(8px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes slide-in-left {
-  from { opacity: 0; transform: translateX(-10px); }
+  from { opacity: 0; transform: translateX(-8px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.97); }
+  from { opacity: 0; transform: scale(0.98); }
   to { opacity: 1; transform: scale(1); }
 }
 
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.92); }
 }
 
 @keyframes toast-in {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes toast-out {
   from { opacity: 1; transform: translateY(0) scale(1); }
-  to { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 0; transform: translateY(5px) scale(0.98); }
+}
+
+@keyframes radar-sweep {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
 }
 
 .animate-fade-in {
-  animation: fade-in 300ms ease-out both;
+  animation: fade-in 250ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-fade-in-up {
-  animation: fade-in-up 400ms ease-out both;
+  animation: fade-in-up 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-slide-in-right {
-  animation: slide-in-right 250ms ease-out both;
+  animation: slide-in-right 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-slide-in-left {
-  animation: slide-in-left 250ms ease-out both;
+  animation: slide-in-left 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-scale-in {
-  animation: scale-in 200ms ease-out both;
+  animation: scale-in 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* ── Stagger Delays ──────────────────────────────────────── */
 
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-500 { animation-delay: 500ms; }
-.delay-600 { animation-delay: 600ms; }
-.delay-700 { animation-delay: 700ms; }
-.delay-800 { animation-delay: 800ms; }
+.delay-100 { animation-delay: 80ms; }
+.delay-200 { animation-delay: 150ms; }
+.delay-300 { animation-delay: 220ms; }
+.delay-400 { animation-delay: 280ms; }
+.delay-500 { animation-delay: 350ms; }
+.delay-600 { animation-delay: 420ms; }
+.delay-700 { animation-delay: 480ms; }
+.delay-800 { animation-delay: 550ms; }
 
-/* ── Focus Styles ────────────────────────────────────────── */
+/* ── Focus Styles (Strict accessibility focus ring) ───────── */
 
 :focus-visible {
   outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+  outline-offset: 1px;
 }
 
-/* ── Button Base ─────────────────────────────────────────── */
+/* ── Button Base (Industrial Tactile Feel) ───────────────── */
 
 .btn {
   display: inline-flex;
@@ -206,29 +222,30 @@ html.transitioning *::after {
   gap: 6px;
   border: 1px solid var(--color-border);
   background: var(--color-surface-1);
-  padding: 7px 14px;
-  font-size: 13px;
+  padding: 8px 15px;
+  font-size: 12.5px;
   font-weight: 500;
   color: var(--color-secondary);
   cursor: pointer;
-  border-radius: 8px;
-  transition: all 150ms ease;
+  border-radius: 6px;
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
   font-family: inherit;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .btn:hover {
-  border-color: var(--color-border-hover);
+  border-color: var(--color-accent-solid);
   color: var(--color-text);
   background: var(--color-surface-2);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.25);
 }
 
 .btn:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .btn:disabled {
-  opacity: 0.4;
+  opacity: 0.38;
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -240,111 +257,116 @@ html.transitioning *::after {
 }
 
 .btn-danger:hover {
-  background: rgba(248, 113, 113, 0.14);
+  background: rgba(255, 51, 68, 0.12);
   border-color: var(--color-danger);
-  color: var(--color-danger);
+  color: var(--color-text);
 }
 
 [data-theme="light"] .btn-danger {
-  background: rgba(220, 38, 38, 0.06);
+  background: rgba(198, 40, 40, 0.05);
 }
 
 [data-theme="light"] .btn-danger:hover {
-  background: rgba(220, 38, 38, 0.12);
+  background: rgba(198, 40, 40, 0.1);
 }
 
 .btn-accent {
   background: var(--color-accent);
-  color: #FFFFFF;
+  color: #000000;
+  font-weight: 600;
   border: 1px solid transparent;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .btn-accent:hover {
   background: var(--color-accent-hover);
   border-color: transparent;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 4px 12px rgba(56, 189, 248, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 14px rgba(255, 106, 0, 0.3);
 }
 
 [data-theme="light"] .btn-accent {
+  color: #ffffff;
   border: 1px solid transparent;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .btn-accent:hover {
   background: var(--color-accent-hover);
   border-color: transparent;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 12px rgba(2, 132, 199, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 12px rgba(230, 81, 0, 0.25);
 }
 
-.btn-accent:active {
-  transform: scale(0.97);
-}
-
-/* ── Overlay / Modal backdrop ────────────────────────────── */
+/* ── Overlay / Modal backdrop (Scrim opacity parity) ──────── */
 
 .overlay-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  background: rgba(4, 5, 7, 0.8);
+  backdrop-filter: blur(12px);
   z-index: 50;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fade-in 150ms ease-out;
+  animation: fade-in 200ms ease-out;
 }
 
 [data-theme="light"] .overlay-backdrop {
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(24, 24, 22, 0.35);
   backdrop-filter: blur(8px);
 }
 
-/* ── Panel System ────────────────────────────────────────── */
+/* ── Panel System (Tactile, corner-shadow depth) ──────────── */
 
-.panel {
+.panel, .acrylic-panel {
   background: var(--color-surface-1);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+  position: relative;
 }
 
-.panel:hover {
+/* Add a clean, precise, subtle top highlight line */
+.panel::after, .acrylic-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+  pointer-events: none;
+}
+
+[data-theme="light"] .panel::after, [data-theme="light"] .acrylic-panel::after {
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.02), transparent);
+}
+
+.panel:hover, .acrylic-panel:hover {
   border-color: var(--color-border-hover);
+  box-shadow: 0 6px 28px -2px rgba(0, 0, 0, 0.5);
 }
 
 .panel-interactive:hover {
   border-color: var(--color-border-hover);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 32px -4px rgba(255, 106, 0, 0.12);
+  transform: translateY(-1px);
 }
 
-[data-theme="light"] .panel {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+[data-theme="light"] .panel, [data-theme="light"] .acrylic-panel {
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .panel:hover, [data-theme="light"] .acrylic-panel:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.06);
 }
 
 [data-theme="light"] .panel-interactive:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 24px -4px rgba(230, 81, 0, 0.08);
 }
 
-/* Legacy: keep acrylic-panel as alias for panel during migration */
-.acrylic-panel {
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  transition: border-color 150ms ease, box-shadow 150ms ease;
-}
-
-[data-theme="light"] .acrylic-panel {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-
-.acrylic-panel:hover {
-  border-color: var(--color-border-hover);
-}
-
-/* ── Subtle Background for Landing ───────────────────────── */
+/* ── Tactical Backgrounds (Out-of-the-box experience) ─────── */
 
 .mesh-bg {
   position: absolute;
@@ -357,68 +379,77 @@ html.transitioning *::after {
   background: var(--color-bg);
 }
 
+/* Radar scanning dot pattern */
 .mesh-bg::before {
   content: '';
   position: absolute;
-  top: -20%;
-  right: -10%;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
-  opacity: 0.04;
-  filter: blur(80px);
+  inset: 0;
+  background-image: radial-gradient(var(--color-accent-soft) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.18;
+  mask-image: radial-gradient(circle at 50% 50%, black 50%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, black 50%, transparent 100%);
 }
 
+/* Horizontal scan line */
 .mesh-bg::after {
   content: '';
   position: absolute;
-  bottom: -15%;
-  left: -10%;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--color-success) 0%, transparent 70%);
-  opacity: 0.03;
-  filter: blur(80px);
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  opacity: 0.04;
+  animation: radar-sweep 10s linear infinite;
+  pointer-events: none;
 }
 
 [data-theme="light"] .mesh-bg::before {
-  opacity: 0.06;
+  opacity: 0.1;
+  background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
 }
 
 [data-theme="light"] .mesh-bg::after {
-  opacity: 0.04;
+  opacity: 0.02;
 }
 
 /* ── Dot Grid Background ────────────────────────────────── */
 
 .dot-grid-bg {
   background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-size: 20px 20px;
+  opacity: 0.8;
 }
 
 /* ── Typography & Display overrides ──────────────────────── */
 
 h1, h2, h3, .font-display {
   font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+  letter-spacing: -0.015em;
+  color: var(--color-text);
 }
 
-/* ── Stat Card ───────────────────────────────────────────── */
+/* ── Stat Card (Tactical panel overlay) ───────────────────── */
 
 .stat-card {
   background: var(--color-surface-1);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  transition: border-color 150ms ease;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.3);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
 }
 
 .stat-card:hover {
   border-color: var(--color-border-hover);
+  box-shadow: 0 4px 24px -2px rgba(255, 106, 0, 0.06);
 }
 
 [data-theme="light"] .stat-card {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .stat-card:hover {
+  box-shadow: 0 4px 16px -2px rgba(230, 81, 0, 0.04);
 }

@@ -60,6 +60,7 @@ export default function NodeGraph({ events, onNodeClick }) {
   const containerRef = useRef(null);
   const tooltipRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const prevStructureRef = useRef('');
 
   useEffect(() => {
@@ -71,6 +72,23 @@ export default function NodeGraph({ events, onNodeClick }) {
     return () => {
       document.removeEventListener('fullscreenchange', onFullscreenChange);
     };
+  }, []);
+
+  // ResizeObserver to track container dimension updates dynamically
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setDimensions({
+          width: entry.contentRect.width || ref.current.clientWidth,
+          height: entry.contentRect.height || ref.current.clientHeight
+        });
+      }
+    });
+
+    resizeObserver.observe(ref.current);
+    return () => resizeObserver.disconnect();
   }, []);
 
   const drawGraph = useCallback(() => {
@@ -87,8 +105,8 @@ export default function NodeGraph({ events, onNodeClick }) {
 
     const colors = getThemeColors();
     const element = ref.current;
-    const width = element.clientWidth || 900;
-    const height = element.clientHeight || 360;
+    const width = dimensions.width || element.clientWidth || 900;
+    const height = dimensions.height || element.clientHeight || 360;
 
     const counts = {};
     events.forEach((event) => {
@@ -126,22 +144,26 @@ export default function NodeGraph({ events, onNodeClick }) {
 
     const graphLayer = svg.append('g');
 
-    svg.call(
-      d3.zoom().scaleExtent([0.3, 3]).on('zoom', (event) => {
+    // Setup zoom behavior and reset to identity to guarantee centering on site switch
+    const zoomBehavior = d3.zoom()
+      .scaleExtent([0.3, 3])
+      .on('zoom', (event) => {
         graphLayer.attr('transform', event.transform);
-      })
-    );
+      });
+
+    svg.call(zoomBehavior);
+    svg.call(zoomBehavior.transform, d3.zoomIdentity);
 
     // Dot grid pattern
     const defs = svg.append('defs');
     const pattern = defs.append('pattern')
       .attr('id', 'dot-grid')
       .attr('patternUnits', 'userSpaceOnUse')
-      .attr('width', 24)
-      .attr('height', 24);
+      .attr('width', 20)
+      .attr('height', 20);
     pattern.append('circle')
-      .attr('cx', 12)
-      .attr('cy', 12)
+      .attr('cx', 10)
+      .attr('cy', 10)
       .attr('r', 0.8)
       .attr('fill', colors.border);
 
@@ -331,6 +353,21 @@ export default function NodeGraph({ events, onNodeClick }) {
         }
       });
 
+    // Pin center site node permanently at center of viewport coordinates
+    const siteNode = nodes.find((n) => n.id === 'site');
+    if (siteNode) {
+      siteNode.fx = cx;
+      siteNode.fy = cy;
+    }
+
+    // Pre-initialize remaining nodes slightly offset from center to prevent initial clustering glitches
+    nodes.forEach((n) => {
+      if (n.id !== 'site') {
+        if (n.x === undefined) n.x = cx + (Math.random() - 0.5) * 40;
+        if (n.y === undefined) n.y = cy + (Math.random() - 0.5) * 40;
+      }
+    });
+
     // Force simulation with concentric ring constraints
     const simulation = d3
       .forceSimulation(nodes)
@@ -358,7 +395,7 @@ export default function NodeGraph({ events, onNodeClick }) {
     });
 
     return () => simulation.stop();
-  }, [events, onNodeClick, isFullscreen]);
+  }, [events, onNodeClick, isFullscreen, dimensions]);
 
   useEffect(() => {
     const cleanup = drawGraph();

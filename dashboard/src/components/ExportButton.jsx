@@ -14,7 +14,7 @@ export default function ExportButton({ site, visits, events, fingerprints }) {
     <button
       type="button"
       onClick={handleExport}
-      className="btn border-accent/30 text-accent hover:bg-accent-soft hover:border-accent/50"
+      className="btn border-accent-solid text-accent hover:bg-accent-soft hover:border-accent"
       disabled={!site || !events.length}
       title={!site || !events.length ? 'Select a site with tracker data to export' : 'Export site report'}
     >
