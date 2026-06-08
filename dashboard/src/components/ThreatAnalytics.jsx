@@ -705,11 +705,13 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
 
                   {/* Examples/Keys found */}
                   {row.keys.length > 0 && (
-                    <div className="flex items-center gap-1.5 flex-wrap pt-1">
-                      <span className="text-[9px] font-mono text-muted uppercase tracking-wider mr-1">Captured Keys:</span>
-                      {row.keys.map(k => (
-                        <code key={k} className="font-mono text-[10px] bg-surface-3 px-1.5 py-0.5 rounded text-secondary border border-border select-all">{k}</code>
-                      ))}
+                    <div className="flex items-center gap-1.5 pt-1 w-full overflow-hidden">
+                      <span className="text-[9px] font-mono text-muted uppercase tracking-wider mr-1 flex-shrink-0">Captured Keys:</span>
+                      <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5 flex-1 select-none flex-nowrap">
+                        {row.keys.map(k => (
+                          <code key={k} className="font-mono text-[10px] bg-surface-3 px-1.5 py-0.5 rounded text-secondary border border-border select-all whitespace-nowrap flex-shrink-0">{k}</code>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>

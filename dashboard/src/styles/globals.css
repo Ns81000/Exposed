@@ -118,6 +118,15 @@ html.transitioning *::after {
   background: var(--color-muted);
 }
 
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── Section Label (Monospace detailing) ──────────────────── */
 
 .section-label {
