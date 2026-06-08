@@ -19,30 +19,34 @@ export default function SettingsModal({ open, onClose, ttl, onTTLChange, onDelet
   return (
     <div className="overlay-backdrop" onClick={onClose}>
       <div
-        className="w-full max-w-lg border border-border bg-surface animate-scale-in"
+        className="w-full max-w-lg acrylic-panel bg-surface-1 animate-scale-in overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-          <p className="text-[15px] font-medium text-text">Settings</p>
-          <button type="button" className="text-muted hover:text-text transition-colors" onClick={onClose}>
-            <X size={18} />
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <p className="text-[16px] font-display font-semibold text-text">Settings</p>
+          <button
+            type="button"
+            className="w-7 h-7 flex items-center justify-center rounded-lg border border-border hover:bg-surface-2 text-muted hover:text-text transition-all"
+            onClick={onClose}
+          >
+            <X size={15} />
           </button>
         </div>
 
-        <div className="p-5 space-y-6">
+        <div className="p-6 space-y-6">
           {/* Session Retention */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <Clock size={14} className="text-muted" />
-              <p className="section-label">Session Retention</p>
+              <Clock size={14} className="text-accent" />
+              <p className="section-label text-text">Session Retention</p>
             </div>
-            <p className="text-[12px] text-muted">
+            <p className="text-[12px] text-secondary leading-relaxed">
               Controls how long tracker data is kept before automatic cleanup. Applies to all sites.
             </p>
             <select
               value={String(ttl)}
               onChange={(e) => onTTLChange(Number(e.target.value))}
-              className="w-full bg-raised border border-border px-3 py-2 text-[13px] text-secondary focus:outline-none focus:border-muted rounded-none"
+              className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2.5 text-[13px] text-text focus:outline-none focus:border-accent/50 font-sans transition-colors cursor-pointer"
             >
               <option value="1">1 day</option>
               <option value="3">3 days</option>
@@ -56,12 +60,12 @@ export default function SettingsModal({ open, onClose, ttl, onTTLChange, onDelet
           {/* Tracker Blocker Shield */}
           <div className="border-t border-border pt-5 space-y-3">
             <div className="flex items-center justify-between">
-              <div className="space-y-1.5 flex-1 pr-4">
+              <div className="space-y-1 flex-1 pr-4">
                 <div className="flex items-center gap-2">
-                  <ShieldAlert size={14} className="text-muted" />
-                  <p className="section-label">Tracker Blocking Shield</p>
+                  <ShieldAlert size={14} className="text-accent" />
+                  <p className="section-label text-text">Tracker Blocking Shield</p>
                 </div>
-                <p className="text-[12px] text-muted">
+                <p className="text-[12px] text-secondary leading-relaxed">
                   Actively block identified surveillance networks in real-time. Telemetry will still log blocked attempts.
                 </p>
               </div>
@@ -70,10 +74,18 @@ export default function SettingsModal({ open, onClose, ttl, onTTLChange, onDelet
                 role="switch"
                 aria-checked={blockingEnabled}
                 onClick={() => onBlockingToggle(!blockingEnabled)}
-                className={`w-9 h-5 rounded-full p-[2px] transition-colors duration-150 focus:outline-none border border-border flex items-center ${blockingEnabled ? 'bg-accent border-accent' : 'bg-raised border-border'}`}
+                className={`w-10 h-[22px] rounded-full p-[2px] transition-all duration-200 focus:outline-none border flex items-center ${
+                  blockingEnabled
+                    ? 'bg-accent border-accent'
+                    : 'bg-surface-3 border-border'
+                }`}
                 title={blockingEnabled ? 'Disable Blocker' : 'Enable Blocker'}
               >
-                <div className={`w-3.5 h-3.5 rounded-full bg-text transition-transform duration-150 ${blockingEnabled ? 'translate-x-4 bg-bg' : 'translate-x-0 bg-muted'}`} />
+                <div
+                  className={`w-4 h-4 rounded-full bg-white transition-transform duration-200 shadow-sm ${
+                    blockingEnabled ? 'translate-x-[18px]' : 'translate-x-0'
+                  }`}
+                />
               </button>
             </div>
           </div>
@@ -82,38 +94,38 @@ export default function SettingsModal({ open, onClose, ttl, onTTLChange, onDelet
           <div className="border-t border-border pt-5 space-y-3">
             <div className="flex items-center gap-2">
               <Trash2 size={14} className="text-danger" />
-              <p className="section-label" style={{ color: 'var(--color-danger)' }}>Danger Zone</p>
+              <p className="section-label text-danger">Danger Zone</p>
             </div>
-            <p className="text-[12px] text-muted">
+            <p className="text-[12px] text-secondary leading-relaxed">
               Permanently removes all current sessions and archived history from this browser. This cannot be undone.
             </p>
             <button
               type="button"
               onClick={onDeleteAll}
               disabled={deletingAll}
-              className="btn btn-danger w-full justify-center"
+              className="btn btn-danger w-full justify-center py-2.5 rounded-lg"
             >
-              <Trash2 size={14} />
+              <Trash2 size={14} className="mr-1" />
               {deletingAll ? 'Deleting...' : 'Delete All Tracking Data'}
             </button>
           </div>
 
           {/* About */}
-          <div className="border-t border-border pt-5 space-y-2">
-            <div className="flex items-center gap-2">
-              <Info size={14} className="text-muted" />
-              <p className="section-label">About</p>
+          <div className="border-t border-border pt-5 space-y-2 text-[11px] text-secondary">
+            <div className="flex items-center gap-2 mb-1.5">
+              <Info size={13} className="text-muted" />
+              <p className="section-label text-text">About</p>
             </div>
-            <p className="text-[12px] text-muted">
+            <p className="leading-relaxed">
               Exposed v1.0.0 — Local-first surveillance intelligence. All data stays in your browser.
             </p>
-            <p className="text-[12px] text-muted">
-              Current theme: <span className="text-secondary capitalize">{theme}</span>
-            </p>
+            <div className="flex items-center justify-between text-muted mt-2 text-[10px]">
+              <span>Theme: <span className="capitalize text-secondary font-medium">{theme}</span></span>
+              <span>Local IndexedDB</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
-

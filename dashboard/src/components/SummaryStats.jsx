@@ -7,7 +7,6 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
     const blocked = events.filter((e) => e.blocked).length;
     const blockedPct = total > 0 ? Math.round((blocked / total) * 100) : 0;
     
-    // Score logic: starts at 100, drops for each tracker (less penalty if blocked), drops heavily for active fingerprinting
     let score = 100;
     let bytesExfiltrated = 0;
     let bytesSaved = 0;
@@ -17,12 +16,12 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
       if (e.blocked) {
         if (e.risk === 'high') score -= 3;
         else if (e.risk === 'medium') score -= 1;
-        bytesSaved += 12 * 1024; // Estimate 12KB saved per blocked request
+        bytesSaved += 12 * 1024;
       } else {
         if (e.risk === 'high') score -= 15;
         else if (e.risk === 'medium') score -= 5;
         else score -= 2;
-        bytesExfiltrated += size > 0 ? size : (8 * 1024); // Estimate 8KB baseline if size is 0
+        bytesExfiltrated += size > 0 ? size : (8 * 1024);
       }
     });
 
@@ -33,19 +32,19 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
     score = Math.max(0, Math.min(100, score));
 
     let grade = 'A';
-    let gradeColor = '#10b981'; // Green
+    let gradeColor = 'var(--color-success)';
     if (score < 55) {
       grade = 'F';
-      gradeColor = '#ef4444'; // Red
+      gradeColor = 'var(--color-risk-high)';
     } else if (score < 70) {
       grade = 'D';
-      gradeColor = '#f97316'; // Orange
+      gradeColor = 'var(--color-risk-medium)';
     } else if (score < 80) {
       grade = 'C';
-      gradeColor = '#f59e0b'; // Amber
+      gradeColor = 'var(--color-risk-medium)';
     } else if (score < 90) {
       grade = 'B';
-      gradeColor = '#3b82f6'; // Blue
+      gradeColor = 'var(--color-accent)';
     }
 
     const formatBytes = (bytes) => {
@@ -69,56 +68,72 @@ export default function SummaryStats({ events = [], fingerprints = [] }) {
     };
   }, [events, fingerprints]);
 
-  const cards = [
-    { 
-      label: 'Privacy Grade', 
-      value: stats.grade, 
-      icon: Shield, 
-      color: stats.gradeColor, 
-      subtext: `Safety Score: ${stats.score}/100` 
-    },
-    { 
-      label: 'Total Trackers', 
-      value: stats.total, 
-      icon: Tag, 
-      color: 'var(--color-accent)', 
-      subtext: `${stats.total - stats.blocked} allowed · ${stats.exfiltratedStr} load` 
-    },
-    { 
-      label: 'Blocked Shield', 
-      value: `${stats.blockedPct}%`, 
-      icon: ShieldAlert, 
-      color: stats.blocked > 0 ? '#10b981' : 'var(--color-border)', 
-      subtext: `${stats.blocked} blocked · ${stats.savedStr} saved` 
-    },
-    { 
-      label: 'Fingerprints', 
-      value: stats.fingerprintsCount, 
-      icon: AlertTriangle, 
-      color: stats.fingerprintsCount > 0 ? '#ef4444' : 'var(--color-border)', 
-      subtext: stats.fingerprintsCount > 0 ? 'Active profiling detected' : 'No profiling detected' 
-    }
-  ];
-
   return (
-    <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-      {cards.map((card, i) => (
-        <div
-          key={card.label}
-          className="border border-border bg-surface px-4 py-3 animate-fade-in flex flex-col justify-between"
-          style={{ animationDelay: `${i * 80}ms` }}
-        >
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <card.icon size={14} style={{ color: card.color }} strokeWidth={2} />
-              <p className="section-label">{card.label}</p>
-            </div>
-            <p className="text-[26px] font-medium text-text leading-none">{card.value}</p>
-          </div>
-          <p className="text-[10px] text-muted mt-2 tracking-wide uppercase">{card.subtext}</p>
+    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+      {/* Privacy Grade — hero card */}
+      <div
+        className="stat-card animate-fade-in flex flex-col justify-between"
+        style={{ animationDelay: '0ms' }}
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <Shield size={14} style={{ color: stats.gradeColor }} />
+          <p className="section-label text-[10px] tracking-wider">Privacy Grade</p>
         </div>
-      ))}
+        <div className="flex items-baseline gap-2">
+          <p
+            className="text-[40px] font-display font-bold leading-none tracking-tight"
+            style={{ color: stats.gradeColor }}
+          >
+            {stats.grade}
+          </p>
+          <span className="text-[13px] text-muted font-medium tabular-nums">{stats.score}/100</span>
+        </div>
+      </div>
+
+      {/* Total Trackers */}
+      <div
+        className="stat-card animate-fade-in flex flex-col justify-between"
+        style={{ animationDelay: '60ms' }}
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <Tag size={14} className="text-accent" />
+          <p className="section-label text-[10px] tracking-wider">Total Trackers</p>
+        </div>
+        <div>
+          <p className="text-[28px] font-display font-bold text-text leading-none tracking-tight tabular-nums">{stats.total}</p>
+          <p className="text-[11px] text-muted mt-2">{stats.total - stats.blocked} allowed · {stats.exfiltratedStr} load</p>
+        </div>
+      </div>
+
+      {/* Blocked Shield */}
+      <div
+        className="stat-card animate-fade-in flex flex-col justify-between"
+        style={{ animationDelay: '120ms' }}
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <ShieldAlert size={14} style={{ color: stats.blocked > 0 ? 'var(--color-success)' : 'var(--color-muted)' }} />
+          <p className="section-label text-[10px] tracking-wider">Blocked Shield</p>
+        </div>
+        <div>
+          <p className="text-[28px] font-display font-bold text-text leading-none tracking-tight tabular-nums">{stats.blockedPct}%</p>
+          <p className="text-[11px] text-muted mt-2">{stats.blocked} blocked · {stats.savedStr} saved</p>
+        </div>
+      </div>
+
+      {/* Fingerprints */}
+      <div
+        className="stat-card animate-fade-in flex flex-col justify-between"
+        style={{ animationDelay: '180ms' }}
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <AlertTriangle size={14} style={{ color: stats.fingerprintsCount > 0 ? 'var(--color-risk-high)' : 'var(--color-muted)' }} />
+          <p className="section-label text-[10px] tracking-wider">Fingerprints</p>
+        </div>
+        <div>
+          <p className="text-[28px] font-display font-bold text-text leading-none tracking-tight tabular-nums">{stats.fingerprintsCount}</p>
+          <p className="text-[11px] text-muted mt-2">{stats.fingerprintsCount > 0 ? 'Active profiling detected' : 'No profiling detected'}</p>
+        </div>
+      </div>
     </div>
   );
 }
-

@@ -7,12 +7,17 @@ function getThemeColors() {
   const style = getComputedStyle(document.documentElement);
   return {
     bg: style.getPropertyValue('--color-bg').trim(),
+    surface1: style.getPropertyValue('--color-surface-1').trim(),
+    surface2: style.getPropertyValue('--color-surface-2').trim(),
     border: style.getPropertyValue('--color-border').trim(),
     text: style.getPropertyValue('--color-text').trim(),
     muted: style.getPropertyValue('--color-muted').trim(),
-    surface: style.getPropertyValue('--color-surface').trim()
+    accent: style.getPropertyValue('--color-accent').trim(),
+    secondary: style.getPropertyValue('--color-secondary').trim()
   };
 }
+
+const RISK_RING = { high: 1, medium: 2, low: 3 };
 
 function buildGraph(events) {
   const counts = {};
@@ -30,7 +35,7 @@ function buildGraph(events) {
 
   const siteDomain = events[0]?.siteDomain || 'site';
   const nodes = [
-    { id: 'site', label: siteDomain, type: 'site', radius: 12 },
+    { id: 'site', label: siteDomain, type: 'site', radius: 22 },
     ...Object.entries(counts).map(([company, value]) => ({
       id: company,
       label: company,
@@ -38,7 +43,8 @@ function buildGraph(events) {
       risk: value.risk,
       category: value.category,
       count: value.count,
-      radius: Math.max(8, Math.min(28, 8 + value.count * 2))
+      ring: RISK_RING[value.risk] || 3,
+      radius: Math.max(7, Math.min(22, 7 + value.count * 1.5))
     }))
   ];
 
@@ -52,6 +58,7 @@ function buildGraph(events) {
 export default function NodeGraph({ events, onNodeClick }) {
   const ref = useRef(null);
   const containerRef = useRef(null);
+  const tooltipRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const prevStructureRef = useRef('');
 
@@ -70,6 +77,7 @@ export default function NodeGraph({ events, onNodeClick }) {
     if (!ref.current) return;
 
     const svg = d3.select(ref.current);
+    const tooltip = d3.select(tooltipRef.current);
 
     if (events.length === 0) {
       svg.selectAll('*').remove();
@@ -82,7 +90,6 @@ export default function NodeGraph({ events, onNodeClick }) {
     const width = element.clientWidth || 900;
     const height = element.clientHeight || 360;
 
-    // Build unique tracking company counts to detect structural changes
     const counts = {};
     events.forEach((event) => {
       if (!counts[event.company]) {
@@ -98,7 +105,7 @@ export default function NodeGraph({ events, onNodeClick }) {
     const sortedCompanies = Object.keys(counts).sort();
     const serializedStructure = JSON.stringify({
       siteDomain,
-      colors,
+      bg: colors.bg,
       width,
       height,
       trackers: sortedCompanies.map(company => ({
@@ -116,6 +123,7 @@ export default function NodeGraph({ events, onNodeClick }) {
     svg.selectAll('*').remove();
 
     const { nodes, links } = buildGraph(events);
+
     const graphLayer = svg.append('g');
 
     svg.call(
@@ -124,43 +132,63 @@ export default function NodeGraph({ events, onNodeClick }) {
       })
     );
 
-    const link = graphLayer
-      .append('g')
+    // Dot grid pattern
+    const defs = svg.append('defs');
+    const pattern = defs.append('pattern')
+      .attr('id', 'dot-grid')
+      .attr('patternUnits', 'userSpaceOnUse')
+      .attr('width', 24)
+      .attr('height', 24);
+    pattern.append('circle')
+      .attr('cx', 12)
+      .attr('cy', 12)
+      .attr('r', 0.8)
+      .attr('fill', colors.border);
+
+    svg.insert('rect', ':first-child')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('fill', `url(#dot-grid)`);
+
+    // Concentric ring guides (subtle)
+    const cx = width / 2;
+    const cy = height / 2;
+    const minDim = Math.min(width, height);
+    const ringRadii = [minDim * 0.18, minDim * 0.32, minDim * 0.44];
+
+    const ringGroup = graphLayer.append('g').attr('class', 'ring-guides');
+    ringRadii.forEach((r) => {
+      ringGroup.append('circle')
+        .attr('cx', cx)
+        .attr('cy', cy)
+        .attr('r', r)
+        .attr('fill', 'none')
+        .attr('stroke', colors.border)
+        .attr('stroke-width', 0.5)
+        .attr('stroke-dasharray', '3,6');
+    });
+
+    // Links — solid, colored by risk, subtle
+    const linkGroup = graphLayer.append('g');
+    const link = linkGroup
       .selectAll('line')
       .data(links)
       .join('line')
-      .attr('stroke', colors.border)
+      .attr('stroke', d => {
+        const targetNode = nodes.find(n => n.id === d.target);
+        return targetNode ? riskAccent(targetNode.risk) : colors.muted;
+      })
       .attr('stroke-width', 1)
-      .attr('stroke-opacity', 0.6);
+      .attr('stroke-opacity', 0.2);
 
+    // Node groups
     const node = graphLayer
       .append('g')
-      .selectAll('circle')
+      .selectAll('g.node')
       .data(nodes)
-      .join('circle')
-      .attr('r', (d) => d.radius)
-      .attr('fill', (d) => (d.type === 'site' ? colors.text : riskAccent(d.risk)))
-      .attr('fill-opacity', (d) => (d.type === 'site' ? 1 : 0.6))
-      .attr('stroke', colors.border)
-      .attr('stroke-width', (d) => (d.type === 'site' ? 0 : 1))
+      .join('g')
+      .attr('class', 'node')
       .style('cursor', 'pointer')
-      .on('mouseenter', function onMouseEnter(_, datum) {
-        d3.select(this).attr('stroke', colors.text).attr('stroke-width', 2);
-        link.attr('stroke-opacity', (edge) =>
-          edge.source.id === datum.id || edge.target.id === datum.id ? 1 : 0.15
-        );
-      })
-      .on('mouseleave', function onMouseLeave(_, datum) {
-        d3.select(this)
-          .attr('stroke', datum.type === 'site' ? 'none' : colors.border)
-          .attr('stroke-width', datum.type === 'site' ? 0 : 1);
-        link.attr('stroke-opacity', 0.6);
-      })
-      .on('click', (_, datum) => {
-        if (datum.type === 'tracker') {
-          onNodeClick(datum);
-        }
-      })
       .call(
         d3
           .drag()
@@ -180,48 +208,153 @@ export default function NodeGraph({ events, onNodeClick }) {
           })
       );
 
-    const label = graphLayer
-      .append('g')
-      .selectAll('text')
-      .data(nodes)
-      .join('text')
-      .text((d) => d.label)
-      .attr('font-size', 11)
-      .attr('fill', colors.muted)
+    // Node circles — flat fill, subtle stroke
+    node.append('circle')
+      .attr('r', d => d.radius)
+      .attr('fill', d => {
+        if (d.type === 'site') return colors.accent;
+        const color = riskAccent(d.risk);
+        return color;
+      })
+      .attr('fill-opacity', d => d.type === 'site' ? 1 : 0.75)
+      .attr('stroke', d => {
+        if (d.type === 'site') return colors.accent;
+        return riskAccent(d.risk);
+      })
+      .attr('stroke-opacity', 0.3)
+      .attr('stroke-width', 1);
+
+    // Site node label
+    node.filter(d => d.type === 'site')
+      .append('text')
       .attr('text-anchor', 'middle')
+      .attr('dy', '0.35em')
+      .attr('font-size', '9px')
+      .attr('font-family', 'Outfit, sans-serif')
+      .attr('font-weight', '600')
+      .attr('fill', '#FFFFFF')
       .style('pointer-events', 'none')
-      .style('opacity', 0);
+      .text(d => {
+        const domain = d.label;
+        const parts = domain.split('.');
+        if (parts.length >= 2) {
+          const name = parts[parts.length - 2];
+          return name.length > 6 ? name.substring(0, 6).toUpperCase() : name.toUpperCase();
+        }
+        return domain.substring(0, 6).toUpperCase();
+      });
 
-    node.on('mouseenter.label', function onLabelEnter(_, datum) {
-      label
-        .filter((nodeDatum) => nodeDatum.id === datum.id)
-        .style('opacity', 1)
-        .attr('fill', colors.text);
-    });
+    // Tracker node labels — show for larger nodes
+    node.filter(d => d.type === 'tracker' && d.radius >= 12)
+      .append('text')
+      .attr('text-anchor', 'middle')
+      .attr('dy', d => d.radius + 14)
+      .attr('font-size', '9px')
+      .attr('font-family', 'Plus Jakarta Sans, sans-serif')
+      .attr('font-weight', '500')
+      .attr('fill', colors.secondary)
+      .style('pointer-events', 'none')
+      .text(d => d.label.length > 14 ? d.label.substring(0, 12) + '…' : d.label);
 
-    node.on('mouseleave.label', function onLabelLeave(_, datum) {
-      label
-        .filter((nodeDatum) => nodeDatum.id === datum.id)
-        .style('opacity', 0)
-        .attr('fill', colors.muted);
-    });
+    // Tooltip & Hover
+    node
+      .on('mouseenter', function (event, datum) {
+        // Dim everything
+        node.attr('opacity', d =>
+          d.id === datum.id || links.some(l =>
+            (l.source.id === datum.id && l.target.id === d.id) ||
+            (l.target.id === datum.id && l.source.id === d.id)
+          ) ? 1 : 0.15
+        );
 
+        link.attr('stroke-opacity', edge =>
+          edge.source.id === datum.id || edge.target.id === datum.id ? 0.5 : 0.04
+        );
+
+        d3.select(this).select('circle')
+          .transition().duration(120)
+          .attr('r', d => d.radius + 2)
+          .attr('stroke-opacity', 0.6)
+          .attr('stroke-width', 1.5);
+
+        const bounds = containerRef.current.getBoundingClientRect();
+        const x = Math.min(event.clientX - bounds.left + 14, bounds.width - 240);
+        const y = event.clientY - bounds.top + 14;
+
+        tooltip
+          .style('left', `${x}px`)
+          .style('top', `${y}px`)
+          .transition().duration(120)
+          .style('opacity', 1);
+
+        if (datum.type === 'site') {
+          tooltip.html(`
+            <div class="font-display font-semibold text-[13px]" style="color: ${colors.text}">
+              ${datum.label}
+            </div>
+            <div class="text-[11px] mt-1" style="color: ${colors.secondary}">Active Web Domain</div>
+          `);
+        } else {
+          tooltip.html(`
+            <div class="font-display font-semibold text-[13px] mb-2" style="color: ${colors.text}">
+              ${datum.label}
+            </div>
+            <div class="text-[11px] mb-1" style="color: ${colors.secondary}">Category: <span style="color: ${colors.text}; font-weight: 500">${datum.category || 'Tracker'}</span></div>
+            <div class="text-[11px] mb-1" style="color: ${colors.secondary}">Risk: <span style="color: ${riskAccent(datum.risk)}; font-weight: 600; text-transform: uppercase">${datum.risk}</span></div>
+            <div class="text-[11px]" style="color: ${colors.secondary}">Requests: <span style="color: ${colors.text}; font-weight: 500; font-variant-numeric: tabular-nums">${datum.count}</span></div>
+          `);
+        }
+      })
+      .on('mousemove', function (event) {
+        const bounds = containerRef.current.getBoundingClientRect();
+        const x = Math.min(event.clientX - bounds.left + 14, bounds.width - 240);
+        const y = event.clientY - bounds.top + 14;
+        tooltip
+          .style('left', `${x}px`)
+          .style('top', `${y}px`);
+      })
+      .on('mouseleave', function () {
+        node.attr('opacity', 1);
+        link.attr('stroke-opacity', 0.2);
+
+        d3.select(this).select('circle')
+          .transition().duration(120)
+          .attr('r', d => d.radius)
+          .attr('stroke-opacity', 0.3)
+          .attr('stroke-width', 1);
+
+        tooltip.transition().duration(120).style('opacity', 0);
+      })
+      .on('click', (_, datum) => {
+        if (datum.type === 'tracker') {
+          onNodeClick(datum);
+        }
+      });
+
+    // Force simulation with concentric ring constraints
     const simulation = d3
       .forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id((d) => d.id).distance(130))
-      .force('charge', d3.forceManyBody().strength(-450))
-      .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius((d) => d.radius + 8));
+      .force('link', d3.forceLink(links).id((d) => d.id).distance(d => {
+        const target = nodes.find(n => n.id === (typeof d.target === 'string' ? d.target : d.target.id));
+        const ring = target?.ring || 2;
+        return ringRadii[ring - 1] || 120;
+      }))
+      .force('charge', d3.forceManyBody().strength(-300))
+      .force('center', d3.forceCenter(cx, cy))
+      .force('collision', d3.forceCollide().radius((d) => d.radius + 8))
+      .force('radial', d3.forceRadial(
+        d => d.type === 'site' ? 0 : ringRadii[(d.ring || 2) - 1],
+        cx, cy
+      ).strength(0.4));
 
     simulation.on('tick', () => {
       link
-        .attr('x1', (d) => d.source.x)
-        .attr('y1', (d) => d.source.y)
-        .attr('x2', (d) => d.target.x)
-        .attr('y2', (d) => d.target.y);
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y);
 
-      node.attr('cx', (d) => d.x).attr('cy', (d) => d.y);
-      label.attr('x', (d) => d.x).attr('y', (d) => d.y + d.radius + 14);
+      node.attr('transform', d => `translate(${d.x},${d.y})`);
     });
 
     return () => simulation.stop();
@@ -232,7 +365,6 @@ export default function NodeGraph({ events, onNodeClick }) {
     return cleanup;
   }, [drawGraph]);
 
-  // Re-draw when theme changes
   useEffect(() => {
     const observer = new MutationObserver(() => {
       drawGraph();
@@ -258,24 +390,31 @@ export default function NodeGraph({ events, onNodeClick }) {
   return (
     <section
       ref={containerRef}
-      className={`border border-border bg-surface animate-fade-in ${isFullscreen ? 'h-screen p-4' : 'h-[360px]'}`}
+      className={`acrylic-panel overflow-hidden animate-fade-in relative ${isFullscreen ? 'h-screen p-5' : 'h-[400px]'}`}
       style={{ animationDelay: '100ms' }}
     >
-      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-        <p className="section-label">Tracker Network</p>
+      <div className="px-5 py-3.5 border-b border-border flex items-center justify-between">
+        <p className="section-label text-text">Tracker Network</p>
         <div className="flex items-center gap-3">
-          <p className="text-[11px] text-muted tracking-[0.08em] uppercase">D3 Force Graph</p>
+          <p className="text-[11px] text-muted tracking-wider uppercase">D3 Force Graph</p>
           <button
             type="button"
             onClick={toggleFullscreen}
-            className="btn py-1 px-2"
+            className="btn py-1.5 px-3 flex items-center gap-1.5"
           >
-            {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
-            <span className="text-[11px]">{isFullscreen ? 'Exit' : 'Fullscreen'}</span>
+            {isFullscreen ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
+            <span className="text-[11px] font-sans">{isFullscreen ? 'Exit' : 'Fullscreen'}</span>
           </button>
         </div>
       </div>
-      <svg ref={ref} className={`w-full bg-bg ${isFullscreen ? 'h-[calc(100vh-96px)]' : 'h-[312px]'}`} />
+      
+      <svg ref={ref} className={`w-full ${isFullscreen ? 'h-[calc(100vh-96px)]' : 'h-[348px]'}`} />
+
+      {/* Tooltip */}
+      <div
+        ref={tooltipRef}
+        className="absolute pointer-events-none opacity-0 bg-surface-1 border border-border p-3 rounded-lg shadow-xl text-[12px] min-w-[180px] max-w-[240px] z-50 transition-opacity duration-120"
+      />
     </section>
   );
 }

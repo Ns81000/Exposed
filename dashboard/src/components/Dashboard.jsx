@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Eye } from 'lucide-react';
 import ConnectPrompt from './ConnectPrompt';
 import ExportButton from './ExportButton';
 import MobileGate from './MobileGate';
@@ -135,7 +136,7 @@ export default function Dashboard() {
   if (!connected) return <ConnectPrompt />;
 
   return (
-    <div className="min-h-screen bg-bg text-secondary flex">
+    <div className="min-h-screen bg-bg text-secondary flex font-sans">
       <Sidebar
         sites={sites}
         selectedDomain={selectedDomain}
@@ -149,12 +150,12 @@ export default function Dashboard() {
         onOpenSettings={() => setSettingsOpen(true)}
       />
 
-      <main className="flex-1 p-4 md:p-6 space-y-4 overflow-y-auto">
+      <main className="flex-1 p-5 md:p-6 space-y-5 overflow-y-auto scrollbar">
         {/* Header */}
-        <header className="border border-border bg-surface px-5 py-4 flex items-center justify-between animate-fade-in">
+        <header className="acrylic-panel px-6 py-5 flex items-center justify-between animate-fade-in">
           <div>
-            <p className="section-label">Active Site</p>
-            <h1 className="text-[22px] font-medium text-text mt-1.5">{selectedDomain || 'Waiting for data'}</h1>
+            <p className="section-label tracking-wider">Active Site</p>
+            <h1 className="text-[22px] font-display font-bold text-text mt-1 tracking-tight">{selectedDomain || 'Waiting for data'}</h1>
           </div>
           <ExportButton site={site} visits={visitsForSite} events={eventsForSite} fingerprints={fingerprintsForSite} />
         </header>
@@ -166,60 +167,99 @@ export default function Dashboard() {
         <NodeGraph events={eventsForSite} onNodeClick={setSelectedTracker} />
 
         {/* Timeline + Tracker Detail */}
-        <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-4 items-start">
-          <div className="space-y-4">
+        <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-5 items-start">
+          <div className="space-y-5">
             <VisitTimeline
               events={eventsForSite}
+              selectedTracker={selectedTracker}
               onSelectTracker={(tracker) => {
                 setSelectedTracker(tracker);
                 setSelectedFingerprint(null);
               }}
             />
 
-            {/* Fingerprint alerts timeline */}
+            {/* Fingerprint alerts */}
             {fingerprintsForSite.length > 0 && (
-              <section className="border border-border bg-surface self-start h-fit animate-fade-in" style={{ animationDelay: '250ms' }}>
-                <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+              <section className="acrylic-panel self-start h-fit overflow-hidden animate-fade-in" style={{ animationDelay: '250ms' }}>
+                <div className="px-5 py-3.5 border-b border-border flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444] animate-pulse inline-block" />
-                    <p className="section-label">Active Fingerprint Detections</p>
+                    <span className="w-2 h-2 rounded-full bg-riskHigh animate-pulse inline-block" />
+                    <p className="section-label text-text">Active Fingerprint Detections</p>
                   </div>
-                  <p className="text-[11px] text-muted tracking-[0.08em] uppercase tabular-nums">
+                  <p className="text-[11px] text-muted tracking-wider uppercase">
                     {fingerprintsForSite.length} Alerts
                   </p>
                 </div>
                 <div className="max-h-[220px] overflow-y-auto scrollbar">
-                  {fingerprintsForSite.map((fp, idx) => (
-                    <button
-                      key={`${fp.timestamp}-${fp.api}-${idx}`}
-                      type="button"
-                      className="w-full text-left px-4 py-2.5 border-b border-border last:border-b-0 bg-surface hover:bg-raised transition-all duration-150 flex items-center justify-between"
-                      style={{ borderLeft: '3px solid #ef4444' }}
-                      onClick={() => {
-                        setSelectedFingerprint(fp);
-                        setSelectedTracker(null);
-                      }}
-                    >
-                      <div className="flex flex-col">
-                        <span className="text-text font-mono text-[12px]">{fp.api}</span>
-                        <span className="text-muted text-[10px] mt-0.5">{new Date(fp.timestamp).toLocaleString()}</span>
-                      </div>
-                      <span className="text-[10px] border border-[#ef4444]/30 bg-[#ef4444]/10 text-[#ef4444] px-1.5 py-0.5 uppercase tracking-wider font-semibold">
-                        Heuristic Triggered
-                      </span>
-                    </button>
-                  ))}
+                  {fingerprintsForSite.map((fp, idx) => {
+                    const isSelected = selectedFingerprint && (
+                      selectedFingerprint.id !== undefined && fp.id !== undefined
+                        ? selectedFingerprint.id === fp.id
+                        : (selectedFingerprint.timestamp === fp.timestamp && selectedFingerprint.api === fp.api)
+                    );
+                    return (
+                      <button
+                        key={`${fp.timestamp}-${fp.api}-${idx}`}
+                        type="button"
+                        className={`w-full text-left px-5 py-3 border-b border-border last:border-b-0 transition-all duration-150 flex items-center justify-between ${
+                          isSelected ? 'bg-accent-soft text-text' : 'hover:bg-surface-2'
+                        }`}
+                        style={{ borderLeft: '3px solid var(--color-risk-high)' }}
+                        onClick={() => {
+                          setSelectedFingerprint(fp);
+                          setSelectedTracker(null);
+                        }}
+                      >
+                        <div className="flex flex-col">
+                          <span className={`font-mono text-[12px] ${isSelected ? 'text-accent font-semibold' : 'text-text font-medium'}`}>{fp.api}</span>
+                          <span className="text-muted text-[10px] mt-0.5">{new Date(fp.timestamp).toLocaleString()}</span>
+                        </div>
+                        <span className="text-[10px] border border-riskHigh/30 bg-riskHigh/10 text-riskHigh px-2 py-0.5 rounded font-medium tracking-wide">
+                          Triggered
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </section>
             )}
           </div>
 
-          <div>
-            {selectedTracker && (
-              <TrackerDetailPanel tracker={selectedTracker} onClose={() => setSelectedTracker(null)} />
-            )}
-            {selectedFingerprint && (
-              <FingerprintPanel event={selectedFingerprint} onClose={() => setSelectedFingerprint(null)} />
+          <div className="sticky top-5">
+            {!selectedTracker && !selectedFingerprint ? (
+              <div className="acrylic-panel p-6 flex flex-col items-center text-center justify-center min-h-[320px] animate-fade-in">
+                <div className="w-11 h-11 rounded-xl bg-accent-soft flex items-center justify-center mb-5 text-accent">
+                  <Eye size={20} />
+                </div>
+                <h3 className="font-display font-semibold text-[15px] text-text mb-2">Privacy Inspector</h3>
+                <p className="text-[12px] text-secondary leading-relaxed max-w-xs mb-6 font-normal">
+                  Select a tracker node from the graph or click a visit event to audit company profiles and payloads.
+                </p>
+                <div className="w-full border-t border-border pt-5 text-left space-y-3">
+                  <p className="section-label text-[10px] tracking-wider mb-1">Guide</p>
+                  <div className="flex gap-2.5 items-start">
+                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: 'var(--color-risk-high)' }} />
+                    <p className="text-[11px] text-secondary leading-normal font-normal">
+                      <strong className="text-text font-medium">Device Fingerprinting:</strong> Queries system APIs to build a hardware fingerprint.
+                    </p>
+                  </div>
+                  <div className="flex gap-2.5 items-start">
+                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: 'var(--color-risk-medium)' }} />
+                    <p className="text-[11px] text-secondary leading-normal font-normal">
+                      <strong className="text-text font-medium">Cross-Site Trackers:</strong> Tracks navigation across sites to build behavior dossiers.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                {selectedTracker && (
+                  <TrackerDetailPanel tracker={selectedTracker} onClose={() => setSelectedTracker(null)} />
+                )}
+                {selectedFingerprint && (
+                  <FingerprintPanel event={selectedFingerprint} onClose={() => setSelectedFingerprint(null)} />
+                )}
+              </>
             )}
           </div>
         </div>
@@ -239,4 +279,3 @@ export default function Dashboard() {
     </div>
   );
 }
-

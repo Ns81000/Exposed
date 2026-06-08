@@ -24,8 +24,8 @@ export default function DailyArchive({ archives, onRefresh }) {
       {archives.map((archive) => (
         <div key={archive.id} className="px-4 py-2.5 border-b border-border flex items-center justify-between gap-2">
           <div className="min-w-0">
-            <p className="text-[12px] text-text truncate">{archive.date}</p>
-            <p className="text-[11px] text-muted tracking-[0.08em] uppercase">
+            <p className="text-[12px] text-text truncate font-medium">{archive.date}</p>
+            <p className="text-[10px] text-muted">
               {archive.data?.summary?.totalTrackers || 0} trackers
             </p>
           </div>

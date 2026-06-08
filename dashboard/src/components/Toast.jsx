@@ -32,22 +32,22 @@ function ToastItem({ toast, onRemove }) {
 
   return (
     <div
-      className="flex items-center gap-3 border border-border bg-surface px-4 py-3 shadow-lg min-w-[280px] max-w-[400px]"
+      className="acrylic-panel px-4 py-3 shadow-lg min-w-[280px] max-w-[420px] bg-surface-1 flex items-center gap-3 transition-all duration-150"
       style={{
-        animation: exiting ? 'toast-out 200ms ease-in forwards' : 'toast-in 300ms ease-out forwards'
+        animation: exiting ? 'toast-out 180ms ease-in forwards' : 'toast-in 250ms ease-out forwards'
       }}
     >
-      <Icon size={16} style={{ color: COLOR_MAP[toast.type], flexShrink: 0 }} />
-      <p className="text-[13px] text-text flex-1">{toast.message}</p>
+      <Icon size={15} style={{ color: COLOR_MAP[toast.type] }} strokeWidth={2} className="flex-shrink-0" />
+      <p className="text-[13px] text-text flex-1 font-medium font-sans leading-snug">{toast.message}</p>
       <button
         type="button"
-        className="text-muted hover:text-text transition-colors duration-150"
+        className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-surface-2 text-muted hover:text-text transition-colors duration-150 flex-shrink-0"
         onClick={() => {
           setExiting(true);
           setTimeout(() => onRemove(toast.id), 200);
         }}
       >
-        <X size={14} />
+        <X size={13} />
       </button>
     </div>
   );

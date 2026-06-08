@@ -5,14 +5,18 @@ export default {
     extend: {
       colors: {
         bg: 'var(--color-bg)',
-        surface: 'var(--color-surface)',
-        raised: 'var(--color-raised)',
+        'surface-1': 'var(--color-surface-1)',
+        'surface-2': 'var(--color-surface-2)',
+        'surface-3': 'var(--color-surface-3)',
         border: 'var(--color-border)',
+        'border-hover': 'var(--color-border-hover)',
         text: 'var(--color-text)',
         secondary: 'var(--color-secondary)',
         muted: 'var(--color-muted)',
         accent: 'var(--color-accent)',
+        'accent-hover': 'var(--color-accent-hover)',
         'accent-soft': 'var(--color-accent-soft)',
+        'accent-solid': 'var(--color-accent-solid)',
         riskHigh: 'var(--color-risk-high)',
         riskMedium: 'var(--color-risk-medium)',
         riskLow: 'var(--color-risk-low)',
@@ -21,7 +25,9 @@ export default {
         success: 'var(--color-success)'
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'Segoe UI', 'sans-serif']
+        sans: ['"Plus Jakarta Sans"', 'system-ui', 'Segoe UI', 'sans-serif'],
+        display: ['Outfit', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace']
       }
     }
   },

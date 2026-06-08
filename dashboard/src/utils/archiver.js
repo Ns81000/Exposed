@@ -40,11 +40,13 @@ async function refreshSitesTable() {
     site.totalTrackers = eventCountByDomain[site.domain] || 0;
   });
 
-  await db.sites.clear();
   const rebuilt = Object.values(siteMap);
-  if (rebuilt.length) {
-    await db.sites.bulkAdd(rebuilt);
-  }
+  await db.transaction('rw', db.sites, async () => {
+    await db.sites.clear();
+    if (rebuilt.length) {
+      await db.sites.bulkAdd(rebuilt);
+    }
+  });
 }
 
 export async function runDailyArchive() {

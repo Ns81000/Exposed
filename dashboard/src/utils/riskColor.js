@@ -1,9 +1,9 @@
 export const RISK_COLOR = {
-  high: '#DC2626',
-  medium: '#D97706',
-  low: '#2563EB'
+  high: '#F87171',
+  medium: '#FBBF24',
+  low: '#60A5FA'
 };
 
 export function riskAccent(risk) {
-  return RISK_COLOR[risk] || '#52525B';
+  return RISK_COLOR[risk] || '#4B5064';
 }
