@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Search, Settings, ChevronDown, ChevronRight, Archive, Eye, Network, User } from 'lucide-react';
 import DailyArchive from './DailyArchive';
+import BrandIcon from './BrandIcon';
+import BrandLogo from './BrandLogo';
 
 function formatRelative(isoTime) {
   const date = new Date(isoTime);
@@ -55,11 +57,11 @@ export default function Sidebar({
     <aside className="w-full md:w-[272px] border-r border-border bg-surface-1 flex flex-col h-screen sticky top-0 z-30">
       {/* Brand Header — taller, more breathing room */}
       <div className="px-5 py-5 border-b border-border flex items-center gap-3">
-        <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
-          <Eye size={18} className="text-white" />
-        </div>
+        <BrandIcon size={34} showBackground={true} bgFill="rgba(94, 106, 210, 0.08)" />
         <div className="min-w-0">
-          <h1 className="text-[17px] font-display font-semibold text-text tracking-tight leading-tight">Exposed</h1>
+          <h1 className="text-[17px] text-text tracking-tight leading-tight">
+            <BrandLogo />
+          </h1>
           <span className="text-[10px] text-muted font-medium tracking-wide">v1.0.0</span>
         </div>
       </div>

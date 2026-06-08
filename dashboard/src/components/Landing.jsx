@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { Github, Eye, Shield, Network, Lock, ArrowRight } from 'lucide-react';
+import { Github, Shield, Network, Lock, ArrowRight } from 'lucide-react';
+import BrandIcon from './BrandIcon';
+import BrandLogo from './BrandLogo';
 
 const GITHUB_URL = 'https://github.com/Ns81000/Exposed';
 
@@ -15,10 +17,10 @@ export default function Landing() {
       <nav className="sticky top-0 z-40 bg-bg/80 backdrop-blur-md border-b border-border px-6 py-3.5 transition-all duration-200">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-              <Eye size={17} className="text-white" />
-            </div>
-            <h1 className="text-[18px] font-display font-semibold tracking-tight text-text">Exposed</h1>
+            <BrandIcon size={30} showBackground={true} bgFill="rgba(94, 106, 210, 0.08)" />
+            <h1 className="text-[18px] tracking-tight text-text">
+              <BrandLogo />
+            </h1>
           </div>
           <div className="flex items-center gap-3">
             <a
@@ -207,11 +209,9 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded bg-accent-soft flex items-center justify-center">
-                <Eye size={11} className="text-accent" />
-              </div>
+              <BrandIcon size={20} showBackground={false} />
               <p className="text-[12px] text-muted font-medium">
-                Exposed — Local-first surveillance intelligence.
+                <BrandLogo className="text-[12px]" /> — Local-first surveillance intelligence.
               </p>
             </div>
             <a

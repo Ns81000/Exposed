@@ -1,4 +1,5 @@
-import { Eye, RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
+import BrandIcon from './BrandIcon';
 
 export default function ConnectPrompt() {
   return (
@@ -7,9 +8,7 @@ export default function ConnectPrompt() {
 
       <div className="w-full max-w-xl acrylic-panel p-8 md:p-10 animate-scale-in relative z-10 bg-surface-1">
         <div className="flex items-center gap-3.5 mb-6">
-          <div className="w-11 h-11 rounded-xl bg-accent flex items-center justify-center">
-            <Eye size={20} className="text-white" />
-          </div>
+          <BrandIcon size={44} showBackground={true} bgFill="rgba(94, 106, 210, 0.08)" />
           <div>
             <p className="section-label tracking-wider">Extension Connection</p>
             <h1 className="text-[22px] font-display font-bold text-text mt-0.5 tracking-tight">Connect your Exposed extension</h1>

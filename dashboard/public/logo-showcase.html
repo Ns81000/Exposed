@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exposed — Logo Concepts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Sora:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&family=Bebas+Neue&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Russo+One&family=Black+Ops+One&family=Share+Tech+Mono&family=Silkscreen&family=DM+Sans:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Unbounded:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0c;
+      color: #e8e8ed;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      padding: 60px 40px;
+    }
+    h1 {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #5e6ad2;
+      margin-bottom: 12px;
+    }
+    .subtitle {
+      font-size: 32px;
+      font-weight: 700;
+      color: #e8e8ed;
+      margin-bottom: 16px;
+    }
+    .hint {
+      font-size: 13px;
+      color: rgba(232,232,237,0.3);
+      margin-bottom: 48px;
+    }
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #5e6ad2;
+      margin: 56px 0 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(94,106,210,0.15);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 40px 36px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      position: relative;
+      transition: border-color 0.3s, background 0.3s, transform 0.2s;
+    }
+    .card:hover {
+      border-color: rgba(94,106,210,0.3);
+      background: rgba(94,106,210,0.03);
+      transform: translateY(-2px);
+    }
+    .card-num {
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #5e6ad2;
+      opacity: 0.5;
+    }
+    .card-name {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      color: rgba(232,232,237,0.2);
+    }
+    .card-desc {
+      margin-top: 20px;
+      font-size: 12px;
+      color: rgba(232,232,237,0.35);
+      text-align: center;
+      max-width: 340px;
+      line-height: 1.6;
+    }
+    .variant-row {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.03);
+      width: 100%;
+      justify-content: center;
+    }
+    .variant-label {
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(232,232,237,0.2);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    @keyframes glitch1 {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 1px); }
+      40% { transform: translate(2px, -1px); }
+      60% { transform: translate(-1px, -1px); }
+      80% { transform: translate(1px, 1px); }
+    }
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(400%); }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+    @keyframes radarSweep {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Brand Identity</h1>
+<p class="subtitle">38 Logo Concepts for Exposed</p>
+<p class="hint">Each concept includes a full-size wordmark and an app icon variant. Hover to highlight.</p>
+
+<!-- ============================================ -->
+<div class="section-title">Typography — Clean & Minimal</div>
+<!-- ============================================ -->
+<div class="grid">
+
+  <!-- 01: Accented X -->
+  <div class="card">
+    <span class="card-num">#01</span><span class="card-name">Accented X</span>
+    <svg width="280" height="52" viewBox="0 0 280 52"><text x="0" y="42" font-family="'Inter'" font-weight="700" font-size="46" fill="#e8e8ed" letter-spacing="-1"><tspan>e</tspan><tspan fill="#5e6ad2">x</tspan><tspan>posed</tspan></text></svg>
+    <p class="card-desc">The "x" accented in lavender — X-ray vision for privacy.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#5e6ad2"/><text x="18" y="26" text-anchor="middle" font-family="'Inter'" font-weight="800" font-size="22" fill="#fff">E</text></svg></div></div>
+  </div>
+
+  <!-- 02: Spaced Uppercase -->
+  <div class="card">
+    <span class="card-num">#02</span><span class="card-name">Wide Track</span>
+    <svg width="380" height="44" viewBox="0 0 380 44"><text x="0" y="36" font-family="'Space Grotesk'" font-weight="600" font-size="38" fill="#e8e8ed" letter-spacing="12">EXPOSED</text></svg>
+    <p class="card-desc">Wide-tracked uppercase. Classified document energy.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="transparent" stroke="#5e6ad2" stroke-width="2"/><text x="18" y="25" text-anchor="middle" font-family="'Space Grotesk'" font-weight="700" font-size="18" fill="#e8e8ed" letter-spacing="2">EX</text></svg></div></div>
+  </div>
+
+  <!-- 03: Dot Split -->
+  <div class="card">
+    <span class="card-num">#03</span><span class="card-name">Dot Split</span>
+    <svg width="280" height="48" viewBox="0 0 280 48"><text x="0" y="40" font-family="'Outfit'" font-weight="700" font-size="42" fill="#e8e8ed" letter-spacing="-0.5"><tspan>expos</tspan><tspan fill="#5e6ad2">.</tspan><tspan>ed</tspan></text></svg>
+    <p class="card-desc">"expos.ed" — domain-name aesthetic with accent dot.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="11" y="27" font-family="'Outfit'" font-weight="800" font-size="20" fill="#e8e8ed">E</text><circle cx="27" cy="24" r="3" fill="#5e6ad2"/></svg></div></div>
+  </div>
+
+  <!-- 04: Eye-O -->
+  <div class="card">
+    <span class="card-num">#04</span><span class="card-name">Eye-O</span>
+    <svg width="300" height="52" viewBox="0 0 300 52">
+      <text x="0" y="42" font-family="'Sora'" font-weight="700" font-size="44" fill="#e8e8ed" letter-spacing="-1">exp</text>
+      <g transform="translate(118, 18)"><ellipse cx="14" cy="12" rx="14" ry="10" fill="none" stroke="#5e6ad2" stroke-width="2.5"/><circle cx="14" cy="12" r="5" fill="#5e6ad2"/><circle cx="14" cy="12" r="2" fill="#0a0a0c"/></g>
+      <text x="150" y="42" font-family="'Sora'" font-weight="700" font-size="44" fill="#e8e8ed" letter-spacing="-1">sed</text>
+    </svg>
+    <p class="card-desc">The "o" becomes a surveillance eye.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#5e6ad2"/><ellipse cx="18" cy="18" rx="10" ry="7" fill="none" stroke="#fff" stroke-width="2"/><circle cx="18" cy="18" r="4" fill="#fff"/><circle cx="18" cy="18" r="1.5" fill="#5e6ad2"/></svg></div></div>
+  </div>
+
+  <!-- 05: Bracket Reveal -->
+  <div class="card">
+    <span class="card-num">#05</span><span class="card-name">Brackets</span>
+    <svg width="300" height="52" viewBox="0 0 300 52">
+      <text x="0" y="42" font-family="'Manrope'" font-weight="300" font-size="40" fill="#5e6ad2">{</text>
+      <text x="22" y="42" font-family="'Manrope'" font-weight="700" font-size="40" fill="#e8e8ed" letter-spacing="-0.5">exposed</text>
+      <text x="258" y="42" font-family="'Manrope'" font-weight="300" font-size="40" fill="#5e6ad2">}</text>
+    </svg>
+    <p class="card-desc">Code brackets — revealing what's inside the data.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113" stroke="#5e6ad2" stroke-width="1.5"/><text x="6" y="25" font-family="'Manrope'" font-weight="300" font-size="16" fill="#5e6ad2">{</text><text x="17" y="25" font-family="'Manrope'" font-weight="800" font-size="16" fill="#e8e8ed">E</text><text x="27" y="25" font-family="'Manrope'" font-weight="300" font-size="16" fill="#5e6ad2">}</text></svg></div></div>
+  </div>
+
+  <!-- 06: Gradient Fade -->
+  <div class="card">
+    <span class="card-num">#06</span><span class="card-name">Gradient</span>
+    <svg width="300" height="52" viewBox="0 0 300 52">
+      <defs><linearGradient id="fg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#e8e8ed"/><stop offset="70%" stop-color="#e8e8ed"/><stop offset="100%" stop-color="#5e6ad2"/></linearGradient></defs>
+      <text x="0" y="42" font-family="'Inter'" font-weight="800" font-size="46" fill="url(#fg1)" letter-spacing="-2">exposed</text>
+    </svg>
+    <p class="card-desc">Gradient from white to lavender — data being revealed.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><defs><linearGradient id="ig1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#e8e8ed"/><stop offset="100%" stop-color="#5e6ad2"/></linearGradient></defs><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="26" text-anchor="middle" font-family="'Inter'" font-weight="800" font-size="22" fill="url(#ig1)">E</text></svg></div></div>
+  </div>
+
+  <!-- 07: Slash Divider -->
+  <div class="card">
+    <span class="card-num">#07</span><span class="card-name">Slash</span>
+    <svg width="290" height="52" viewBox="0 0 290 52">
+      <text x="0" y="42" font-family="'Outfit'" font-weight="800" font-size="44" fill="#e8e8ed" letter-spacing="-1">ex</text>
+      <line x1="70" y1="4" x2="58" y2="48" stroke="#5e6ad2" stroke-width="3" stroke-linecap="round"/>
+      <text x="74" y="42" font-family="'Outfit'" font-weight="800" font-size="44" fill="#e8e8ed" letter-spacing="-1">posed</text>
+    </svg>
+    <p class="card-desc">A slash cuts through — breaking through the noise.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="8" y="27" font-family="'Outfit'" font-weight="800" font-size="20" fill="#e8e8ed">E</text><line x1="24" y1="8" x2="20" y2="30" stroke="#5e6ad2" stroke-width="2.5" stroke-linecap="round"/></svg></div></div>
+  </div>
+
+  <!-- 08: Underline Reveal -->
+  <div class="card">
+    <span class="card-num">#08</span><span class="card-name">Underline</span>
+    <svg width="280" height="56" viewBox="0 0 280 56">
+      <text x="0" y="38" font-family="'Inter'" font-weight="600" font-size="42" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+      <line x1="0" y1="50" x2="120" y2="50" stroke="#5e6ad2" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <p class="card-desc">Partial underline — classified document redaction energy.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="24" text-anchor="middle" font-family="'Inter'" font-weight="700" font-size="20" fill="#e8e8ed">E</text><line x1="8" y1="30" x2="22" y2="30" stroke="#5e6ad2" stroke-width="2.5" stroke-linecap="round"/></svg></div></div>
+  </div>
+
+</div>
+
+<!-- ============================================ -->
+<div class="section-title">Typography — Bold & Expressive</div>
+<!-- ============================================ -->
+<div class="grid">
+
+  <!-- 09: Bebas Heavy -->
+  <div class="card">
+    <span class="card-num">#09</span><span class="card-name">Bebas Heavy</span>
+    <svg width="320" height="52" viewBox="0 0 320 52">
+      <text x="0" y="46" font-family="'Bebas Neue'" font-size="56" fill="#e8e8ed" letter-spacing="6">EXPOSED</text>
+    </svg>
+    <p class="card-desc">Tall condensed uppercase — newspaper headline punch.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#5e6ad2"/><text x="18" y="27" text-anchor="middle" font-family="'Bebas Neue'" font-size="26" fill="#fff" letter-spacing="1">EX</text></svg></div></div>
+  </div>
+
+  <!-- 10: Orbitron Futuristic -->
+  <div class="card">
+    <span class="card-num">#10</span><span class="card-name">Orbitron</span>
+    <svg width="340" height="48" viewBox="0 0 340 48">
+      <text x="0" y="38" font-family="'Orbitron'" font-weight="700" font-size="36" fill="#e8e8ed" letter-spacing="3">EXPOSED</text>
+    </svg>
+    <p class="card-desc">Sci-fi geometric — like a HUD interface readout.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#111113" stroke="#5e6ad2" stroke-width="1"/><text x="18" y="25" text-anchor="middle" font-family="'Orbitron'" font-weight="700" font-size="16" fill="#5e6ad2">EX</text></svg></div></div>
+  </div>
+
+  <!-- 11: Russo One -->
+  <div class="card">
+    <span class="card-num">#11</span><span class="card-name">Russo</span>
+    <svg width="320" height="50" viewBox="0 0 320 50">
+      <text x="0" y="42" font-family="'Russo One'" font-size="44" fill="#e8e8ed" letter-spacing="2">EXPOSED</text>
+    </svg>
+    <p class="card-desc">Industrial bold — authoritative and commanding.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="6" fill="#5e6ad2"/><text x="18" y="26" text-anchor="middle" font-family="'Russo One'" font-size="20" fill="#fff">E</text></svg></div></div>
+  </div>
+
+  <!-- 12: Black Ops -->
+  <div class="card">
+    <span class="card-num">#12</span><span class="card-name">Black Ops</span>
+    <svg width="340" height="50" viewBox="0 0 340 50">
+      <text x="0" y="42" font-family="'Black Ops One'" font-size="40" fill="#e8e8ed" letter-spacing="2">EXPOSED</text>
+    </svg>
+    <p class="card-desc">Military stencil — covert operations aesthetic.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#1a1a1d"/><text x="18" y="26" text-anchor="middle" font-family="'Black Ops One'" font-size="18" fill="#5e6ad2">E</text></svg></div></div>
+  </div>
+
+  <!-- 13: Unbounded -->
+  <div class="card">
+    <span class="card-num">#13</span><span class="card-name">Unbounded</span>
+    <svg width="340" height="52" viewBox="0 0 340 52">
+      <text x="0" y="42" font-family="'Unbounded'" font-weight="700" font-size="38" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+    </svg>
+    <p class="card-desc">Rounded bold — modern, approachable yet strong.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="10" fill="#5e6ad2"/><text x="18" y="26" text-anchor="middle" font-family="'Unbounded'" font-weight="700" font-size="20" fill="#fff">e</text></svg></div></div>
+  </div>
+
+  <!-- 14: Rajdhani Tech -->
+  <div class="card">
+    <span class="card-num">#14</span><span class="card-name">Rajdhani</span>
+    <svg width="280" height="50" viewBox="0 0 280 50">
+      <text x="0" y="42" font-family="'Rajdhani'" font-weight="700" font-size="48" fill="#e8e8ed" letter-spacing="2">EXPOSED</text>
+    </svg>
+    <p class="card-desc">Sharp angular letterforms — cyberpunk data aesthetic.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#111113"/><text x="18" y="27" text-anchor="middle" font-family="'Rajdhani'" font-weight="700" font-size="24" fill="#5e6ad2">EX</text></svg></div></div>
+  </div>
+
+  <!-- 15: Playfair Serif -->
+  <div class="card">
+    <span class="card-num">#15</span><span class="card-name">Playfair</span>
+    <svg width="300" height="54" viewBox="0 0 300 54">
+      <text x="0" y="44" font-family="'Playfair Display'" font-weight="700" font-size="48" fill="#e8e8ed" font-style="italic" letter-spacing="-1">Exposed</text>
+    </svg>
+    <p class="card-desc">Italic serif — editorial and journalistic gravitas.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="27" text-anchor="middle" font-family="'Playfair Display'" font-weight="800" font-size="24" fill="#e8e8ed" font-style="italic">E</text></svg></div></div>
+  </div>
+
+  <!-- 16: DM Sans Light -->
+  <div class="card">
+    <span class="card-num">#16</span><span class="card-name">Whisper Light</span>
+    <svg width="280" height="48" viewBox="0 0 280 48">
+      <text x="0" y="38" font-family="'DM Sans'" font-weight="300" font-size="44" fill="#e8e8ed" letter-spacing="4">exposed</text>
+    </svg>
+    <p class="card-desc">Ultra-light weight with wide spacing — elegant whisper.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113" stroke="rgba(232,232,237,0.1)" stroke-width="1"/><text x="18" y="26" text-anchor="middle" font-family="'DM Sans'" font-weight="300" font-size="22" fill="#e8e8ed">e</text></svg></div></div>
+  </div>
+
+</div>
+
+<!-- ============================================ -->
+<div class="section-title">Symbolic — Glitch, Cyber & Digital</div>
+<!-- ============================================ -->
+<div class="grid">
+
+  <!-- 17: Glitch Effect -->
+  <div class="card">
+    <span class="card-num">#17</span><span class="card-name">Glitch</span>
+    <svg width="300" height="56" viewBox="0 0 300 56">
+      <text x="2" y="42" font-family="'Space Grotesk'" font-weight="700" font-size="44" fill="rgba(94,106,210,0.4)" letter-spacing="-1" style="animation: glitch1 0.3s infinite">exposed</text>
+      <text x="-1" y="44" font-family="'Space Grotesk'" font-weight="700" font-size="44" fill="rgba(210,94,106,0.3)" letter-spacing="-1">exposed</text>
+      <text x="0" y="43" font-family="'Space Grotesk'" font-weight="700" font-size="44" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+    </svg>
+    <p class="card-desc">Digital glitch artifact — data corruption revealing truth.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="19" y="26" text-anchor="middle" font-family="'Space Grotesk'" font-weight="700" font-size="22" fill="rgba(94,106,210,0.5)">E</text><text x="17" y="27" text-anchor="middle" font-family="'Space Grotesk'" font-weight="700" font-size="22" fill="rgba(210,94,106,0.4)">E</text><text x="18" y="26" text-anchor="middle" font-family="'Space Grotesk'" font-weight="700" font-size="22" fill="#e8e8ed">E</text></svg></div></div>
+  </div>
+
+  <!-- 18: Terminal / Mono -->
+  <div class="card">
+    <span class="card-num">#18</span><span class="card-name">Terminal</span>
+    <svg width="320" height="48" viewBox="0 0 320 48">
+      <text x="0" y="36" font-family="'JetBrains Mono'" font-weight="600" font-size="32" fill="#5e6ad2">$</text>
+      <text x="24" y="36" font-family="'JetBrains Mono'" font-weight="600" font-size="32" fill="#e8e8ed" letter-spacing="1"> exposed</text>
+      <rect x="275" y="14" width="3" height="26" fill="#5e6ad2" style="animation: blink 1s infinite"/>
+    </svg>
+    <p class="card-desc">Terminal prompt with blinking cursor — CLI hacker energy.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="6" fill="#111113"/><text x="8" y="24" font-family="'JetBrains Mono'" font-weight="700" font-size="14" fill="#5e6ad2">$_</text></svg></div></div>
+  </div>
+
+  <!-- 19: Matrix / Share Tech -->
+  <div class="card">
+    <span class="card-num">#19</span><span class="card-name">Matrix</span>
+    <svg width="310" height="48" viewBox="0 0 310 48">
+      <text x="0" y="38" font-family="'Share Tech Mono'" font-size="36" fill="#5e6ad2" letter-spacing="3">EXPOSED</text>
+      <text x="0" y="38" font-family="'Share Tech Mono'" font-size="36" fill="#e8e8ed" letter-spacing="3" opacity="0.9">EXPOSED</text>
+    </svg>
+    <p class="card-desc">Monospace green-on-black matrix style — digital rain.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#0a0a0c" stroke="#5e6ad2" stroke-width="1"/><text x="18" y="15" text-anchor="middle" font-family="'Share Tech Mono'" font-size="8" fill="rgba(94,106,210,0.3)">010</text><text x="18" y="26" text-anchor="middle" font-family="'Share Tech Mono'" font-size="14" fill="#e8e8ed">EX</text><text x="18" y="34" text-anchor="middle" font-family="'Share Tech Mono'" font-size="8" fill="rgba(94,106,210,0.3)">101</text></svg></div></div>
+  </div>
+
+  <!-- 20: Pixel / Retro -->
+  <div class="card">
+    <span class="card-num">#20</span><span class="card-name">Pixel</span>
+    <svg width="310" height="44" viewBox="0 0 310 44">
+      <text x="0" y="36" font-family="'Silkscreen'" font-size="32" fill="#e8e8ed" letter-spacing="2">EXPOSED</text>
+    </svg>
+    <p class="card-desc">8-bit pixel font — retro hacker / early internet nostalgia.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="2" fill="#111113"/><text x="18" y="25" text-anchor="middle" font-family="'Silkscreen'" font-size="16" fill="#5e6ad2">EX</text></svg></div></div>
+  </div>
+
+  <!-- 21: Scan Lines -->
+  <div class="card">
+    <span class="card-num">#21</span><span class="card-name">Scanline</span>
+    <svg width="300" height="52" viewBox="0 0 300 52">
+      <defs>
+        <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="4" y2="0" stroke="rgba(10,10,12,0.4)" stroke-width="1"/></pattern>
+        <clipPath id="textClip"><text x="0" y="42" font-family="'Outfit'" font-weight="800" font-size="46" letter-spacing="-1">exposed</text></clipPath>
+      </defs>
+      <text x="0" y="42" font-family="'Outfit'" font-weight="800" font-size="46" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+      <rect width="300" height="52" fill="url(#scanlines)" clip-path="url(#textClip)"/>
+    </svg>
+    <p class="card-desc">CRT scan lines overlaid — old monitor surveillance feed.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="26" text-anchor="middle" font-family="'Outfit'" font-weight="800" font-size="22" fill="#e8e8ed">E</text><line x1="0" y1="12" x2="36" y2="12" stroke="rgba(94,106,210,0.2)" stroke-width="0.5"/><line x1="0" y1="16" x2="36" y2="16" stroke="rgba(94,106,210,0.2)" stroke-width="0.5"/><line x1="0" y1="20" x2="36" y2="20" stroke="rgba(94,106,210,0.2)" stroke-width="0.5"/><line x1="0" y1="24" x2="36" y2="24" stroke="rgba(94,106,210,0.2)" stroke-width="0.5"/></svg></div></div>
+  </div>
+
+  <!-- 22: Binary Undertext -->
+  <div class="card">
+    <span class="card-num">#22</span><span class="card-name">Binary</span>
+    <svg width="300" height="60" viewBox="0 0 300 60">
+      <text x="0" y="36" font-family="'Inter'" font-weight="800" font-size="44" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+      <text x="0" y="54" font-family="'JetBrains Mono'" font-size="9" fill="rgba(94,106,210,0.35)" letter-spacing="1">01100101 01111000 01110000 01101111 01110011 01100101 01100100</text>
+    </svg>
+    <p class="card-desc">Binary encoding beneath — the raw data behind the name.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="22" text-anchor="middle" font-family="'Inter'" font-weight="800" font-size="18" fill="#e8e8ed">E</text><text x="18" y="32" text-anchor="middle" font-family="'JetBrains Mono'" font-size="6" fill="rgba(94,106,210,0.5)">01100101</text></svg></div></div>
+  </div>
+
+  <!-- 23: Angle Brackets -->
+  <div class="card">
+    <span class="card-num">#23</span><span class="card-name">HTML Tag</span>
+    <svg width="320" height="48" viewBox="0 0 320 48">
+      <text x="0" y="38" font-family="'JetBrains Mono'" font-weight="400" font-size="30" fill="#5e6ad2" letter-spacing="0">&lt;</text>
+      <text x="18" y="38" font-family="'Inter'" font-weight="700" font-size="34" fill="#e8e8ed" letter-spacing="-0.5">exposed</text>
+      <text x="230" y="38" font-family="'JetBrains Mono'" font-weight="400" font-size="30" fill="#5e6ad2" letter-spacing="0"> /&gt;</text>
+    </svg>
+    <p class="card-desc">HTML self-closing tag — the web is the data source.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="25" text-anchor="middle" font-family="'JetBrains Mono'" font-size="14" fill="#5e6ad2">&lt;E/&gt;</text></svg></div></div>
+  </div>
+
+  <!-- 24: Hash Prefix -->
+  <div class="card">
+    <span class="card-num">#24</span><span class="card-name">Hash</span>
+    <svg width="300" height="50" viewBox="0 0 300 50">
+      <text x="0" y="40" font-family="'DM Sans'" font-weight="800" font-size="42" fill="#5e6ad2" letter-spacing="-1">#</text>
+      <text x="30" y="40" font-family="'DM Sans'" font-weight="800" font-size="42" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+    </svg>
+    <p class="card-desc">Hashtag prefix — trending, social, data discovery.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#5e6ad2"/><text x="18" y="26" text-anchor="middle" font-family="'DM Sans'" font-weight="800" font-size="20" fill="#fff">#E</text></svg></div></div>
+  </div>
+
+</div>
+
+<!-- ============================================ -->
+<div class="section-title">Symbolic — Surveillance & Intelligence</div>
+<!-- ============================================ -->
+<div class="grid">
+
+  <!-- 25: Crosshair -->
+  <div class="card">
+    <span class="card-num">#25</span><span class="card-name">Crosshair</span>
+    <svg width="340" height="52" viewBox="0 0 340 52">
+      <g transform="translate(0, 8)">
+        <circle cx="18" cy="18" r="14" fill="none" stroke="#5e6ad2" stroke-width="1.5"/>
+        <circle cx="18" cy="18" r="3" fill="#5e6ad2"/>
+        <line x1="18" y1="0" x2="18" y2="8" stroke="#5e6ad2" stroke-width="1.5"/>
+        <line x1="18" y1="28" x2="18" y2="36" stroke="#5e6ad2" stroke-width="1.5"/>
+        <line x1="0" y1="18" x2="8" y2="18" stroke="#5e6ad2" stroke-width="1.5"/>
+        <line x1="28" y1="18" x2="36" y2="18" stroke="#5e6ad2" stroke-width="1.5"/>
+      </g>
+      <text x="46" y="38" font-family="'Inter'" font-weight="700" font-size="36" fill="#e8e8ed" letter-spacing="-0.5">exposed</text>
+    </svg>
+    <p class="card-desc">Crosshair reticle + wordmark — targeting hidden data.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><circle cx="18" cy="18" r="10" fill="none" stroke="#5e6ad2" stroke-width="1.5"/><circle cx="18" cy="18" r="2.5" fill="#5e6ad2"/><line x1="18" y1="4" x2="18" y2="11" stroke="#5e6ad2" stroke-width="1.5"/><line x1="18" y1="25" x2="18" y2="32" stroke="#5e6ad2" stroke-width="1.5"/><line x1="4" y1="18" x2="11" y2="18" stroke="#5e6ad2" stroke-width="1.5"/><line x1="25" y1="18" x2="32" y2="18" stroke="#5e6ad2" stroke-width="1.5"/></svg></div></div>
+  </div>
+
+  <!-- 26: Keyhole -->
+  <div class="card">
+    <span class="card-num">#26</span><span class="card-name">Keyhole</span>
+    <svg width="320" height="52" viewBox="0 0 320 52">
+      <g transform="translate(4, 6)">
+        <circle cx="16" cy="12" r="10" fill="none" stroke="#5e6ad2" stroke-width="2"/>
+        <path d="M11 18 L16 36 L21 18" fill="#5e6ad2" opacity="0.6"/>
+        <circle cx="16" cy="12" r="4" fill="#5e6ad2"/>
+      </g>
+      <text x="42" y="40" font-family="'Sora'" font-weight="700" font-size="38" fill="#e8e8ed" letter-spacing="-0.5">exposed</text>
+    </svg>
+    <p class="card-desc">Keyhole symbol — peering through locked doors at hidden data.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><circle cx="18" cy="13" r="7" fill="none" stroke="#5e6ad2" stroke-width="2"/><path d="M14 17 L18 30 L22 17" fill="#5e6ad2" opacity="0.6"/><circle cx="18" cy="13" r="3" fill="#5e6ad2"/></svg></div></div>
+  </div>
+
+  <!-- 27: Radar -->
+  <div class="card">
+    <span class="card-num">#27</span><span class="card-name">Radar</span>
+    <svg width="330" height="52" viewBox="0 0 330 52">
+      <g transform="translate(4, 6)">
+        <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(94,106,210,0.2)" stroke-width="1"/>
+        <circle cx="18" cy="18" r="10" fill="none" stroke="rgba(94,106,210,0.3)" stroke-width="1"/>
+        <circle cx="18" cy="18" r="4" fill="none" stroke="rgba(94,106,210,0.5)" stroke-width="1"/>
+        <circle cx="18" cy="18" r="2" fill="#5e6ad2"/>
+        <line x1="18" y1="18" x2="32" y2="8" stroke="#5e6ad2" stroke-width="1.5" stroke-linecap="round" style="animation: radarSweep 3s linear infinite; transform-origin: 18px 18px"/>
+      </g>
+      <text x="48" y="38" font-family="'Inter'" font-weight="700" font-size="36" fill="#e8e8ed" letter-spacing="-0.5">exposed</text>
+    </svg>
+    <p class="card-desc">Animated radar sweep — scanning and detecting threats.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><circle cx="18" cy="18" r="12" fill="none" stroke="rgba(94,106,210,0.2)" stroke-width="1"/><circle cx="18" cy="18" r="7" fill="none" stroke="rgba(94,106,210,0.4)" stroke-width="1"/><circle cx="18" cy="18" r="2" fill="#5e6ad2"/><line x1="18" y1="18" x2="28" y2="10" stroke="#5e6ad2" stroke-width="1.5" stroke-linecap="round" style="animation: radarSweep 3s linear infinite; transform-origin: 18px 18px"/></svg></div></div>
+  </div>
+
+  <!-- 28: Shield -->
+  <div class="card">
+    <span class="card-num">#28</span><span class="card-name">Shield</span>
+    <svg width="330" height="52" viewBox="0 0 330 52">
+      <g transform="translate(2, 2)">
+        <path d="M18 2 L32 10 L32 24 C32 34 18 44 18 44 C18 44 4 34 4 24 L4 10 Z" fill="none" stroke="#5e6ad2" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M12 22 L16 26 L24 16" fill="none" stroke="#5e6ad2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <text x="44" y="38" font-family="'Inter'" font-weight="700" font-size="36" fill="#e8e8ed" letter-spacing="-0.5">exposed</text>
+    </svg>
+    <p class="card-desc">Shield + checkmark — security verified, privacy protected.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><path d="M18 6 L28 12 L28 20 C28 27 18 32 18 32 C18 32 8 27 8 20 L8 12 Z" fill="none" stroke="#5e6ad2" stroke-width="1.5"/><path d="M13 19 L16 22 L23 14" fill="none" stroke="#5e6ad2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+  </div>
+
+  <!-- 29: Fingerprint -->
+  <div class="card">
+    <span class="card-num">#29</span><span class="card-name">Fingerprint</span>
+    <svg width="340" height="52" viewBox="0 0 340 52">
+      <g transform="translate(2, 4)">
+        <path d="M8 30 C8 16 14 6 22 6 C30 6 36 16 36 26" fill="none" stroke="rgba(94,106,210,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M12 32 C12 20 16 10 22 10 C28 10 32 18 32 26" fill="none" stroke="rgba(94,106,210,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M16 34 C16 24 18 14 22 14 C26 14 28 22 28 28" fill="none" stroke="rgba(94,106,210,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M20 36 C20 28 21 20 22 18 C23 20 24 28 24 32" fill="none" stroke="#5e6ad2" stroke-width="1.5" stroke-linecap="round"/>
+      </g>
+      <text x="48" y="38" font-family="'Inter'" font-weight="700" font-size="36" fill="#e8e8ed" letter-spacing="-0.5">exposed</text>
+    </svg>
+    <p class="card-desc">Fingerprint — unique identity, biometric tracking exposed.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><path d="M10 28 C10 18 14 8 18 8 C22 8 26 18 26 24" fill="none" stroke="rgba(94,106,210,0.3)" stroke-width="1.5" stroke-linecap="round"/><path d="M13 28 C13 20 15 12 18 12 C21 12 23 18 23 24" fill="none" stroke="rgba(94,106,210,0.6)" stroke-width="1.5" stroke-linecap="round"/><path d="M16 28 C16 22 17 16 18 16 C19 16 20 22 20 26" fill="none" stroke="#5e6ad2" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+  </div>
+
+  <!-- 30: Redacted -->
+  <div class="card">
+    <span class="card-num">#30</span><span class="card-name">Redacted</span>
+    <svg width="300" height="52" viewBox="0 0 300 52">
+      <text x="0" y="40" font-family="'Inter'" font-weight="700" font-size="42" fill="#e8e8ed" letter-spacing="-0.5">exposed</text>
+      <rect x="52" y="14" width="72" height="32" fill="#e8e8ed" opacity="0.12" rx="2"/>
+      <line x1="52" y1="30" x2="124" y2="30" stroke="#5e6ad2" stroke-width="1" stroke-dasharray="4 2"/>
+    </svg>
+    <p class="card-desc">Partially redacted middle — censored info being uncovered.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="26" text-anchor="middle" font-family="'Inter'" font-weight="700" font-size="22" fill="#e8e8ed">E</text><rect x="8" y="18" width="20" height="6" fill="rgba(232,232,237,0.1)" rx="1"/></svg></div></div>
+  </div>
+
+  <!-- 31: Magnifying Glass -->
+  <div class="card">
+    <span class="card-num">#31</span><span class="card-name">Magnify</span>
+    <svg width="340" height="52" viewBox="0 0 340 52">
+      <g transform="translate(2, 6)">
+        <circle cx="16" cy="16" r="12" fill="none" stroke="#5e6ad2" stroke-width="2"/>
+        <line x1="25" y1="25" x2="34" y2="34" stroke="#5e6ad2" stroke-width="2.5" stroke-linecap="round"/>
+        <text x="16" y="20" text-anchor="middle" font-family="'Inter'" font-weight="800" font-size="12" fill="#5e6ad2">e</text>
+      </g>
+      <text x="46" y="38" font-family="'Inter'" font-weight="700" font-size="36" fill="#e8e8ed" letter-spacing="-0.5">xposed</text>
+    </svg>
+    <p class="card-desc">Magnifying glass over "e" — deep inspection and analysis.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><circle cx="16" cy="16" r="8" fill="none" stroke="#5e6ad2" stroke-width="2"/><line x1="22" y1="22" x2="30" y2="30" stroke="#5e6ad2" stroke-width="2.5" stroke-linecap="round"/><text x="16" y="20" text-anchor="middle" font-family="'Inter'" font-weight="800" font-size="10" fill="#5e6ad2">e</text></svg></div></div>
+  </div>
+
+  <!-- 32: Lock/Unlock -->
+  <div class="card">
+    <span class="card-num">#32</span><span class="card-name">Unlocked</span>
+    <svg width="340" height="52" viewBox="0 0 340 52">
+      <g transform="translate(2, 4)">
+        <rect x="6" y="18" width="24" height="22" rx="3" fill="none" stroke="#5e6ad2" stroke-width="2"/>
+        <path d="M12 18 V12 C12 6 18 2 24 2 C30 2 32 6 32 10" fill="none" stroke="#5e6ad2" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="18" cy="29" r="2.5" fill="#5e6ad2"/>
+        <line x1="18" y1="31" x2="18" y2="36" stroke="#5e6ad2" stroke-width="2" stroke-linecap="round"/>
+      </g>
+      <text x="46" y="38" font-family="'Outfit'" font-weight="700" font-size="36" fill="#e8e8ed" letter-spacing="-0.5">exposed</text>
+    </svg>
+    <p class="card-desc">Open padlock — unlocking and revealing secured data.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><rect x="10" y="18" width="16" height="14" rx="2" fill="none" stroke="#5e6ad2" stroke-width="1.5"/><path d="M14 18 V13 C14 9 18 7 22 7 C24 7 25 8 25 10" fill="none" stroke="#5e6ad2" stroke-width="1.5" stroke-linecap="round"/><circle cx="18" cy="25" r="2" fill="#5e6ad2"/></svg></div></div>
+  </div>
+
+</div>
+
+<!-- ============================================ -->
+<div class="section-title">Creative — Conceptual & Artistic</div>
+<!-- ============================================ -->
+<div class="grid">
+
+  <!-- 33: Spotlight Reveal -->
+  <div class="card">
+    <span class="card-num">#33</span><span class="card-name">Spotlight</span>
+    <svg width="300" height="56" viewBox="0 0 300 56">
+      <defs>
+        <radialGradient id="spotG" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e8e8ed"/><stop offset="60%" stop-color="#e8e8ed"/><stop offset="100%" stop-color="rgba(232,232,237,0.15)"/></radialGradient>
+      </defs>
+      <text x="0" y="42" font-family="'Poppins'" font-weight="700" font-size="44" fill="url(#spotG)" letter-spacing="-1">exposed</text>
+    </svg>
+    <p class="card-desc">Radial spotlight gradient — center illuminated, edges in shadow.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><defs><radialGradient id="spotI" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e8e8ed"/><stop offset="100%" stop-color="rgba(232,232,237,0.15)"/></radialGradient></defs><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="26" text-anchor="middle" font-family="'Poppins'" font-weight="800" font-size="22" fill="url(#spotI)">E</text></svg></div></div>
+  </div>
+
+  <!-- 34: Strikethrough -->
+  <div class="card">
+    <span class="card-num">#34</span><span class="card-name">Strikethrough</span>
+    <svg width="280" height="52" viewBox="0 0 280 52">
+      <text x="0" y="40" font-family="'Inter'" font-weight="700" font-size="44" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+      <line x1="0" y1="28" x2="270" y2="28" stroke="#5e6ad2" stroke-width="2.5"/>
+    </svg>
+    <p class="card-desc">Strikethrough — crossing out what was hidden, now revealed.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="26" text-anchor="middle" font-family="'Inter'" font-weight="800" font-size="22" fill="#e8e8ed">E</text><line x1="6" y1="20" x2="30" y2="20" stroke="#5e6ad2" stroke-width="2"/></svg></div></div>
+  </div>
+
+  <!-- 35: Mirror / Reflection -->
+  <div class="card">
+    <span class="card-num">#35</span><span class="card-name">Mirror</span>
+    <svg width="280" height="72" viewBox="0 0 280 72">
+      <text x="0" y="36" font-family="'Outfit'" font-weight="800" font-size="40" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+      <text x="0" y="36" font-family="'Outfit'" font-weight="800" font-size="40" fill="rgba(94,106,210,0.15)" letter-spacing="-1" transform="translate(0,72) scale(1,-1)">exposed</text>
+      <line x1="0" y1="42" x2="260" y2="42" stroke="rgba(94,106,210,0.15)" stroke-width="0.5"/>
+    </svg>
+    <p class="card-desc">Reflected wordmark — the hidden mirror image of data.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="19" text-anchor="middle" font-family="'Outfit'" font-weight="800" font-size="16" fill="#e8e8ed">E</text><text x="18" y="19" text-anchor="middle" font-family="'Outfit'" font-weight="800" font-size="16" fill="rgba(94,106,210,0.2)" transform="translate(0,36) scale(1,-1)">E</text><line x1="6" y1="22" x2="30" y2="22" stroke="rgba(94,106,210,0.15)" stroke-width="0.5"/></svg></div></div>
+  </div>
+
+  <!-- 36: Negative Space E -->
+  <div class="card">
+    <span class="card-num">#36</span><span class="card-name">Negative Space</span>
+    <svg width="300" height="52" viewBox="0 0 300 52">
+      <text x="0" y="42" font-family="'Inter'" font-weight="900" font-size="46" letter-spacing="-2">
+        <tspan fill="rgba(94,106,210,0.15)">e</tspan><tspan fill="#e8e8ed">xposed</tspan>
+      </text>
+    </svg>
+    <p class="card-desc">Ghost "e" — the first letter is barely visible, being exposed.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="26" text-anchor="middle" font-family="'Inter'" font-weight="900" font-size="22" fill="rgba(94,106,210,0.2)">E</text><rect x="18" y="12" width="10" height="16" fill="#111113"/><text x="18" y="26" text-anchor="middle" font-family="'Inter'" font-weight="900" font-size="22" fill="rgba(232,232,237,0.05)">E</text></svg></div></div>
+  </div>
+
+  <!-- 37: Morse Code -->
+  <div class="card">
+    <span class="card-num">#37</span><span class="card-name">Morse Code</span>
+    <svg width="300" height="60" viewBox="0 0 300 60">
+      <text x="0" y="34" font-family="'Inter'" font-weight="700" font-size="38" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+      <!-- E=. X=-..- P=.--. O=--- S=... E=. D=-..- -->
+      <g transform="translate(0, 48)">
+        <circle cx="4" cy="0" r="2" fill="#5e6ad2"/>
+        <rect x="14" y="-2" width="10" height="4" rx="2" fill="#5e6ad2" opacity="0.7"/>
+        <circle cx="30" cy="0" r="2" fill="#5e6ad2"/>
+        <circle cx="38" cy="0" r="2" fill="#5e6ad2"/>
+        <rect x="46" y="-2" width="10" height="4" rx="2" fill="#5e6ad2" opacity="0.7"/>
+        <circle cx="64" cy="0" r="2" fill="#5e6ad2"/>
+        <rect x="72" y="-2" width="10" height="4" rx="2" fill="#5e6ad2" opacity="0.7"/>
+        <rect x="86" y="-2" width="10" height="4" rx="2" fill="#5e6ad2" opacity="0.7"/>
+        <circle cx="104" cy="0" r="2" fill="#5e6ad2"/>
+        <rect x="112" y="-2" width="10" height="4" rx="2" fill="#5e6ad2" opacity="0.7"/>
+        <rect x="126" y="-2" width="10" height="4" rx="2" fill="#5e6ad2" opacity="0.7"/>
+        <rect x="140" y="-2" width="10" height="4" rx="2" fill="#5e6ad2" opacity="0.7"/>
+        <circle cx="160" cy="0" r="2" fill="#5e6ad2"/>
+        <circle cx="168" cy="0" r="2" fill="#5e6ad2"/>
+        <circle cx="176" cy="0" r="2" fill="#5e6ad2"/>
+        <circle cx="190" cy="0" r="2" fill="#5e6ad2"/>
+        <rect x="200" y="-2" width="10" height="4" rx="2" fill="#5e6ad2" opacity="0.7"/>
+        <circle cx="218" cy="0" r="2" fill="#5e6ad2"/>
+        <circle cx="226" cy="0" r="2" fill="#5e6ad2"/>
+      </g>
+    </svg>
+    <p class="card-desc">Morse code underline — secret message hidden in plain sight.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><circle cx="10" cy="14" r="2" fill="#5e6ad2"/><rect x="16" y="12" width="8" height="4" rx="2" fill="#5e6ad2" opacity="0.7"/><circle cx="30" cy="14" r="2" fill="#5e6ad2"/><text x="18" y="28" text-anchor="middle" font-family="'Inter'" font-weight="700" font-size="10" fill="rgba(232,232,237,0.4)">EX</text></svg></div></div>
+  </div>
+
+  <!-- 38: Poppins Mixed Weight -->
+  <div class="card">
+    <span class="card-num">#38</span><span class="card-name">Mixed Weight</span>
+    <svg width="300" height="52" viewBox="0 0 300 52">
+      <text y="42" font-family="'Poppins'" font-size="44" letter-spacing="-1">
+        <tspan x="0" font-weight="300" fill="rgba(232,232,237,0.5)">ex</tspan><tspan font-weight="800" fill="#e8e8ed">pos</tspan><tspan font-weight="300" fill="rgba(232,232,237,0.5)">ed</tspan>
+      </text>
+    </svg>
+    <p class="card-desc">Mixed weights — "pos" (position) emphasized, bookended by whispers.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="10" y="26" font-family="'Poppins'" font-weight="300" font-size="18" fill="rgba(232,232,237,0.3)">E</text><text x="22" y="26" font-family="'Poppins'" font-weight="800" font-size="18" fill="#e8e8ed">x</text></svg></div></div>
+  </div>
+
+</div>
+
+<!-- ============================================ -->
+<div class="section-title">Creative — Geometric & Abstract</div>
+<!-- ============================================ -->
+<div class="grid">
+
+  <!-- 39: Circle Crop -->
+  <div class="card">
+    <span class="card-num">#39</span><span class="card-name">Circle Crop</span>
+    <svg width="340" height="52" viewBox="0 0 340 52">
+      <defs><clipPath id="circClip"><circle cx="22" cy="26" r="20"/></clipPath></defs>
+      <circle cx="22" cy="26" r="20" fill="none" stroke="#5e6ad2" stroke-width="1.5"/>
+      <text x="-4" y="42" font-family="'Inter'" font-weight="800" font-size="44" fill="#5e6ad2" letter-spacing="-1" clip-path="url(#circClip)">ex</text>
+      <text x="48" y="42" font-family="'Inter'" font-weight="800" font-size="44" fill="#e8e8ed" letter-spacing="-1">posed</text>
+    </svg>
+    <p class="card-desc">Circle crops "ex" — like a lens or scope isolating data.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><circle cx="18" cy="18" r="12" fill="none" stroke="#5e6ad2" stroke-width="1.5"/><text x="18" y="24" text-anchor="middle" font-family="'Inter'" font-weight="800" font-size="16" fill="#5e6ad2">E</text></svg></div></div>
+  </div>
+
+  <!-- 40: Double Line -->
+  <div class="card">
+    <span class="card-num">#40</span><span class="card-name">Double Line</span>
+    <svg width="290" height="56" viewBox="0 0 290 56">
+      <line x1="0" y1="4" x2="270" y2="4" stroke="rgba(94,106,210,0.3)" stroke-width="1"/>
+      <text x="0" y="40" font-family="'Space Grotesk'" font-weight="700" font-size="40" fill="#e8e8ed" letter-spacing="1">exposed</text>
+      <line x1="0" y1="52" x2="270" y2="52" stroke="rgba(94,106,210,0.3)" stroke-width="1"/>
+    </svg>
+    <p class="card-desc">Horizontal rules frame the word — official document styling.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><line x1="6" y1="10" x2="30" y2="10" stroke="rgba(94,106,210,0.3)" stroke-width="1"/><text x="18" y="26" text-anchor="middle" font-family="'Space Grotesk'" font-weight="700" font-size="16" fill="#e8e8ed">E</text><line x1="6" y1="30" x2="30" y2="30" stroke="rgba(94,106,210,0.3)" stroke-width="1"/></svg></div></div>
+  </div>
+
+  <!-- 41: Arrow Right -->
+  <div class="card">
+    <span class="card-num">#41</span><span class="card-name">Arrow</span>
+    <svg width="320" height="50" viewBox="0 0 320 50">
+      <text x="0" y="40" font-family="'DM Sans'" font-weight="700" font-size="42" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+      <g transform="translate(262, 14)">
+        <line x1="0" y1="12" x2="28" y2="12" stroke="#5e6ad2" stroke-width="2" stroke-linecap="round"/>
+        <polyline points="20,4 28,12 20,20" fill="none" stroke="#5e6ad2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </svg>
+    <p class="card-desc">Forward arrow — moving data from hidden to visible.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#5e6ad2"/><line x1="10" y1="18" x2="26" y2="18" stroke="#fff" stroke-width="2" stroke-linecap="round"/><polyline points="20,12 26,18 20,24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+  </div>
+
+  <!-- 42: Diamond Accent -->
+  <div class="card">
+    <span class="card-num">#42</span><span class="card-name">Diamond</span>
+    <svg width="310" height="50" viewBox="0 0 310 50">
+      <text x="0" y="40" font-family="'Sora'" font-weight="700" font-size="40" fill="#e8e8ed" letter-spacing="-0.5">exposed</text>
+      <rect x="267" y="15" width="12" height="12" rx="2" fill="#5e6ad2" transform="rotate(45, 273, 21)"/>
+    </svg>
+    <p class="card-desc">Diamond accent — a gem of information, precious data point.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><rect x="12" y="12" width="12" height="12" rx="2" fill="#5e6ad2" transform="rotate(45, 18, 18)"/><text x="18" y="22" text-anchor="middle" font-family="'Sora'" font-weight="800" font-size="12" fill="#fff">E</text></svg></div></div>
+  </div>
+
+  <!-- 43: Stacked -->
+  <div class="card">
+    <span class="card-num">#43</span><span class="card-name">Stacked</span>
+    <svg width="200" height="64" viewBox="0 0 200 64">
+      <text x="0" y="28" font-family="'Inter'" font-weight="900" font-size="30" fill="#5e6ad2" letter-spacing="8">EX</text>
+      <text x="0" y="58" font-family="'Inter'" font-weight="400" font-size="24" fill="#e8e8ed" letter-spacing="3">POSED</text>
+    </svg>
+    <p class="card-desc">Stacked two-line — "EX" dominates, "POSED" complements.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="18" text-anchor="middle" font-family="'Inter'" font-weight="900" font-size="14" fill="#5e6ad2">EX</text><text x="18" y="30" text-anchor="middle" font-family="'Inter'" font-weight="400" font-size="8" fill="rgba(232,232,237,0.5)" letter-spacing="2">POSED</text></svg></div></div>
+  </div>
+
+  <!-- 44: Outline Only -->
+  <div class="card">
+    <span class="card-num">#44</span><span class="card-name">Outline</span>
+    <svg width="300" height="52" viewBox="0 0 300 52">
+      <text x="0" y="42" font-family="'Outfit'" font-weight="800" font-size="46" fill="none" stroke="#e8e8ed" stroke-width="1" letter-spacing="-1">exposed</text>
+    </svg>
+    <p class="card-desc">Outlined only — hollow letters, transparent and see-through.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="26" text-anchor="middle" font-family="'Outfit'" font-weight="800" font-size="22" fill="none" stroke="#5e6ad2" stroke-width="1">E</text></svg></div></div>
+  </div>
+
+  <!-- 45: Glow -->
+  <div class="card">
+    <span class="card-num">#45</span><span class="card-name">Glow</span>
+    <svg width="290" height="52" viewBox="0 0 290 52">
+      <defs><filter id="glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <text x="0" y="42" font-family="'Inter'" font-weight="800" font-size="44" fill="#5e6ad2" letter-spacing="-1" filter="url(#glow)">exposed</text>
+    </svg>
+    <p class="card-desc">Neon glow — luminous data radiating from the dark.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><defs><filter id="glowI"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="36" height="36" rx="8" fill="#0a0a0c"/><text x="18" y="26" text-anchor="middle" font-family="'Inter'" font-weight="800" font-size="22" fill="#5e6ad2" filter="url(#glowI)">E</text></svg></div></div>
+  </div>
+
+  <!-- 46: Half & Half -->
+  <div class="card">
+    <span class="card-num">#46</span><span class="card-name">Half &amp; Half</span>
+    <svg width="300" height="52" viewBox="0 0 300 52">
+      <defs>
+        <linearGradient id="halfG" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#e8e8ed"/><stop offset="50%" stop-color="#e8e8ed"/><stop offset="50%" stop-color="#5e6ad2"/><stop offset="100%" stop-color="#5e6ad2"/></linearGradient>
+      </defs>
+      <text x="0" y="42" font-family="'Outfit'" font-weight="800" font-size="46" fill="url(#halfG)" letter-spacing="-1">exposed</text>
+    </svg>
+    <p class="card-desc">Split color at midline — two identities, one revealed.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><defs><linearGradient id="halfI" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#e8e8ed"/><stop offset="50%" stop-color="#e8e8ed"/><stop offset="50%" stop-color="#5e6ad2"/><stop offset="100%" stop-color="#5e6ad2"/></linearGradient></defs><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="26" text-anchor="middle" font-family="'Outfit'" font-weight="800" font-size="22" fill="url(#halfI)">E</text></svg></div></div>
+  </div>
+
+  <!-- 47: Parenthetical -->
+  <div class="card">
+    <span class="card-num">#47</span><span class="card-name">Parenthetical</span>
+    <svg width="310" height="50" viewBox="0 0 310 50">
+      <text x="0" y="40" font-family="'Inter'" font-weight="300" font-size="40" fill="rgba(94,106,210,0.4)">(</text>
+      <text x="14" y="40" font-family="'Inter'" font-weight="700" font-size="40" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+      <text x="260" y="40" font-family="'Inter'" font-weight="300" font-size="40" fill="rgba(94,106,210,0.4)">)</text>
+    </svg>
+    <p class="card-desc">In parentheses — a whispered aside, hidden in plain text.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="5" y="26" font-family="'Inter'" font-weight="300" font-size="18" fill="rgba(94,106,210,0.4)">(</text><text x="18" y="26" text-anchor="middle" font-family="'Inter'" font-weight="700" font-size="18" fill="#e8e8ed">E</text><text x="25" y="26" font-family="'Inter'" font-weight="300" font-size="18" fill="rgba(94,106,210,0.4)">)</text></svg></div></div>
+  </div>
+
+  <!-- 48: Wave Underline -->
+  <div class="card">
+    <span class="card-num">#48</span><span class="card-name">Wave</span>
+    <svg width="290" height="58" viewBox="0 0 290 58">
+      <text x="0" y="38" font-family="'Poppins'" font-weight="700" font-size="42" fill="#e8e8ed" letter-spacing="-1">exposed</text>
+      <path d="M0 52 Q20 44 40 52 Q60 60 80 52 Q100 44 120 52 Q140 60 160 52 Q180 44 200 52 Q220 60 240 52 Q260 44 270 52" fill="none" stroke="#5e6ad2" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <p class="card-desc">Wave underline — data signals, frequency patterns.</p>
+    <div class="variant-row"><div><p class="variant-label">Icon</p><svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#111113"/><text x="18" y="22" text-anchor="middle" font-family="'Poppins'" font-weight="800" font-size="18" fill="#e8e8ed">E</text><path d="M6 30 Q12 26 18 30 Q24 34 30 30" fill="none" stroke="#5e6ad2" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+  </div>
+
+</div>
+
+<div style="text-align:center; padding: 60px 0 40px; color: rgba(232,232,237,0.15); font-size: 12px; letter-spacing: 2px;">— END OF CONCEPTS —</div>
+
+</body>
+</html>

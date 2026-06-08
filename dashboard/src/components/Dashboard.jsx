@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Eye } from 'lucide-react';
+import BrandIcon from './BrandIcon';
 import ConnectPrompt from './ConnectPrompt';
 import ExportButton from './ExportButton';
 import MobileGate from './MobileGate';
@@ -234,9 +234,7 @@ export default function Dashboard() {
             <div className="sticky top-5">
               {!selectedTracker && !selectedFingerprint ? (
                 <div className="acrylic-panel p-6 flex flex-col items-center text-center justify-center min-h-[320px] animate-fade-in">
-                  <div className="w-11 h-11 rounded-xl bg-accent-soft flex items-center justify-center mb-5 text-accent">
-                    <Eye size={20} />
-                  </div>
+                  <BrandIcon size={44} showBackground={true} bgFill="rgba(94, 106, 210, 0.08)" className="mb-5" />
                   <h3 className="font-sans font-semibold text-[15px] text-text mb-2">Privacy Inspector</h3>
                   <p className="text-[12px] text-secondary leading-relaxed max-w-xs mb-6 font-normal">
                     Select a tracker node from the graph or click a visit event to audit company profiles and payloads.

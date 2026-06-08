@@ -1,8 +1,8 @@
-# 🚨 Exposed
+# 🚨 expos.ed
 
 <div align="center">
 
-> **"uBlock Origin hides them. Exposed names, unmasks, and analyzes them."**
+> **"uBlock Origin hides them. expos.ed names, unmasks, and analyzes them."**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](./LICENSE)
 [![Chrome Extension](https://img.shields.io/badge/Platform-Chrome%20Extension-green.svg?style=for-the-badge)](https://developer.chrome.com/docs/extensions)
@@ -11,7 +11,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8.svg?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
 [![D3.js](https://img.shields.io/badge/D3.js-7.9-f9a03f.svg?style=for-the-badge&logo=d3.js)](https://d3js.org)
 
-Exposed is a local-first, decentralized privacy-intelligence platform that intercepts, visualizes, and audits the hidden tracking networks active on every website you visit. 
+expos.ed is a local-first, decentralized privacy-intelligence platform that intercepts, visualizes, and audits the hidden tracking networks active on every website you visit. 
 
 [Explore Architecture](#-architecture-&-data-flow) • [How to Run](#-quick-start) • [Database Schema](#-database-&-storage-layer) • [Security Policy](#-security-&-privacy-first)
 
@@ -19,18 +19,18 @@ Exposed is a local-first, decentralized privacy-intelligence platform that inter
 
 ---
 
-## 📖 What is Exposed?
+## 📖 What is expos.ed?
 
 Most modern privacy tools (like uBlock Origin, Brave, or AdBlock) block trackers silently. While this keeps you safe, it keeps you in the dark about who is actively trying to surveil you, what data they are capturing, and how they bypass your browser settings.
 
-**Exposed takes the opposite approach: capture the surveillance, inspect the payloads, and visualize the threat landscape.**
+**expos.ed takes the opposite approach: capture the surveillance, inspect the payloads, and visualize the threat landscape.**
 
 Two tightly integrated components work together:
 1. **Chrome Extension (Sensor Layer)**: Intercepts network requests in real-time, inspects payload data, unmasks DNS CNAME cloaks, and injects behavioral sensors to trap browser fingerprinting attempts.
 2. **React Dashboard (Visualization Layer)**: Renders a comprehensive dark-mode console displaying D3 force-directed networks, visit timelines, parsed exfiltration grids, and detailed profiling alerts.
 
 > [!IMPORTANT]
-> **Why Exposed is a Vital Tool for Cybersecurity Professionals & Privacy Engineers**
+> **Why expos.ed is a Vital Tool for Cybersecurity Professionals & Privacy Engineers**
 > * **Behavioral Adware & Spyware Auditing**: Instantly detect if embedded scripts are registering silent keyboard listeners (keyloggers), capturing inputs, or profiling system canvas/WebGL/Audio runtimes.
 > * **DNS CNAME De-cloaking**: De-cloak tracking assets hiding behind masqueraded first-party subdomains to identify evasion tactics and blocklist bypasses.
 > * **Payload Exfiltration Analysis**: Inspect exact query parameters and POST bodies in real time to document *what* PII (Personally Identifiable Information), session IDs, or device footprints are being leaked.
@@ -41,13 +41,13 @@ Two tightly integrated components work together:
 ## ✨ Advanced Features
 
 ### 🔍 Real-Time Request Payload Decryption
-Captures query parameters and POST body JSON data in real-time. If a tracker exfiltrates tracking identifiers, device dimensions, or session IDs, Exposed decodes them and formats them into an easy-to-read key-value grid.
+Captures query parameters and POST body JSON data in real-time. If a tracker exfiltrates tracking identifiers, device dimensions, or session IDs, expos.ed decodes them and formats them into an easy-to-read key-value grid.
 
 ### 🔗 DNS-over-HTTPS CNAME Unmasking
-Trackers frequently hide behind "first-party" subdomains (e.g. `analytics.yourbank.com` pointing to `metrics.adobe.com`) to bypass browser blocklists. Exposed runs asynchronous CNAME DNS resolution queries using Cloudflare's secure JSON DNS-over-HTTPS (DoH) API, catching and flagging cloaked trackers as `Company (Cloaked)` in the timeline.
+Trackers frequently hide behind "first-party" subdomains (e.g. `analytics.yourbank.com` pointing to `metrics.adobe.com`) to bypass browser blocklists. expos.ed runs asynchronous CNAME DNS resolution queries using Cloudflare's secure JSON DNS-over-HTTPS (DoH) API, catching and flagging cloaked trackers as `Company (Cloaked)` in the timeline.
 
 ### ⚙️ Behavioral Fingerprint Sensors
-Instruments browser prototype interfaces to detect scripts trying to build hardware and network profiles of you. Exposed logs and shows JavaScript call stacks for:
+Instruments browser prototype interfaces to detect scripts trying to build hardware and network profiles of you. expos.ed logs and shows JavaScript call stacks for:
 * **Canvas Profiling**: Calls to `toDataURL` and `getImageData`.
 * **WebGL Identifiers**: Queries to `getParameter` querying graphics rendering units.
 * **Audio Fingerprinting**: Creating custom audio oscillators via `createOscillator`.
@@ -205,7 +205,7 @@ cd Exposed
 2. Toggle the **Developer mode** switch in the top-right corner.
 3. Click the **Load unpacked** button in the top-left.
 4. Select the `extension` folder located inside the cloned `Exposed` directory.
-5. The **Exposed** symbol should appear in your extensions list.
+5. The **expos.ed** symbol should appear in your extensions list.
 
 #### 3. Run React Dashboard
 Install packages and start the Vite local server:
@@ -225,10 +225,10 @@ Open a new browser tab, visit any website (e.g. news sites, social media, shoppi
 
 ## 🛡️ Security & Privacy First
 
-Exposed is built for security analysts, privacy advocates, and educational researchers. It adheres to strict offline-first principles:
+expos.ed is built for security analysts, privacy advocates, and educational researchers. It adheres to strict offline-first principles:
 
-* **Zero Cloud Connectors**: Exposed does not run remote APIs, server databases, or user accounts. Everything operates on client hardware.
-* **No Telemetry Outbound**: Exposed never logs usage metrics, crash reports, or exfiltrated domains to its authors or third parties.
+* **Zero Cloud Connectors**: expos.ed does not run remote APIs, server databases, or user accounts. Everything operates on client hardware.
+* **No Telemetry Outbound**: expos.ed never logs usage metrics, crash reports, or exfiltrated domains to its authors or third parties.
 * **Inspectable Data**: Your database is transparent. You can inspect all IndexedDB entries using Chrome Developer Tools (`F12` -> Application -> IndexedDB).
 * **Full Auditability**: The codebase contains zero binaries, minimized wrappers, or unvetted libraries. You can audit every line of JavaScript and CSS.
 

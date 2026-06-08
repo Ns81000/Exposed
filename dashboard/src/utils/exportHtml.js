@@ -215,11 +215,11 @@ export function exportSiteReport(site, visits, events, fingerprints = []) {
     .brand-logo {
       font-size: 26px;
       font-weight: 700;
-      background: linear-gradient(135deg, #ff3344 0%, #ff6a00 50%, #ffaa00 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+    }
+    .brand-logo span {
+      color: var(--color-accent);
     }
 
     .meta-info { text-align: right; }
@@ -416,7 +416,7 @@ export function exportSiteReport(site, visits, events, fingerprints = []) {
 <body>
   <div class="header-container">
     <div>
-      <div class="brand-logo">Exposed</div>
+      <div class="brand-logo">expos<span>.</span>ed</div>
       <div style="font-size: 12px; color: var(--color-muted); margin-top: 2px;">Local-First Privacy Intelligence Platform</div>
     </div>
     <div class="meta-info">
@@ -702,11 +702,11 @@ export function exportArchiveReport(archive) {
     .brand-logo {
       font-size: 26px;
       font-weight: 700;
-      background: linear-gradient(135deg, #ff3344 0%, #ff6a00 50%, #ffaa00 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+    }
+    .brand-logo span {
+      color: var(--color-accent);
     }
 
     .meta-info { text-align: right; }
@@ -805,7 +805,7 @@ export function exportArchiveReport(archive) {
 <body>
   <div class="header-container">
     <div>
-      <div class="brand-logo">Exposed</div>
+      <div class="brand-logo">expos<span>.</span>ed</div>
       <div style="font-size: 12px; color: var(--color-muted); margin-top: 2px;">Local-First Privacy Intelligence Platform</div>
     </div>
     <div class="meta-info">
