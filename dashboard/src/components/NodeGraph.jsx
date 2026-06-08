@@ -96,6 +96,7 @@ export default function NodeGraph({ events, onNodeClick }) {
 
     const svg = d3.select(ref.current);
     const tooltip = d3.select(tooltipRef.current);
+    let simulation;
 
     if (events.length === 0) {
       svg.selectAll('*').remove();
@@ -225,8 +226,10 @@ export default function NodeGraph({ events, onNodeClick }) {
           })
           .on('end', (event, datum) => {
             if (!event.active) simulation.alphaTarget(0);
-            datum.fx = null;
-            datum.fy = null;
+            if (datum.id !== 'site') {
+              datum.fx = null;
+              datum.fy = null;
+            }
           })
       );
 
@@ -360,30 +363,79 @@ export default function NodeGraph({ events, onNodeClick }) {
       siteNode.fy = cy;
     }
 
-    // Pre-initialize remaining nodes slightly offset from center to prevent initial clustering glitches
-    nodes.forEach((n) => {
-      if (n.id !== 'site') {
-        if (n.x === undefined) n.x = cx + (Math.random() - 0.5) * 40;
-        if (n.y === undefined) n.y = cy + (Math.random() - 0.5) * 40;
+    // Distribute remaining nodes in a circle initially to speed up stabilization
+    nodes.forEach((n, i) => {
+      if (n.id === 'site') {
+        n.x = cx;
+        n.y = cy;
+      } else {
+        const angle = (i / (nodes.length - 1)) * 2 * Math.PI;
+        const dist = ringRadii[(n.ring || 2) - 1] || 120;
+        n.x = cx + Math.cos(angle) * dist;
+        n.y = cy + Math.sin(angle) * dist;
       }
     });
 
-    // Force simulation with concentric ring constraints
-    const simulation = d3
+    // Create simulation with link, charge, and collision forces (removing conflicting center force)
+    simulation = d3
       .forceSimulation(nodes)
       .force('link', d3.forceLink(links).id((d) => d.id).distance(d => {
         const target = nodes.find(n => n.id === (typeof d.target === 'string' ? d.target : d.target.id));
         const ring = target?.ring || 2;
         return ringRadii[ring - 1] || 120;
-      }))
-      .force('charge', d3.forceManyBody().strength(-300))
-      .force('center', d3.forceCenter(cx, cy))
-      .force('collision', d3.forceCollide().radius((d) => d.radius + 8))
+      }).strength(1.0))
+      .force('charge', d3.forceManyBody().strength(-200))
+      .force('collision', d3.forceCollide().radius((d) => d.radius + 12))
       .force('radial', d3.forceRadial(
         d => d.type === 'site' ? 0 : ringRadii[(d.ring || 2) - 1],
         cx, cy
-      ).strength(0.4));
+      ).strength(0.35));
 
+    // Run ticks synchronously to settle layout immediately
+    simulation.stop();
+    for (let i = 0; i < 100; ++i) {
+      simulation.tick();
+    }
+
+    // Render initial coordinates immediately
+    link
+      .attr('x1', d => d.source.x)
+      .attr('y1', d => d.source.y)
+      .attr('x2', d => d.target.x)
+      .attr('y2', d => d.target.y);
+
+    node.attr('transform', d => `translate(${d.x},${d.y})`);
+
+    // Zoom-to-fit: calculate bounding box of node layout
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    nodes.forEach(d => {
+      x0 = Math.min(x0, d.x - d.radius - 30);
+      x1 = Math.max(x1, d.x + d.radius + 30);
+      y0 = Math.min(y0, d.y - d.radius - 30);
+      y1 = Math.max(y1, d.y + d.radius + 30);
+    });
+
+    let scale = 1.0;
+    let tx = 0;
+    let ty = 0;
+
+    if (x0 !== Infinity) {
+      const graphW = x1 - x0;
+      const graphH = y1 - y0;
+      
+      // Compute best scaling factor and bounding center offset
+      scale = 0.85 / Math.max(graphW / width, graphH / height);
+      scale = Math.max(0.65, Math.min(1.2, scale));
+
+      tx = width / 2 - scale * (x0 + x1) / 2;
+      ty = height / 2 - scale * (y0 + y1) / 2;
+    }
+
+    // Set auto-fitting zoom transform immediately
+    const initialTransform = d3.zoomIdentity.translate(tx, ty).scale(scale);
+    svg.call(zoomBehavior.transform, initialTransform);
+
+    // Register active tick handler for manual drags
     simulation.on('tick', () => {
       link
         .attr('x1', d => d.source.x)
