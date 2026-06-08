@@ -179,12 +179,18 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     // Extract connections: Top 7 sites and Top 8 tracker companies
     const siteDomainCounts = {};
     const companyCounts = {};
-    const connections = [];
+    const connectionMap = new Map();
 
     events.forEach(e => {
       siteDomainCounts[e.siteDomain] = (siteDomainCounts[e.siteDomain] || 0) + 1;
       companyCounts[e.company] = (companyCounts[e.company] || 0) + 1;
-      connections.push({ site: e.siteDomain, company: e.company, risk: e.risk });
+      
+      const key = `${e.siteDomain}||${e.company}`;
+      if (connectionMap.has(key)) {
+        connectionMap.get(key).count += 1;
+      } else {
+        connectionMap.set(key, { site: e.siteDomain, company: e.company, risk: e.risk, count: 1 });
+      }
     });
 
     const topSites = Object.keys(siteDomainCounts)
@@ -196,6 +202,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .slice(0, 8);
 
     // Keep only connections relating to top sites and top companies
+    const connections = Array.from(connectionMap.values());
     const filteredConnections = connections.filter(
       c => topSites.includes(c.site) && topCompanies.includes(c.company)
     );
@@ -225,16 +232,16 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .attr('fill', 'none')
       .attr('stroke', d => riskAccent(d.risk))
       .attr('stroke-width', d => {
-        if (hoveredCompany === null && hoveredSite === null) return 1.8;
-        if (hoveredCompany !== null && d.company === hoveredCompany) return 3.0;
-        if (hoveredSite !== null && d.site === hoveredSite) return 3.0;
+        if (hoveredCompany === null && hoveredSite === null) return 1.5;
+        if (hoveredCompany !== null && d.company === hoveredCompany) return 2.5;
+        if (hoveredSite !== null && d.site === hoveredSite) return 2.5;
         return 1.0;
       })
       .attr('stroke-opacity', d => {
-        if (hoveredCompany === null && hoveredSite === null) return 0.25;
-        if (hoveredCompany !== null) return d.company === hoveredCompany ? 0.85 : 0.06;
-        if (hoveredSite !== null) return d.site === hoveredSite ? 0.85 : 0.06;
-        return 0.06;
+        if (hoveredCompany === null && hoveredSite === null) return 0.22;
+        if (hoveredCompany !== null) return d.company === hoveredCompany ? 0.85 : 0.02;
+        if (hoveredSite !== null) return d.site === hoveredSite ? 0.85 : 0.02;
+        return 0.02;
       })
       .style('transition', 'stroke-opacity 180ms ease, stroke-width 180ms ease');
 
