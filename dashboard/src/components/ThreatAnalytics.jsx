@@ -46,7 +46,9 @@ function parseThreatVectors(events) {
 export default function ThreatAnalytics({ sites, visits, events, fingerprints }) {
   const bipartiteRef = useRef(null);
   const bandwidthRef = useRef(null);
-  const [hoveredCompany, setHoveredCompany] = useState(null);
+  const [activeHover, setActiveHover] = useState(null);
+  const [showLeaked, setShowLeaked] = useState(true);
+  const [showBlocked, setShowBlocked] = useState(true);
 
   // ── Global Stats ──────────────────────────────────────────
   const totalSites = sites.length;
@@ -128,6 +130,35 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
     const leftScale = d3.scalePoint().domain(topSites).range([40, height - 40]);
     const rightScale = d3.scalePoint().domain(topCompanies).range([30, height - 30]);
 
+    // Helper check functions
+    const isLinkActive = (c) => {
+      if (!activeHover) return false;
+      if (activeHover.type === 'company') return c.company === activeHover.val;
+      if (activeHover.type === 'site') return c.site === activeHover.val;
+      if (activeHover.type === 'link') return c.site === activeHover.site && c.company === activeHover.company;
+      return false;
+    };
+
+    const isSiteActive = (site) => {
+      if (!activeHover) return true;
+      if (activeHover.type === 'site') return site === activeHover.val;
+      if (activeHover.type === 'company') {
+        return uniqueConnections.some(c => c.site === site && c.company === activeHover.val);
+      }
+      if (activeHover.type === 'link') return activeHover.site === site;
+      return false;
+    };
+
+    const isCompanyActive = (company) => {
+      if (!activeHover) return true;
+      if (activeHover.type === 'company') return company === activeHover.val;
+      if (activeHover.type === 'site') {
+        return uniqueConnections.some(c => c.site === activeHover.val && c.company === company);
+      }
+      if (activeHover.type === 'link') return activeHover.company === company;
+      return false;
+    };
+
     const bipartiteG = svg.append('g');
 
     // Draw connecting lines (smooth cubic curves)
@@ -135,6 +166,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .x(d => d[0])
       .y(d => d[1]);
 
+    // Background links
     const links = bipartiteG.append('g')
       .selectAll('path')
       .data(uniqueConnections)
@@ -145,15 +177,48 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
         return linkGenerator({ source: [leftX, yStart], target: [rightX, yEnd] });
       })
       .attr('fill', 'none')
-      .attr('stroke', d => riskAccent(d.risk))
+      .attr('stroke', d => `var(--color-risk-${d.risk})`)
       .attr('stroke-width', d => 1.2 + Math.log2(d.count) * 0.8) // Log thickness based on request volume
-      .attr('stroke-opacity', d => hoveredCompany === null ? 0.22 : (d.company === hoveredCompany ? 0.9 : 0.01))
+      .attr('stroke-opacity', d => {
+        if (activeHover === null) return 0.15;
+        return isLinkActive(d) ? 0.95 : 0.01;
+      })
       .style('transition', 'stroke-opacity 220ms ease, stroke-width 220ms ease');
 
-    // Helper to check connection between site and hovered company
-    const hasConnection = (siteDomain, companyName) => {
-      return uniqueConnections.some(c => c.site === siteDomain && c.company === companyName);
-    };
+    // Flowing particles for active links
+    const flowPaths = bipartiteG.append('g')
+      .selectAll('path')
+      .data(uniqueConnections)
+      .join('path')
+      .attr('d', d => {
+        const yStart = leftScale(d.site);
+        const yEnd = rightScale(d.company);
+        return linkGenerator({ source: [leftX, yStart], target: [rightX, yEnd] });
+      })
+      .attr('fill', 'none')
+      .attr('stroke', d => `var(--color-risk-${d.risk})`)
+      .attr('stroke-width', d => (1.2 + Math.log2(d.count) * 0.8) * 1.5)
+      .attr('stroke-opacity', d => activeHover !== null && isLinkActive(d) ? 0.85 : 0)
+      .attr('class', 'link-flow-active')
+      .style('pointer-events', 'none')
+      .style('transition', 'stroke-opacity 220ms ease');
+
+    // Invisible thick links for easier hover interaction
+    const interactiveLinks = bipartiteG.append('g')
+      .selectAll('path')
+      .data(uniqueConnections)
+      .join('path')
+      .attr('d', d => {
+        const yStart = leftScale(d.site);
+        const yEnd = rightScale(d.company);
+        return linkGenerator({ source: [leftX, yStart], target: [rightX, yEnd] });
+      })
+      .attr('fill', 'none')
+      .attr('stroke', 'transparent')
+      .attr('stroke-width', 10)
+      .style('cursor', 'pointer')
+      .on('mouseenter', (event, d) => setActiveHover({ type: 'link', site: d.site, company: d.company }))
+      .on('mouseleave', () => setActiveHover(null));
 
     // Left Node Group (Sites)
     const leftNodes = bipartiteG.append('g')
@@ -161,20 +226,35 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .data(topSites)
       .join('g')
       .attr('transform', d => `translate(${leftX}, ${leftScale(d)})`)
-      .style('opacity', d => hoveredCompany === null ? 1 : (hasConnection(d, hoveredCompany) ? 1 : 0.18))
-      .style('transition', 'opacity 220ms ease');
+      .style('cursor', 'pointer')
+      .style('opacity', d => isSiteActive(d) ? 1 : 0.08)
+      .style('transition', 'opacity 220ms ease')
+      .on('mouseenter', (event, d) => setActiveHover({ type: 'site', val: d }))
+      .on('mouseleave', () => setActiveHover(null));
 
+    // Outer Ring
     leftNodes.append('circle')
-      .attr('r', 5)
-      .attr('fill', 'var(--color-accent)');
+      .attr('r', d => (activeHover && isSiteActive(d)) ? 8 : 6)
+      .attr('fill', 'none')
+      .attr('stroke', d => (activeHover?.type === 'site' && activeHover.val === d) ? 'var(--color-accent)' : 'var(--color-border)')
+      .attr('stroke-width', 1.5)
+      .style('transition', 'all 220ms ease');
+
+    // Inner Dot
+    leftNodes.append('circle')
+      .attr('r', 2.5)
+      .attr('fill', d => (activeHover?.type === 'site' && activeHover.val === d) ? 'var(--color-accent-hover)' : 'var(--color-accent)')
+      .style('transition', 'all 220ms ease');
 
     leftNodes.append('text')
-      .attr('x', -12)
+      .attr('x', -14)
       .attr('dy', '0.31em')
       .attr('text-anchor', 'end')
       .attr('font-size', '11px')
       .attr('font-family', 'Plus Jakarta Sans, sans-serif')
-      .attr('fill', 'var(--color-text)')
+      .attr('font-weight', d => (activeHover?.type === 'site' && activeHover.val === d) ? '600' : '500')
+      .attr('fill', d => (activeHover?.type === 'site' && activeHover.val === d) ? 'var(--color-text)' : 'var(--color-secondary)')
+      .style('transition', 'all 220ms ease')
       .text(d => d.length > 20 ? d.substring(0, 18) + '...' : d);
 
     // Right Node Group (Companies)
@@ -184,14 +264,24 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .join('g')
       .attr('transform', d => `translate(${rightX}, ${rightScale(d)})`)
       .style('cursor', 'pointer')
-      .style('opacity', d => hoveredCompany === null ? 1 : (d === hoveredCompany ? 1 : 0.18))
+      .style('opacity', d => isCompanyActive(d) ? 1 : 0.08)
       .style('transition', 'opacity 220ms ease')
-      .on('mouseenter', (event, d) => setHoveredCompany(d))
-      .on('mouseleave', () => setHoveredCompany(null));
+      .on('mouseenter', (event, d) => setActiveHover({ type: 'company', val: d }))
+      .on('mouseleave', () => setActiveHover(null));
 
+    // Outer Ring for Companies
     rightNodes.append('circle')
-      .attr('r', 6)
-      .attr('fill', d => hoveredCompany === d ? 'var(--color-accent)' : 'var(--color-secondary)');
+      .attr('r', d => (activeHover && isCompanyActive(d)) ? 8 : 6)
+      .attr('fill', 'none')
+      .attr('stroke', d => (activeHover?.type === 'company' && activeHover.val === d) ? 'var(--color-accent)' : 'var(--color-border)')
+      .attr('stroke-width', 1.5)
+      .style('transition', 'all 220ms ease');
+
+    // Inner Dot for Companies
+    rightNodes.append('circle')
+      .attr('r', 2.5)
+      .attr('fill', d => (activeHover?.type === 'company' && activeHover.val === d) ? 'var(--color-accent)' : 'var(--color-secondary)')
+      .style('transition', 'all 220ms ease');
 
     rightNodes.append('text')
       .attr('x', 14)
@@ -199,11 +289,12 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .attr('text-anchor', 'start')
       .attr('font-size', '11.5px')
       .attr('font-family', 'Outfit, sans-serif')
-      .attr('font-weight', d => hoveredCompany === d ? '600' : '500')
-      .attr('fill', d => hoveredCompany === d ? 'var(--color-accent)' : 'var(--color-text)')
+      .attr('font-weight', d => (activeHover?.type === 'company' && activeHover.val === d) ? '600' : '500')
+      .attr('fill', d => (activeHover?.type === 'company' && activeHover.val === d) ? 'var(--color-accent)' : 'var(--color-text)')
+      .style('transition', 'all 220ms ease')
       .text(d => d);
 
-  }, [events, hoveredCompany]);
+  }, [events, activeHover]);
 
   // ── D3 Bandwidth Savings Timeline Area Chart ───────────────
   useEffect(() => {
@@ -235,14 +326,20 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       };
     });
 
+    let xDomain = d3.extent(chartData, d => d.date);
+    if (xDomain[0] && xDomain[0].getTime() === xDomain[1].getTime()) {
+      xDomain = [new Date(xDomain[0].getTime() - 3600 * 1000), new Date(xDomain[1].getTime() + 3600 * 1000)];
+    }
+
     const xScale = d3.scaleTime()
-      .domain(d3.extent(chartData, d => d.date))
+      .domain(xDomain)
       .range([margin.left, width - margin.right]);
 
-    const yMax = Math.max(
-      d3.max(chartData, d => d.exfiltrated) || 10,
-      d3.max(chartData, d => d.saved) || 10
+    const maxVal = Math.max(
+      showLeaked ? (d3.max(chartData, d => d.exfiltrated) || 10) : 0,
+      showBlocked ? (d3.max(chartData, d => d.saved) || 10) : 0
     );
+    const yMax = maxVal === 0 ? 10 : maxVal;
 
     const yScale = d3.scaleLinear()
       .domain([0, yMax * 1.15])
@@ -276,6 +373,21 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .attr('offset', '100%')
       .attr('stop-color', 'var(--color-success)')
       .attr('stop-opacity', 0.0);
+
+    // Gridlines (subtle horizontal dashed lines)
+    const yTicks = yScale.ticks(4);
+    svg.append('g')
+      .attr('class', 'gridlines')
+      .selectAll('line')
+      .data(yTicks)
+      .join('line')
+      .attr('x1', margin.left)
+      .attr('x2', width - margin.right)
+      .attr('y1', d => yScale(d))
+      .attr('y2', d => yScale(d))
+      .attr('stroke', 'var(--color-border)')
+      .attr('stroke-width', 1)
+      .attr('stroke-dasharray', '2,4');
 
     // Axes
     const xAxis = d3.axisBottom(xScale).ticks(5).tickFormat(d3.timeFormat('%I:%M %p'));
@@ -312,31 +424,39 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .y1(d => yScale(d.saved))
       .curve(d3.curveMonotoneX);
 
-    // Render shaded areas
-    svg.append('path')
-      .datum(chartData)
-      .attr('fill', 'url(#grad-exfiltrated)')
-      .attr('d', areaExfiltrated);
+    // Render shaded areas conditionally
+    if (showLeaked) {
+      svg.append('path')
+        .datum(chartData)
+        .attr('fill', 'url(#grad-exfiltrated)')
+        .attr('d', areaExfiltrated);
+    }
 
-    svg.append('path')
-      .datum(chartData)
-      .attr('fill', 'url(#grad-saved)')
-      .attr('d', areaSaved);
+    if (showBlocked) {
+      svg.append('path')
+        .datum(chartData)
+        .attr('fill', 'url(#grad-saved)')
+        .attr('d', areaSaved);
+    }
 
-    // Render crisp border strokes
-    svg.append('path')
-      .datum(chartData)
-      .attr('fill', 'none')
-      .attr('stroke', 'var(--color-accent)')
-      .attr('stroke-width', 2)
-      .attr('d', d3.line().x(d => xScale(d.date)).y(d => yScale(d.exfiltrated)).curve(d3.curveMonotoneX));
+    // Render crisp border strokes conditionally
+    if (showLeaked) {
+      svg.append('path')
+        .datum(chartData)
+        .attr('fill', 'none')
+        .attr('stroke', 'var(--color-accent)')
+        .attr('stroke-width', 2)
+        .attr('d', d3.line().x(d => xScale(d.date)).y(d => yScale(d.exfiltrated)).curve(d3.curveMonotoneX));
+    }
 
-    svg.append('path')
-      .datum(chartData)
-      .attr('fill', 'none')
-      .attr('stroke', 'var(--color-success)')
-      .attr('stroke-width', 2)
-      .attr('d', d3.line().x(d => xScale(d.date)).y(d => yScale(d.saved)).curve(d3.curveMonotoneX));
+    if (showBlocked) {
+      svg.append('path')
+        .datum(chartData)
+        .attr('fill', 'none')
+        .attr('stroke', 'var(--color-success)')
+        .attr('stroke-width', 2)
+        .attr('d', d3.line().x(d => xScale(d.date)).y(d => yScale(d.saved)).curve(d3.curveMonotoneX));
+    }
 
     // Interactive hover scanner line
     const hoverLine = svg.append('line')
@@ -374,6 +494,7 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .style('position', 'absolute')
       .style('pointer-events', 'none')
       .style('background', 'var(--color-surface-2)')
+      .style('backdrop-filter', 'blur(8px)')
       .style('border', '1px solid var(--color-border)')
       .style('padding', '6px 10px')
       .style('border-radius', '6px')
@@ -392,10 +513,12 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
       .attr('fill', 'none')
       .attr('pointer-events', 'all')
       .on('mouseover', () => {
-        hoverLine.style('opacity', 0.6);
-        focusDotExfiltrated.style('opacity', 1);
-        focusDotSaved.style('opacity', 1);
-        tooltip.style('opacity', 1);
+        if (showLeaked || showBlocked) {
+          hoverLine.style('opacity', 0.6);
+          if (showLeaked) focusDotExfiltrated.style('opacity', 1);
+          if (showBlocked) focusDotSaved.style('opacity', 1);
+          tooltip.style('opacity', 1);
+        }
       })
       .on('mouseout', () => {
         hoverLine.style('opacity', 0);
@@ -404,38 +527,69 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
         tooltip.style('opacity', 0);
       })
       .on('mousemove', (event) => {
+        if (!showLeaked && !showBlocked) {
+          hoverLine.style('opacity', 0);
+          focusDotExfiltrated.style('opacity', 0);
+          focusDotSaved.style('opacity', 0);
+          tooltip.style('opacity', 0);
+          return;
+        }
+
         const xPos = d3.pointer(event)[0];
         const datePos = xScale.invert(xPos);
-        const index = bisectDate(chartData, datePos, 1);
-        const d0 = chartData[index - 1];
-        const d1 = chartData[index];
-        if (!d0 || !d1) return;
-        const d = datePos - d0.date > d1.date - datePos ? d1 : d0;
+        
+        let d;
+        if (chartData.length === 1) {
+          d = chartData[0];
+        } else {
+          const index = bisectDate(chartData, datePos, 1);
+          const d0 = chartData[index - 1];
+          const d1 = chartData[index];
+          if (!d0 && !d1) return;
+          if (!d0) d = d1;
+          else if (!d1) d = d0;
+          else d = datePos - d0.date > d1.date - datePos ? d1 : d0;
+        }
         
         const xCoord = xScale(d.date);
         
         hoverLine.attr('x1', xCoord).attr('x2', xCoord);
-        focusDotExfiltrated.attr('cx', xCoord).attr('cy', yScale(d.exfiltrated));
-        focusDotSaved.attr('cx', xCoord).attr('cy', yScale(d.saved));
+        if (showLeaked) focusDotExfiltrated.attr('cx', xCoord).attr('cy', yScale(d.exfiltrated));
+        if (showBlocked) focusDotSaved.attr('cx', xCoord).attr('cy', yScale(d.saved));
 
         // Position tooltip intelligently inside bounds
-        const tooltipW = 150;
+        const tooltipW = 160;
         const tx = Math.min(xCoord + 15, width - tooltipW - 10);
-        const ty = yScale(Math.max(d.exfiltrated, d.saved)) - 30;
+        
+        let activeY = height / 2;
+        if (showLeaked && showBlocked) {
+          activeY = yScale(Math.max(d.exfiltrated, d.saved));
+        } else if (showLeaked) {
+          activeY = yScale(d.exfiltrated);
+        } else if (showBlocked) {
+          activeY = yScale(d.saved);
+        }
+        const ty = activeY - 30;
+
+        let htmlContent = `
+          <div style="font-weight: 600; color: var(--color-text); margin-bottom: 2px;">
+            ${d3.timeFormat('%I:%M %p')(d.date)}
+          </div>
+        `;
+        if (showLeaked) {
+          htmlContent += `<div style="color: var(--color-accent)">Leaked: ${d.exfiltrated.toFixed(1)} KB</div>`;
+        }
+        if (showBlocked) {
+          htmlContent += `<div style="color: var(--color-success)">Blocked: ${d.saved.toFixed(1)} KB</div>`;
+        }
 
         tooltip
           .style('left', `${tx}px`)
           .style('top', `${ty}px`)
-          .html(`
-            <div style="font-weight: 600; color: var(--color-text); margin-bottom: 2px;">
-              ${d3.timeFormat('%I:%M %p')(d.date)}
-            </div>
-            <div style="color: var(--color-accent)">Leaked: ${d.exfiltrated.toFixed(1)} KB</div>
-            <div style="color: var(--color-success)">Blocked: ${d.saved.toFixed(1)} KB</div>
-          `);
+          .html(htmlContent);
       });
 
-  }, [visits, events]);
+  }, [visits, events, showLeaked, showBlocked]);
 
   // Total parsed leak metrics
   const totalLeaks = threatStats.pii + threatStats.fingerprint + threatStats.behavior + threatStats.marketing;
@@ -505,7 +659,11 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
             <p className="text-[11px] text-muted mt-0.5">Exposing surveillance networks linking your identity across domains.</p>
           </div>
           <span className="text-[10px] text-accent border border-accent/20 bg-accent-soft px-2 py-0.5 rounded font-mono font-medium">
-            {hoveredCompany ? `CORRELATING: ${hoveredCompany.toUpperCase()}` : 'HOVER COMPANY TO INSPECT LINKS'}
+            {activeHover ? (
+              activeHover.type === 'company' ? `CORRELATING COMPANY: ${activeHover.val.toUpperCase()}` :
+              activeHover.type === 'site' ? `CORRELATING SITE: ${activeHover.val.toUpperCase()}` :
+              `LINK DETECTED: ${activeHover.site} ── ${activeHover.company}`
+            ) : 'HOVER ELEMENTS TO INSPECT LINKS'}
           </span>
         </div>
         
@@ -611,12 +769,18 @@ export default function ThreatAnalytics({ sites, visits, events, fingerprints })
               <p className="text-[11px] text-muted mt-0.5">Historical bandwidth blocked vs exfiltrated (cumulative).</p>
             </div>
             <div className="flex items-center gap-3 text-[10px] font-mono">
-              <div className="flex items-center gap-1.5 text-accent">
+              <button 
+                onClick={() => setShowLeaked(!showLeaked)}
+                className={`flex items-center gap-1.5 transition-all duration-200 hover:opacity-100 focus:outline-none ${showLeaked ? 'text-accent' : 'text-muted opacity-40'}`}
+              >
                 <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Leaked
-              </div>
-              <div className="flex items-center gap-1.5 text-success">
+              </button>
+              <button 
+                onClick={() => setShowBlocked(!showBlocked)}
+                className={`flex items-center gap-1.5 transition-all duration-200 hover:opacity-100 focus:outline-none ${showBlocked ? 'text-success' : 'text-muted opacity-40'}`}
+              >
                 <span className="w-1.5 h-1.5 rounded-full bg-success" /> Blocked
-              </div>
+              </button>
             </div>
           </div>
 
