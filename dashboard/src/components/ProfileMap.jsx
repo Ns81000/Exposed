@@ -9,7 +9,6 @@ import { riskAccent } from '../utils/riskColor';
 // ── Helpers for parsing parameters ──
 function extractKeysFromPayload(payload) {
   if (!payload) return {};
-  let parsed = {};
   
   if (typeof payload === 'object') {
     return payload;
@@ -17,15 +16,53 @@ function extractKeysFromPayload(payload) {
 
   const str = payload.trim();
 
-  // Try JSON
+  // 1. Try parsing as standard JSON (single-line or formatted multi-line)
   try {
     const obj = JSON.parse(str);
     if (obj && typeof obj === 'object') return obj;
   } catch (e) {
-    // Ignore and try URL query params
+    // Ignore and proceed to NDJSON
   }
 
-  // Try URL query params
+  // 2. Try parsing as NDJSON or space-separated JSON blocks (Sentry envelopes)
+  if (str.startsWith('{') || str.includes('\n')) {
+    const parts = str.split(/\n/);
+    let merged = {};
+    let parsedAny = false;
+    parts.forEach(part => {
+      const trimmedPart = part.trim();
+      if (!trimmedPart) return;
+      try {
+        const parsed = JSON.parse(trimmedPart);
+        if (parsed && typeof parsed === 'object') {
+          merged = { ...merged, ...parsed };
+          parsedAny = true;
+        }
+      } catch (e) {
+        // Try splitting by space between JSON objects: } {
+        const subParts = trimmedPart.split(/(?<=\})\s+(?=\{)/);
+        if (subParts.length > 1) {
+          subParts.forEach(sp => {
+            try {
+              const parsedSub = JSON.parse(sp.trim());
+              if (parsedSub && typeof parsedSub === 'object') {
+                merged = { ...merged, ...parsedSub };
+                parsedAny = true;
+              }
+            } catch (e2) {
+              // Ignored
+            }
+          });
+        }
+      }
+    });
+    if (parsedAny) {
+      return merged;
+    }
+  }
+
+  // 3. Try URL query params fallback
+  let parsed = {};
   if (str.includes('=') && (str.includes('&') || !str.startsWith('{'))) {
     str.split('&').forEach(p => {
       const parts = p.split('=');
@@ -535,7 +572,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
       <div className="grid grid-cols-1 xl:grid-cols-[2fr_1.1fr] gap-6">
         
         {/* Radar Orbit Map */}
-        <section className="acrylic-panel p-5 relative overflow-hidden flex flex-col justify-between" style={{ minHeight: '520px' }}>
+        <section className="acrylic-panel p-5 relative overflow-hidden flex flex-col justify-between min-w-0" style={{ minHeight: '520px' }}>
           <div className="px-1 pb-4 border-b border-border flex flex-wrap items-center justify-between z-10 gap-2">
             <div>
               <p className="section-label text-text">Shadow Profile Radar</p>
@@ -786,7 +823,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
         </section>
 
         {/* Shadow Profile Bento Card */}
-        <section className="space-y-5">
+        <section className="space-y-5 min-w-0">
           {/* Persona Card */}
           <div className="acrylic-panel p-5 space-y-4">
             <div className="pb-3 border-b border-border flex items-center justify-between">
@@ -896,7 +933,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
                       <span className="text-[9px] font-mono text-muted uppercase tracking-wider block">Leaked Parameters:</span>
                       <div className="flex flex-wrap gap-1 max-h-[70px] overflow-y-auto scrollbar">
                         {selectedDetails.keys.map(k => (
-                          <code key={k} className="text-[10px] bg-surface-2 border border-border px-1.5 py-0.5 rounded font-mono text-secondary">{k}</code>
+                          <code key={k} className="text-[10px] bg-surface-2 border border-border px-1.5 py-0.5 rounded font-mono text-secondary break-all max-w-full">{k}</code>
                         ))}
                       </div>
                     </div>
