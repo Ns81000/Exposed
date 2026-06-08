@@ -9,13 +9,38 @@ async function checkCNAMETrackers(hostname) {
     return cnameCache.get(hostname);
   }
 
-  if (hostname.includes('cloudflare-dns.com') || hostname.includes('dns.google')) {
+  // Skip DoH resolution for DNS resolvers and localhost addresses
+  if (
+    hostname.includes('cloudflare-dns.com') ||
+    hostname.includes('dns.google') ||
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '0.0.0.0' ||
+    hostname.startsWith('127.') ||
+    hostname === '::1'
+  ) {
+    cnameCache.set(hostname, null);
     return null;
   }
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+    
     const url = `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(hostname)}&type=CNAME`;
-    const res = await fetch(url, { headers: { 'accept': 'application/dns-json' } });
+    const res = await fetch(url, { 
+      headers: { 'accept': 'application/dns-json' },
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!res.ok) {
+      console.warn('DoH query failed for', hostname, 'status:', res.status);
+      cnameCache.set(hostname, null);
+      return null;
+    }
+    
     const json = await res.json();
     
     if (json.Answer) {
@@ -47,7 +72,11 @@ async function checkCNAMETrackers(hostname) {
       }
     }
   } catch (e) {
-    console.error('DoH resolve error for', hostname, e);
+    if (e.name === 'AbortError') {
+      console.warn('DoH query timeout for', hostname);
+    } else {
+      console.debug('DoH resolve error for', hostname, e.message);
+    }
   }
 
   cnameCache.set(hostname, null);
