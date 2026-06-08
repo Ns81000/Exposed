@@ -98,6 +98,7 @@ html.transitioning *::after {
 .scrollbar {
   scrollbar-width: thin;
   scrollbar-color: var(--color-surface-3) var(--color-surface-1);
+  scrollbar-gutter: stable;
 }
 
 .scrollbar::-webkit-scrollbar {

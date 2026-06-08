@@ -365,7 +365,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
 
   // Selection detail box
   const selectedDetails = useMemo(() => {
-    const node = selectedNode || hoveredNode;
+    const node = selectedNode;
     if (!node) return null;
 
     if (node.type === 'category') {
@@ -532,7 +532,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
       </header>
 
       {/* Main Graph + Bento Dossier Row */}
-      <div className="grid grid-cols-1 xl:grid-cols-[2fr_1.1fr] gap-6 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-[2fr_1.1fr] gap-6">
         
         {/* Radar Orbit Map */}
         <section className="acrylic-panel p-5 relative overflow-hidden flex flex-col justify-between" style={{ minHeight: '520px' }}>
@@ -676,6 +676,22 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
                       strokeWidth={isActive ? 2.5 : 1.5}
                       style={{ transition: 'r 200ms ease, stroke-width 200ms ease' }}
                     />
+                    {/* Category Icon */}
+                    {(() => {
+                      const Icon = cat.icon;
+                      const size = isActive ? 16 : isHovered ? 15 : 14;
+                      const iconSize = size - 2;
+                      return (
+                        <Icon 
+                          size={iconSize} 
+                          x={-iconSize / 2} 
+                          y={-iconSize / 2} 
+                          stroke={cat.color}
+                          strokeWidth={2}
+                          fill="none"
+                        />
+                      );
+                    })()}
                     {/* Count badge */}
                     {catCount > 0 && (
                       <>
@@ -906,7 +922,7 @@ export default function ProfileMap({ sites, visits, events, fingerprints }) {
                 <Building2 size={24} className="text-muted mb-3" />
                 <h4 className="font-display font-semibold text-[13px] text-text mb-1">Radar Inspector</h4>
                 <p className="text-[11px] text-secondary max-w-xs font-normal leading-normal">
-                  Hover or click a tracker company node or a data category bubble to audit leaking nodes.
+                  Click a tracker company node or a data category bubble to audit leaking nodes.
                 </p>
               </div>
             )}
