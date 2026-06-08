@@ -285,22 +285,26 @@ export default function NodeGraph({ events, onNodeClick }) {
     // Tooltip & Hover
     node
       .on('mouseenter', function (event, datum) {
-        // Dim everything
-        node.attr('opacity', d =>
+        // Dim everything smoothly
+        node.transition().duration(120).attr('opacity', d =>
           d.id === datum.id || links.some(l =>
             (l.source.id === datum.id && l.target.id === d.id) ||
             (l.target.id === datum.id && l.source.id === d.id)
-          ) ? 1 : 0.15
+          ) ? 1 : 0.08
         );
 
-        link.attr('stroke-opacity', edge =>
-          edge.source.id === datum.id || edge.target.id === datum.id ? 0.5 : 0.04
-        );
+        link.transition().duration(120)
+          .attr('stroke-opacity', edge =>
+            edge.source.id === datum.id || edge.target.id === datum.id ? 0.65 : 0.02
+          )
+          .attr('stroke-width', edge =>
+            edge.source.id === datum.id || edge.target.id === datum.id ? 2.5 : 0.5
+          );
 
         d3.select(this).select('circle')
           .transition().duration(120)
           .attr('r', d => d.radius + 2)
-          .attr('stroke-opacity', 0.6)
+          .attr('stroke-opacity', 0.8)
           .attr('stroke-width', 1.5);
 
         const bounds = containerRef.current.getBoundingClientRect();
@@ -340,8 +344,11 @@ export default function NodeGraph({ events, onNodeClick }) {
           .style('top', `${y}px`);
       })
       .on('mouseleave', function () {
-        node.attr('opacity', 1);
-        link.attr('stroke-opacity', 0.2);
+        node.transition().duration(120).attr('opacity', 1);
+        
+        link.transition().duration(120)
+          .attr('stroke-opacity', 0.25)
+          .attr('stroke-width', 1.5);
 
         d3.select(this).select('circle')
           .transition().duration(120)
@@ -402,8 +409,9 @@ export default function NodeGraph({ events, onNodeClick }) {
     link.attr('d', d => {
       const dx = d.target.x - d.source.x;
       const dy = d.target.y - d.source.y;
-      const dr = Math.sqrt(dx * dx + dy * dy) * 1.2; // slight arc curvature
-      return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+      const mx = (d.source.x + d.target.x) / 2;
+      const my = (d.source.y + d.target.y) / 2;
+      return `M${d.source.x},${d.source.y} Q${mx - dy * 0.15},${my + dx * 0.15} ${d.target.x},${d.target.y}`;
     });
 
     node.attr('transform', d => `translate(${d.x},${d.y})`);
@@ -442,8 +450,9 @@ export default function NodeGraph({ events, onNodeClick }) {
       link.attr('d', d => {
         const dx = d.target.x - d.source.x;
         const dy = d.target.y - d.source.y;
-        const dr = Math.sqrt(dx * dx + dy * dy) * 1.2;
-        return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+        const mx = (d.source.x + d.target.x) / 2;
+        const my = (d.source.y + d.target.y) / 2;
+        return `M${d.source.x},${d.source.y} Q${mx - dy * 0.15},${my + dx * 0.15} ${d.target.x},${d.target.y}`;
       });
 
       node.attr('transform', d => `translate(${d.x},${d.y})`);
